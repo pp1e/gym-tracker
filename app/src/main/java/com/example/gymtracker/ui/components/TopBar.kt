@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +38,8 @@ fun TopBar(
     screenTitle: String,
     isScheduleScreenActive: Boolean,
     isHistoryScreenActive: Boolean,
+    isEditTrainingScreenActive: Boolean,
+    onBackClicked: () -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -62,6 +66,20 @@ fun TopBar(
                     WeekdaySwitcher(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+        },
+        navigationIcon = {
+            if (isEditTrainingScreenActive) {
+                IconButton(
+                    modifier = Modifier
+                        .height(TopAppBarDefaults.TopAppBarExpandedHeight),
+                    onClick = onBackClicked,
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = "Back"
                     )
                 }
             }

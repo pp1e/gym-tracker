@@ -37,7 +37,7 @@ fun ColumnScope.CurrentExerciseApproaches(
     Row(
         modifier = Modifier
             .padding(bottom = CURRENT_EXERCISE_APPROACH_BOTTOM_PADDING)
-            .fillMaxWidth(UiConstants.CURRENT_EXERCISE_WIDTH_FRACTION)
+            .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
             .align(Alignment.CenterHorizontally)
     ) {
         Spacer(
@@ -71,7 +71,7 @@ fun ColumnScope.CurrentExerciseApproaches(
                 Row(
                     modifier = Modifier
                         .padding(vertical = CURRENT_EXERCISE_APPROACH_BOTTOM_PADDING)
-                        .fillMaxWidth(UiConstants.CURRENT_EXERCISE_WIDTH_FRACTION)
+                        .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
                         .align(Alignment.Center),
                 ) {
                     ApproachLabel(

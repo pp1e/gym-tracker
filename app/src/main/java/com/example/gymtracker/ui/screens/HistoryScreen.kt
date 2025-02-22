@@ -17,17 +17,22 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import com.example.gymtracker.components.history.HistoryComponent
+import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.components.CompletedTrainingEntry
 import com.example.gymtracker.ui.components.SubtitleText
-
-private const val WIDTH_COEF = 0.9f
 
 @Composable
 fun HistoryScreen(
     paddingValues: PaddingValues,
+    component: HistoryComponent,
 ) {
+    val model by component.model.subscribeAsState()
+
     Box(
         Modifier
             .padding(paddingValues)
@@ -37,7 +42,7 @@ fun HistoryScreen(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxHeight()
-                .fillMaxWidth(WIDTH_COEF)
+                .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -45,25 +50,37 @@ fun HistoryScreen(
                 text = "Эта неделя"
             )
 
-            CompletedTrainingEntry()
+            CompletedTrainingEntry(
+                onClicked = component::onTrainingClicked
+            )
 
-            CompletedTrainingEntry()
+            CompletedTrainingEntry(
+                onClicked = component::onTrainingClicked
+            )
 
-            CompletedTrainingEntry()
+            CompletedTrainingEntry(
+                onClicked = component::onTrainingClicked
+            )
 
             SubtitleText(
                 text = "Прошлая неделя"
             )
 
-            CompletedTrainingEntry()
+            CompletedTrainingEntry(
+                onClicked = component::onTrainingClicked
+            )
 
             SubtitleText(
                 text = "Две недели назад"
             )
 
-            CompletedTrainingEntry()
+            CompletedTrainingEntry(
+                onClicked = component::onTrainingClicked
+            )
 
-            CompletedTrainingEntry()
+            CompletedTrainingEntry(
+                onClicked = component::onTrainingClicked
+            )
         }
     }
 }

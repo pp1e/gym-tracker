@@ -4,18 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -50,6 +42,8 @@ class MainActivity : ComponentActivity() {
                             screenTitle = model.screenTitle,
                             isScheduleScreenActive = model.isScheduleScreenActive,
                             isHistoryScreenActive = model.isHistoryScreenActive,
+                            isEditTrainingScreenActive = model.isEditTrainingScreenActive,
+                            onBackClicked = router::onBackClicked,
                         )
                     },
                     bottomBar = {
@@ -57,7 +51,7 @@ class MainActivity : ComponentActivity() {
                             onTrainingClicked = router::onTrainingScreenMenuButtonClicked,
                             onScheduleClicked = router::onScheduleScreenMenuButtonClicked,
                             onHistoryClicked = router::onHistoryScreenMenuButtonClicked,
-                            isTrainingScreenActive = model.isTrainingScreenActive,
+                            isTrainingScreenActive = model.isCurrentTrainingScreenActive,
                             isScheduleScreenActive = model.isScheduleScreenActive,
                             isHistoryScreenActive = model.isHistoryScreenActive,
                         )

@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object UiConstants {
-    const val CURRENT_EXERCISE_WIDTH_FRACTION = 0.9f
+    const val COMMON_WIDTH_FRACTION = 0.9f
     const val FAB_ADD_WEIGHT = 0.75f
 
     val WeekdaySwitcherPaddingValues = PaddingValues(

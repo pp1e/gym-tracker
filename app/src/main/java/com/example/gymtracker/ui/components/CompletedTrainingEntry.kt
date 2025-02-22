@@ -47,6 +47,7 @@ private val CARD_ELEMENT_PADDING_VALUES = PaddingValues(
 @Composable
 fun CompletedTrainingEntry(
     modifier: Modifier = Modifier,
+    onClicked: (Long) -> Unit,
 ) {
     Card (
         modifier = Modifier
@@ -54,7 +55,7 @@ fun CompletedTrainingEntry(
             .padding(ENTRY_PADDING)
             .height(CARD_HEIGHT)
             .fillMaxWidth()
-            .clickable {},
+            .clickable { onClicked(1) },
         colors = CardDefaults.outlinedCardColors(),
     ) {
         Box(
