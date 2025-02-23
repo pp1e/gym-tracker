@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 dependencyResolutionManagement {
@@ -20,4 +21,12 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "GymTracker"
-include(":app")
+include(
+//    ":common:components",
+//    ":common:routing",
+//    ":common:ui",
+//    ":common:utils",
+    ":common",
+    ":android",
+//    ":ios",
+)
