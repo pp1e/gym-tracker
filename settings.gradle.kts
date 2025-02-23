@@ -28,5 +28,5 @@ include(
 //    ":common:utils",
     ":common",
     ":android",
-//    ":ios",
+    ":iosCompose",
 )
