@@ -1,4 +1,6 @@
+package com.example.gymtracker
+
 import androidx.compose.ui.window.ComposeUIViewController
-import common
+import com.example.gymtracker
 
 fun MainViewController() = ComposeUIViewController { GymTrackerApplication() }
