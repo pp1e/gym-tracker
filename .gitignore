@@ -1,7 +1,14 @@
+# IDeA's
 .idea
+
+# Build artefacts
 .gradle
 */build
+.kotlin
 /captures
 .externalNativeBuild
 .cxx
+
+# Configs
+
 local.properties
