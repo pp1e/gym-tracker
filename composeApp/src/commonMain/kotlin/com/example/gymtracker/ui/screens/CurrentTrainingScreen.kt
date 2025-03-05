@@ -30,17 +30,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.example.gymtracker.components.main.MainComponent
+import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.components.AddExerciseSheet
-import com.example.gymtracker.ui.components.CurrentExercise
-import com.example.gymtracker.ui.components.TrainingTitle
+import com.example.gymtracker.ui.components.TrainingFull
 
 private val FAB_SPACE_BETWEEN = 12.dp
 
 @Composable
 fun CurrentTrainingScreen(
-    component: MainComponent,
+    component: CurrentTrainingComponent,
     paddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
 ) {
@@ -54,39 +53,9 @@ fun CurrentTrainingScreen(
                 .padding(paddingValues)
                 .fillMaxSize(),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .verticalScroll(rememberScrollState()),
-        ) {
-            TrainingTitle(
-                title = "Бицепс + грудь",
-            )
-
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-
-            Spacer(
-                modifier =
-                    Modifier
-                        .padding(UiConstants.FABPanelPadding)
-                        .fillMaxWidth()
-                        .height(UiConstants.FABHeight),
-            )
-        }
+        TrainingFull(
+            snackbarHostState = snackbarHostState,
+        )
 
         Row(
             modifier =

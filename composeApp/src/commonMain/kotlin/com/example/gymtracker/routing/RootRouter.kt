@@ -13,14 +13,12 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
 import com.example.gymtracker.components.history.HistoryComponent
-import com.example.gymtracker.components.main.MainComponent
+import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.utils.Consumer
 import com.example.gymtracker.utils.now
+import com.example.gymtracker.utils.russianName
 import kotlinx.serialization.Serializable
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.datetime.format.DateTimeFormat
 
 class RootRouter(
     componentContext: ComponentContext,
@@ -28,7 +26,8 @@ class RootRouter(
 //    database: AppRepository
 ) : ComponentContext by componentContext {
     companion object {
-        private fun generateCurrentTrainingScreenTitle() = "Текущая тренировка, ${LocalDate.now().dayOfWeek.name}"
+        private fun generateCurrentTrainingScreenTitle() =
+            "Текущая тренировка, ${LocalDate.now().dayOfWeek.russianName()}"
     }
 
     data class Model(
@@ -111,7 +110,7 @@ class RootRouter(
         when (screenConfig) {
             is ScreenConfig.CurrentTraining ->
                 Child.CurrentTraining(
-                    MainComponent(
+                    CurrentTrainingComponent(
                         componentContext = componentContext,
                         storeFactory = storeFactory,
                     ),

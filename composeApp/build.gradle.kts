@@ -3,11 +3,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.multiplatform)
-//    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.multiplatform)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.sqldelight)
     alias(libs.plugins.ktlint)
 }
 
@@ -30,10 +29,6 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-//            implementation(compose.preview)
-            implementation(libs.android.activity.compose)
-        }
         commonMain.dependencies {
             // Core
             implementation(libs.androidx.lifecycle.viewmodel)
@@ -54,20 +49,25 @@ kotlin {
             implementation(libs.bundles.decompose)
             implementation(libs.bundles.mvikotlin)
             implementation(libs.bundles.reactive)
-//            implementation(libs.bundles.room)
 
             // Other
 
-//            annotationProcessor(libs.roomCompiler)
-//            ksp(libs.roomCompiler)
-//
-//
 //            androidTestImplementation(libs.androidJunit)
 //            androidTestImplementation(libs.espressoCore)
 //            androidTestImplementation(libs.composeJunitUiTest)
 //
 //            debugImplementation(libs.composeUiTooling)
 //            debugImplementation(libs.composeUiTestManifest)
+        }
+
+        androidMain.dependencies {
+//            implementation(compose.preview)
+            implementation(libs.android.activity.compose)
+            implementation(libs.sqldelight.android.driver)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.native.driver)
         }
     }
 }
@@ -108,12 +108,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-//    kotlinOptions {
-//        jvmTarget = "11"
-//    }
-//    buildFeatures {
-//        compose = true
-//    }
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.example.gymtracker.database")
+        }
+    }
 }
 
 dependencies {

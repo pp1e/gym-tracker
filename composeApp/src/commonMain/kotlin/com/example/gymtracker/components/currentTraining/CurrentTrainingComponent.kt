@@ -1,4 +1,4 @@
-package com.example.gymtracker.components.main
+package com.example.gymtracker.components.currentTraining
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
@@ -6,7 +6,7 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.gymtracker.utils.asValue
 
-class MainComponent(
+class CurrentTrainingComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
 //    database: AppRepository,
@@ -18,7 +18,7 @@ class MainComponent(
 
     private val store =
         instanceKeeper.getStore {
-            MainStoreProvider(
+            CurrentTrainingStoreProvider(
                 storeFactory = storeFactory,
 // //                database = database
             ).provide()

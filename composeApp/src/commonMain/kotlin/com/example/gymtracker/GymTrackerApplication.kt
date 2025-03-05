@@ -1,3 +1,5 @@
+package com.example.gymtracker
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -10,6 +12,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.example.gymtracker.database.Database
 import com.example.gymtracker.routing.RootContent
 import com.example.gymtracker.routing.RootRouter
 import com.example.gymtracker.ui.components.BottomMenu
@@ -17,7 +20,16 @@ import com.example.gymtracker.ui.components.TopBar
 import com.example.gymtracker.ui.theme.GymTrackerTheme
 
 @Composable
-fun GymTrackerApplication() {
+fun GymTrackerApplication(
+    database: Database,
+) {
+    database.userQueries.insert("arisha", "burova")
+    println(
+        database.userQueries
+            .selectAll()
+            .executeAsList()
+    )
+
     val router =
         RootRouter(
             componentContext = DefaultComponentContext(LifecycleRegistry()),

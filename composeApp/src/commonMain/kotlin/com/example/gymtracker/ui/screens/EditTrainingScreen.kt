@@ -73,7 +73,7 @@ fun EditTrainingScreen(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                     ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             )
@@ -87,7 +87,7 @@ fun EditTrainingScreen(
                         )
                         .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
                 text = "Понедельник, 17 февраля",
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             )
 

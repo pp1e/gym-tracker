@@ -1,10 +1,11 @@
 package com.example.gymtracker
 
-import GymTrackerApplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.gymtracker.database.DriverFactory
+import com.example.gymtracker.database.createDatabase
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,7 +13,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            GymTrackerApplication()
+            GymTrackerApplication(
+                database = createDatabase(
+                    driverFactory = DriverFactory(context = this)
+                )
+            )
         }
     }
 }

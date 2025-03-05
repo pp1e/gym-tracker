@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.components.AddExerciseSheet
 import com.example.gymtracker.ui.components.CurrentExercise
+import com.example.gymtracker.ui.components.TrainingFull
 
 @Composable
 fun ScheduleScreen(
@@ -41,35 +42,9 @@ fun ScheduleScreen(
                 .padding(paddingValues)
                 .fillMaxSize(),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .verticalScroll(rememberScrollState()),
-        ) {
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-
-            Spacer(
-                modifier =
-                    Modifier
-                        .padding(UiConstants.FABPanelPadding)
-                        .fillMaxWidth()
-                        .height(UiConstants.FABHeight),
-            )
-        }
+        TrainingFull(
+            snackbarHostState = snackbarHostState,
+        )
 
         ExtendedFloatingActionButton(
             onClick = { showBottomSheet = true },
