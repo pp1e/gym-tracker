@@ -52,6 +52,8 @@ kotlin {
 
             // Other
 
+            implementation(libs.sqldelight.runtime)
+
 //            androidTestImplementation(libs.androidJunit)
 //            androidTestImplementation(libs.espressoCore)
 //            androidTestImplementation(libs.composeJunitUiTest)
@@ -114,6 +116,10 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("com.example.gymtracker.database")
+            dialect(
+                "app.cash.sqldelight:sqlite-3-24-dialect:${libs.versions.sqldelight.get()}"
+            )
+            generateAsync = true
         }
     }
 }
