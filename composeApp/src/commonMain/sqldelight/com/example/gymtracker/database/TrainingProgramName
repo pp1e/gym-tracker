@@ -1,0 +1,5 @@
+CREATE TABLE training_program_name (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    color TEXT,
+    name TEXT NOT NULL
+);
