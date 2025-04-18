@@ -3,11 +3,12 @@ package com.example.gymtracker.routing
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
 import com.example.gymtracker.components.history.HistoryComponent
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
+import com.example.gymtracker.components.schedule.ScheduleComponent
 
 sealed class Child {
     data class CurrentTraining(val component: CurrentTrainingComponent) : Child()
 
-    data object Schedule : Child()
+    data class Schedule(val component: ScheduleComponent) : Child()
 
     data class History(val component: HistoryComponent) : Child()
 

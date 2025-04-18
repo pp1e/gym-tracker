@@ -1,0 +1,29 @@
+CREATE TABLE training_schedule (
+    id INTEGER PRIMARY KEY,
+    day_of_week INTEGER NOT NULL UNIQUE CHECK(
+        day_of_week IN (1, 2, 3, 4, 5, 6, 7)
+    ),
+    training_program_id INTEGER NOT NULL,
+
+    FOREIGN KEY (training_program_id) REFERENCES training_program(id)
+        ON DELETE CASCADE
+);
+
+
+insert:
+    INSERT INTO training_schedule (day_of_week, training_program_id)
+        VALUES (:dayOfWeek, :training_program_id)
+        ON CONFLICT (day_of_week) DO UPDATE SET training_program_id = :training_program_id;
+
+get:
+    SELECT * FROM training_schedule
+    LEFT JOIN training_program ON training_program.id = training_schedule.training_program_id
+    LEFT JOIN exercise ON exercise.training_id = training_program.training_id
+    LEFT JOIN exercise_template ON exercise_template.id = exercise.exercise_template_id
+    LEFT JOIN muscle_group ON muscle_group.id = exercise_template.muscle_group_id
+    LEFT JOIN approach ON approach.exercise_id = exercise.id
+    WHERE day_of_week = :dayOfWeek
+    ORDER BY exercise.ordinal, approach.ordinal;
+
+delete:
+    DELETE FROM training_schedule WHERE id = :id;

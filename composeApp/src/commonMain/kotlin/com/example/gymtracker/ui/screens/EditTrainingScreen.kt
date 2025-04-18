@@ -34,8 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.ui.components.AddExerciseSheet
-import com.example.gymtracker.ui.components.CurrentExercise
+import com.example.gymtracker.ui.elements.AddExerciseSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,22 +96,21 @@ fun EditTrainingScreen(
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
             )
-//            }
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
-            CurrentExercise(
-                snackbarHostState = snackbarHostState,
-            )
+//            CurrentExercise(
+//                snackbarHostState = snackbarHostState,
+//            )
+//            CurrentExercise(
+//                snackbarHostState = snackbarHostState,
+//            )
+//            CurrentExercise(
+//                snackbarHostState = snackbarHostState,
+//            )
+//            CurrentExercise(
+//                snackbarHostState = snackbarHostState,
+//            )
+//            CurrentExercise(
+//                snackbarHostState = snackbarHostState,
+//            )
 
             Spacer(
                 modifier =
@@ -139,6 +137,16 @@ fun EditTrainingScreen(
     if (showBottomSheet) {
         AddExerciseSheet(
             onDismissRequest = { showBottomSheet = false },
+            exerciseTemplateNames = emptyList(),
+            exerciseName = "",
+            onExerciseNameChanged = {},
+            approachesCount = 3,
+            onApproachesCountChanged = {},
+            repetitionsCount = 3,
+            onRepetitionsCountChanged = {},
+            weight = 3f,
+            onWeightChanged = {},
+            onAddExerciseClicked = {},
         )
     }
 }

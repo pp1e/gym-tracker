@@ -2,16 +2,11 @@ package com.example.gymtracker.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Done
@@ -32,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.ui.components.AddExerciseSheet
-import com.example.gymtracker.ui.components.TrainingFull
+import com.example.gymtracker.ui.elements.AddExerciseSheet
+import com.example.gymtracker.ui.elements.TrainingFull
 
 private val FAB_SPACE_BETWEEN = 12.dp
 
@@ -53,9 +48,19 @@ fun CurrentTrainingScreen(
                 .padding(paddingValues)
                 .fillMaxSize(),
     ) {
-        TrainingFull(
-            snackbarHostState = snackbarHostState,
-        )
+        if (model.training != null) {
+            TrainingFull(
+                snackbarHostState = snackbarHostState,
+                training = model.training!!,
+                onApproachAdd = {},
+                onRepetitionsChange = { _, _ -> },
+                onWeightChange = { _, _ -> },
+                requestExerciseDeleting = {},
+                cancelExerciseDeleting = {},
+                requestApproachDeleting = {},
+                cancelApproachDeleting = {},
+            )
+        }
 
         Row(
             modifier =
@@ -112,6 +117,16 @@ fun CurrentTrainingScreen(
     if (showBottomSheet) {
         AddExerciseSheet(
             onDismissRequest = { showBottomSheet = false },
+            exerciseTemplateNames = emptyList(),
+            exerciseName = "",
+            onExerciseNameChanged = {},
+            approachesCount = 3,
+            onApproachesCountChanged = {},
+            repetitionsCount = 3,
+            onRepetitionsCountChanged = {},
+            weight = 3f,
+            onWeightChanged = {},
+            onAddExerciseClicked = {},
         )
     }
 }

@@ -1,0 +1,10 @@
+CREATE TABLE training_history (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    datetime TEXT NOT NULL,
+    training_id INTEGER NOT NULL,
+
+    FOREIGN KEY (training_id) REFERENCES training(id)
+);
+
+CREATE INDEX training_history_training_fki ON training_history(training_id);

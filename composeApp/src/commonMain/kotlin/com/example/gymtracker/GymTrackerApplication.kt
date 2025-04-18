@@ -12,29 +12,22 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import com.example.gymtracker.database.Database
+import com.example.gymtracker.database.DatabasesBuilder
 import com.example.gymtracker.routing.RootContent
 import com.example.gymtracker.routing.RootRouter
-import com.example.gymtracker.ui.components.BottomMenu
-import com.example.gymtracker.ui.components.TopBar
+import com.example.gymtracker.ui.elements.BottomMenu
+import com.example.gymtracker.ui.elements.TopBar
 import com.example.gymtracker.ui.theme.GymTrackerTheme
 
 @Composable
 fun GymTrackerApplication(
-    database: Database,
+    databasesBuilder: DatabasesBuilder,
 ) {
-    database.userQueries.insert("arisha", "burova")
-    println(
-        database.userQueries
-            .selectAll()
-            .executeAsList()
-    )
-
     val router =
         RootRouter(
             componentContext = DefaultComponentContext(LifecycleRegistry()),
             storeFactory = DefaultStoreFactory(),
-//                            database = appRepository
+            databasesBuilder = databasesBuilder,
         )
 
     GymTrackerTheme {
@@ -50,11 +43,12 @@ fun GymTrackerApplication(
                     isHistoryScreenActive = model.isHistoryScreenActive,
                     isEditTrainingScreenActive = model.isEditTrainingScreenActive,
                     onBackClicked = router::onBackClicked,
+                    onWeekdaySwitch = router::onWeekdaySwitch,
                 )
             },
             bottomBar = {
                 BottomMenu(
-                    onTrainingClicked = router::onTrainingScreenMenuButtonClicked,
+                    onTrainingClicked = router::onCurrentTrainingScreenMenuButtonClicked,
                     onScheduleClicked = router::onScheduleScreenMenuButtonClicked,
                     onHistoryClicked = router::onHistoryScreenMenuButtonClicked,
                     isTrainingScreenActive = model.isCurrentTrainingScreenActive,

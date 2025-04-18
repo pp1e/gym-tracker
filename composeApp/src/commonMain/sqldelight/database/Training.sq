@@ -1,0 +1,12 @@
+CREATE TABLE training (
+    id INTEGER PRIMARY KEY
+);
+
+insert:
+    INSERT INTO training (id) VALUES (:id);
+
+delete:
+    DELETE FROM training WHERE training.id IN :ids;
+
+maxId:
+    SELECT MAX(id) FROM training;

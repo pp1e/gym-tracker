@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.history.HistoryComponent
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.ui.components.CompletedTrainingEntry
-import com.example.gymtracker.ui.components.SubtitleText
+import com.example.gymtracker.ui.elements.CompletedTrainingEntry
+import com.example.gymtracker.ui.elements.SubtitleText
 
 @Composable
 fun HistoryScreen(

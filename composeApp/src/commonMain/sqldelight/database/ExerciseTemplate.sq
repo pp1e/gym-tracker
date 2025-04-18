@@ -1,0 +1,29 @@
+CREATE TABLE exercise_template (
+    id INTEGER PRIMARY KEY,
+    muscle_group_id INTEGER,
+    name TEXT NOT NULL UNIQUE,
+
+    FOREIGN KEY (muscle_group_id) REFERENCES muscle_group(id)
+);
+
+CREATE INDEX exercise_template_muscle_group_idx
+    ON exercise_template(muscle_group_id);
+
+INSERT INTO exercise_template (id, muscle_group_id, name)
+    VALUES (1, 1, "Подтягивания с весом");
+
+insert:
+    INSERT INTO exercise_template (muscle_group_id, name)
+        VALUES (:muscle_group_id, :name);
+
+getList:
+    SELECT exercise_template.id, exercise_template.name, muscle_group.name
+    FROM exercise_template
+    LEFT JOIN muscle_group ON muscle_group.id = exercise_template.muscle_group_id;
+
+getId:
+    SELECT id FROM exercise_template WHERE name = :name;
+
+delete:
+    DELETE FROM exercise_template
+        WHERE id = :id;

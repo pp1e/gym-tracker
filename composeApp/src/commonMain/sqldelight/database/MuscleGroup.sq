@@ -1,0 +1,15 @@
+CREATE TABLE muscle_group (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+INSERT INTO muscle_group (id, name)
+    VALUES (1, "Турник");
+
+insertOrNothing:
+    INSERT OR IGNORE INTO muscle_group (name)
+    VALUES (:name);
+
+getId:
+    SELECT id FROM muscle_group
+        WHERE name = :name;

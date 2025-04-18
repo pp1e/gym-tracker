@@ -31,6 +31,7 @@ fun RootContent(
 
             is Child.Schedule ->
                 ScheduleScreen(
+                    component = child.component,
                     paddingValues = paddingValues,
                     snackbarHostState = snackbarHostState,
                 )

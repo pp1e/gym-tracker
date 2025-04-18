@@ -14,16 +14,19 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
 import com.example.gymtracker.components.history.HistoryComponent
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
+import com.example.gymtracker.components.schedule.ScheduleComponent
+import com.example.gymtracker.database.DatabasesBuilder
 import com.example.gymtracker.utils.Consumer
 import com.example.gymtracker.utils.now
 import com.example.gymtracker.utils.russianName
+import kotlinx.datetime.DayOfWeek
 import kotlinx.serialization.Serializable
 import kotlinx.datetime.LocalDate
 
 class RootRouter(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
-//    database: AppRepository
+    val databasesBuilder: DatabasesBuilder,
 ) : ComponentContext by componentContext {
     companion object {
         private fun generateCurrentTrainingScreenTitle() =
@@ -46,7 +49,7 @@ class RootRouter(
         data object CurrentTraining : ScreenConfig()
 
         @Serializable
-        data object Schedule : ScreenConfig()
+        data class Schedule(val dayOfWeek: DayOfWeek) : ScreenConfig()
 
         @Serializable
         data object History : ScreenConfig()
@@ -92,7 +95,7 @@ class RootRouter(
                             screenTitle = "История тренировок",
                         )
                     }
-                ScreenConfig.Schedule ->
+                is ScreenConfig.Schedule ->
                     model.update {
                         Model(
                             isScheduleScreenActive = true,
@@ -113,10 +116,19 @@ class RootRouter(
                     CurrentTrainingComponent(
                         componentContext = componentContext,
                         storeFactory = storeFactory,
+                        database = databasesBuilder.createCurrentTrainingDatabase(),
                     ),
                 )
 
-            is ScreenConfig.Schedule -> Child.Schedule
+            is ScreenConfig.Schedule -> Child.Schedule(
+                ScheduleComponent(
+                    componentContext = componentContext,
+                    storeFactory = storeFactory,
+                    database = databasesBuilder.createScheduleDatabase(
+                        dayOfWeek = screenConfig.dayOfWeek
+                    )
+                )
+            )
 
             is ScreenConfig.History ->
                 Child.History(
@@ -152,15 +164,47 @@ class RootRouter(
             }
         }
 
-    fun onTrainingScreenMenuButtonClicked() {
-        router.navigate { listOf(ScreenConfig.CurrentTraining) }
+    fun onCurrentTrainingScreenMenuButtonClicked() {
+        router.navigate { stack ->
+            stack
+                .find { it == ScreenConfig.CurrentTraining }
+                ?.let { currentTrainingScreenConfig ->
+                    stack
+                        .filter { it != ScreenConfig.CurrentTraining }
+                        .plus(currentTrainingScreenConfig)
+                } ?: (stack + ScreenConfig.CurrentTraining)
+        }
     }
 
     fun onScheduleScreenMenuButtonClicked() {
-        router.navigate { listOf(ScreenConfig.Schedule) }
+        router.navigate { stack ->
+            stack
+                .find { it is ScreenConfig.Schedule }
+                ?.let { scheduleScreenConfig ->
+                    stack
+                        .filterNot { it is ScreenConfig.Schedule }
+                        .plus(scheduleScreenConfig)
+                } ?: (stack + ScreenConfig.Schedule(LocalDate.now().dayOfWeek))
+        }
+    }
+
+    fun onWeekdaySwitch(dayOfWeek: DayOfWeek) {
+        router.navigate { stack ->
+            stack
+                .filterNot { it is ScreenConfig.Schedule }
+                .plus(ScreenConfig.Schedule(dayOfWeek))
+        }
     }
 
     fun onHistoryScreenMenuButtonClicked() {
-        router.navigate { listOf(ScreenConfig.History) }
+        router.navigate { stack ->
+            stack
+                .find { it == ScreenConfig.History }
+                ?.let { historyScreenConfig ->
+                    stack
+                        .filter { it != ScreenConfig.History }
+                        .plus(historyScreenConfig)
+                } ?: (stack + ScreenConfig.History)
+        }
     }
 }

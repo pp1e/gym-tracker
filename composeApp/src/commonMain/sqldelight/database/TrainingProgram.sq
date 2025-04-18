@@ -1,0 +1,30 @@
+CREATE TABLE training_program (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    training_id INTEGER NOT NULL,
+
+    FOREIGN KEY (training_id) REFERENCES training(id)
+);
+
+CREATE INDEX training_program_training_fki ON training_program(training_id);
+
+maxId:
+    SELECT MAX(id) FROM training_program;
+
+insert:
+    INSERT INTO training_program (id, name, training_id)
+        VALUES (:id, "Программа без имени " || :id, :training_id);
+
+updateName:
+    UPDATE training_program SET name = :name WHERE id = :id;
+
+getList:
+    SELECT id, name FROM training_program;
+
+getTrainingId:
+    SELECT training_id FROM training_program
+        WHERE id = :id
+        LIMIT 1;
+
+delete:
+    DELETE FROM training_program WHERE id = :id;

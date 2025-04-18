@@ -1,0 +1,33 @@
+CREATE TABLE approach(
+    id INTEGER PRIMARY KEY,
+    ordinal INTEGER NOT NULL,
+    weight REAL,
+    repetitions INTEGER NOT NULL,
+    exercise_id INTEGER NOT NULL,
+
+    UNIQUE (ordinal, exercise_id),
+
+    FOREIGN KEY (exercise_id) REFERENCES exercise(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX approach_exercise_idx ON approach(exercise_id);
+
+insert:
+    INSERT INTO approach (ordinal, weight, repetitions, exercise_id)
+        SELECT :ordinal, :weight, :repetitions, :exercise_id;
+
+insertSingle:
+    INSERT INTO approach (ordinal, weight, repetitions, exercise_id)
+        SELECT COALESCE(
+                (SELECT MAX(ordinal) + 1 FROM approach WHERE exercise_id = :exercise_id), 1
+            ), :weight, :repetitions, :exercise_id;
+
+updateRepetitions:
+    UPDATE approach SET repetitions = :repetitions WHERE id = :id;
+
+updateWeight:
+    UPDATE approach SET weight = :weight WHERE id = :id;
+
+delete:
+    DELETE FROM approach WHERE id = :id;

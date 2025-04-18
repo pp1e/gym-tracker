@@ -1,0 +1,33 @@
+CREATE TABLE exercise (
+    id INTEGER PRIMARY KEY,
+    ordinal INTEGER NOT NULL,
+    exercise_template_id INTEGER NOT NULL,
+    training_id INTEGER NOT NULL,
+
+    UNIQUE (ordinal, training_id),
+
+    FOREIGN KEY (exercise_template_id) REFERENCES exercise_template(id),
+    FOREIGN KEY (training_id) REFERENCES training(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX exercise_exercise_template_idx ON exercise(exercise_template_id);
+
+CREATE INDEX exercise_training_idx ON exercise(training_id);
+
+insertSingle:
+    INSERT INTO exercise (id, ordinal, exercise_template_id, training_id)
+        SELECT :id, COALESCE(
+                (SELECT MAX(ordinal) + 1 FROM exercise WHERE training_id = :training_id), 1
+             ), :exercise_template_id, :training_id;
+
+insert:
+    INSERT INTO exercise (id, ordinal, exercise_template_id, training_id)
+        VALUES (:id, :ordinal, :exercise_template_id, :training_id);
+
+delete:
+    DELETE FROM exercise WHERE
+        id = :id;
+
+maxId:
+    SELECT MAX(id) FROM exercise;
