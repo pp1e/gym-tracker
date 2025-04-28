@@ -8,6 +8,15 @@ CREATE TABLE training_program (
 
 CREATE INDEX training_program_training_fki ON training_program(training_id);
 
+get:
+    SELECT * FROM training_program
+    LEFT JOIN exercise ON exercise.training_id = training_program.training_id
+    LEFT JOIN exercise_template ON exercise_template.id = exercise.exercise_template_id
+    LEFT JOIN muscle_group ON muscle_group.id = exercise_template.muscle_group_id
+    LEFT JOIN approach ON approach.exercise_id = exercise.id
+    WHERE training_program.id = :id
+    ORDER BY exercise.ordinal, approach.ordinal;
+
 maxId:
     SELECT MAX(id) FROM training_program;
 

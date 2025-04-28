@@ -6,14 +6,19 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.base.invoke
+import com.example.gymtracker.database.databases.HistoryDatabase
+import com.example.gymtracker.domain.CompleteTraining
 import com.example.gymtracker.utils.asValue
 
 class HistoryComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    database: HistoryDatabase,
     private val output: Consumer<Output>,
 ) : ComponentContext by componentContext {
-    object Model
+    data class Model (
+        val completeTrainings: List<CompleteTraining> = emptyList(),
+    )
 
     sealed class Output {
         data class EditTrainingTransit(val trainingId: Long) : Output()
@@ -23,7 +28,7 @@ class HistoryComponent(
         instanceKeeper.getStore {
             HistoryStoreProvider(
                 storeFactory = storeFactory,
-// //                database = database
+                database = database,
             ).provide()
         }
 

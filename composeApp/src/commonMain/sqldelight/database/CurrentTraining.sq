@@ -1,7 +1,7 @@
 CREATE TABLE current_training  (
     id INTEGER PRIMARY KEY,
-    started_at TEXT NOT NULL,
-    program_name TEXT NOT NULL,
+    started_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now', 'localtime')),
+    name TEXT NOT NULL,
     training_id INTEGER NOT NULL,
 
     FOREIGN KEY (training_id) REFERENCES training(id)
@@ -23,7 +23,13 @@ getTrainingIds:
 clean:
     DELETE FROM current_training;
 
-insert:
-    INSERT INTO current_training (program_name, started_at, training_id)
-    SELECT :program_name, :started_at, :training_id;
+insertDefaults:
+    INSERT INTO current_training (name, training_id)
+    SELECT "Тренировка без имени", :training_id;
 
+insert:
+    INSERT INTO current_training (name, training_id)
+    SELECT :name, :training_id;
+
+updateName:
+    UPDATE current_training SET name = :name;

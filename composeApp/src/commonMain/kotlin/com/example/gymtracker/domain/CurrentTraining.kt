@@ -1,4 +1,6 @@
 package com.example.gymtracker.domain
 
-class CurrentTraining {
-}
+data class CurrentTraining(
+    val name: String,
+    val training: Training,
+)

@@ -17,6 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.gymtracker.domain.CompleteTraining
+import com.example.gymtracker.utils.russianName
+import kotlinx.datetime.LocalDateTime
 
 private val CARD_HEIGHT = 80.dp
 
@@ -29,9 +32,20 @@ private val CARD_ELEMENT_PADDING_VALUES =
         horizontal = 10.dp,
     )
 
+private fun formatDatetime(datetime: LocalDateTime): String {
+    val dayOfWeekName = datetime.dayOfWeek.russianName()
+    val day = datetime.dayOfMonth
+    val monthName = datetime.month.russianName()
+    val hour = datetime.hour.toString().padStart(2, '0')
+    val minute = datetime.minute.toString().padStart(2, '0')
+
+    return "$dayOfWeekName, $day $monthName, $hour:$minute"
+}
+
 @Composable
 fun CompletedTrainingEntry(
     modifier: Modifier = Modifier,
+    completedTraining: CompleteTraining,
     onClicked: (Long) -> Unit,
 ) {
     Card(
@@ -53,7 +67,7 @@ fun CompletedTrainingEntry(
         ) {
             Text(
                 modifier = Modifier.align(Alignment.BottomCenter),
-                text = "Грудь + ноги",
+                text = completedTraining.name,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
@@ -69,7 +83,7 @@ fun CompletedTrainingEntry(
         ) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
-                text = "Понедельник, 17 февраля",
+                text = formatDatetime(completedTraining.datetime),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),

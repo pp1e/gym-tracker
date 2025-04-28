@@ -8,6 +8,7 @@ import com.badoo.reaktive.single.zip
 import com.example.gymtracker.database.awaitMaxId
 import com.example.gymtracker.database.execute
 import com.example.gymtracker.database.observe
+import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
@@ -105,37 +106,17 @@ class ScheduleDatabase(
     ) { exerciseQueries, approachQueries, exerciseTemplateQueries ->
         Triple(exerciseQueries, approachQueries, exerciseTemplateQueries)
     }.execute { (exerciseQueries, approachQueries, exerciseTemplateQueries) ->
-        val exerciseId = exerciseQueries
-            .maxId()
-            .awaitMaxId { it.MAX }
-        exerciseQueries.insertSingle(
-            id = exerciseId,
-            training_id = trainingId,
-            exercise_template_id = when (exerciseTemplate) {
-                is NewOrExistingExerciseTemplate.ExistingExerciseTemplate -> exerciseTemplate.id
-                is NewOrExistingExerciseTemplate.NewExerciseTemplate -> {
-                    exerciseTemplateQueries.insert(
-                        name = exerciseTemplate.name,
-                        muscle_group_id = null,
-                    )
-                    exerciseTemplateQueries
-                        .getId(exerciseTemplate.name)
-                        .awaitAsOne()
-                }
-            },
+        executeAddExerciseOperation(
+            trainingId = trainingId,
+            exerciseTemplate = exerciseTemplate,
+            approachesCount = approachesCount,
+            repetitionsCount = repetitionsCount,
+            weight = weight,
+            exerciseQueries = exerciseQueries,
+            exerciseTemplateQueries = exerciseTemplateQueries,
+            approachQueries = approachQueries,
+            coroutineScope = this,
         )
-        var ordinal = 1L
-        List(approachesCount) {
-            launch {
-                approachQueries
-                    .insert(
-                        ordinal = ordinal++,
-                        exercise_id = exerciseId,
-                        repetitions = repetitionsCount.toLong(),
-                        weight = weight?.toDouble(),
-                    )
-            }
-        }.joinAll()
     }
 
     fun addApproach(exerciseId: Long) = approachQueries

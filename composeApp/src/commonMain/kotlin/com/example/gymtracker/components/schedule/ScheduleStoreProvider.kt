@@ -1,5 +1,6 @@
 package com.example.gymtracker.components.schedule
 
+import androidx.lifecycle.AtomicReference
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -7,14 +8,12 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.reaktive.ReaktiveExecutor
 import com.badoo.reaktive.completable.andThen
 import com.badoo.reaktive.completable.completableDefer
-import com.badoo.reaktive.completable.completableFromFunction
 import com.badoo.reaktive.completable.completableOfEmpty
 import com.badoo.reaktive.completable.completableTimer
 import com.badoo.reaktive.completable.delay
 import com.badoo.reaktive.completable.doOnAfterComplete
-import com.badoo.reaktive.completable.doOnAfterFinally
-import com.badoo.reaktive.completable.observeOn
 import com.badoo.reaktive.completable.subscribeOn
+import com.badoo.reaktive.disposable.Disposable
 import com.badoo.reaktive.observable.map
 import com.badoo.reaktive.observable.observeOn
 import com.badoo.reaktive.scheduler.ioScheduler
@@ -24,11 +23,8 @@ import com.example.gymtracker.database.databases.ScheduleDatabase
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.domain.TrainingProgram
 import com.example.gymtracker.domain.TrainingProgramShort
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.example.gymtracker.utils.add
+import com.example.gymtracker.utils.remove
 
 internal class ScheduleStoreProvider(
     private val storeFactory: StoreFactory,
@@ -117,6 +113,9 @@ internal class ScheduleStoreProvider(
     }
 
     private inner class ExecutorImpl : ReaktiveExecutor<ScheduleStore.Intent, Unit, ScheduleStore.State, Msg, Nothing>() {
+        private val pendingExerciseDeletions = AtomicReference(emptyMap<Long, Disposable>())
+        private val pendingApproachDeletions = AtomicReference(emptyMap<Long, Disposable>())
+
         override fun executeAction(action: Unit, getState: () -> ScheduleStore.State) {
             database
                 .observeTrainingSchedule()
@@ -288,69 +287,60 @@ internal class ScheduleStoreProvider(
             approachId: Long,
             getState: () -> ScheduleStore.State,
         ) {
+            pendingApproachDeletions.remove(approachId)
             dispatch(Msg.ApproachDeletingRequested(approachId))
-            completableTimer(4500, ioScheduler) // This delay is need to wait for possible deleting cancellation
-                .andThen (
-                    completableDefer {
-                        if (approachId in getState().deleteApproachRequests) {
-                            database
-                                .deleteApproach(approachId)
-                                .delay(500, ioScheduler) // This delay is need to wait for approaches list update
-                                .doOnAfterComplete {
-                                    mainScheduler.newExecutor().submit {
-                                        dispatch(Msg.ApproachDeletingFinished(approachId))
+            pendingApproachDeletions.add(
+                key = approachId,
+                value = completableTimer(4500, ioScheduler) // This delay is need to wait for possible deleting cancellation
+                    .andThen (
+                        completableDefer {
+                            if (approachId in getState().deleteApproachRequests) {
+                                database
+                                    .deleteApproach(approachId)
+                                    .delay(500, ioScheduler) // This delay is need to wait for approaches list update
+                                    .doOnAfterComplete {
+                                        mainScheduler.newExecutor().submit {
+                                            dispatch(Msg.ApproachDeletingFinished(approachId))
+                                        }
                                     }
-                                }
-                        } else {
-                            completableOfEmpty()
+                            } else {
+                                completableOfEmpty()
+                            }
                         }
-                    }
-                )
-                .subscribeOn(ioScheduler)
-                .subscribeScoped()
-
-//            completableDefer {
-//                if (approachId in getState().deleteApproachRequests) {
-//                    CoroutineScope(Dispatchers.Main).launch {
-//
-//                    }
-//                    database.deleteApproach(
-//                        approachId = approachId,
-//                    )
-//                }
-//                else {
-//                    completableOfEmpty()
-//                }
-//            }
-//                .subscribeOn(ioScheduler)
-//                .subscribeScoped()
-
+                    )
+                    .subscribeOn(ioScheduler)
+                    .subscribeScoped()
+            )
         }
 
         private fun requestExerciseDeleting(
             exerciseId: Long,
             getState: () -> ScheduleStore.State,
         ) {
+            pendingExerciseDeletions.remove(exerciseId)
             dispatch(Msg.ExerciseDeletingRequested(exerciseId))
-            completableTimer(5000, ioScheduler) // This delay is need to wait for possible deleting cancellation
-                .andThen (
-                    completableDefer {
-                        if (exerciseId in getState().deleteExerciseRequests) {
-                            database
-                                .deleteExercise(exerciseId)
-                                .delay(500, ioScheduler) // This delay is need to wait for approaches list update
-                                .doOnAfterComplete {
-                                    mainScheduler.newExecutor().submit {
-                                        dispatch(Msg.ExerciseDeletingFinished(exerciseId))
+            pendingExerciseDeletions.add(
+                key = exerciseId,
+                value = completableTimer(5000, ioScheduler) // This delay is need to wait for possible deleting cancellation
+                    .andThen (
+                        completableDefer {
+                            if (exerciseId in getState().deleteExerciseRequests) {
+                                database
+                                    .deleteExercise(exerciseId)
+                                    .delay(500, ioScheduler) // This delay is need to wait for approaches list update
+                                    .doOnAfterComplete {
+                                        mainScheduler.newExecutor().submit {
+                                            dispatch(Msg.ExerciseDeletingFinished(exerciseId))
+                                        }
                                     }
-                                }
-                        } else {
-                            completableOfEmpty()
+                            } else {
+                                completableOfEmpty()
+                            }
                         }
-                    }
-                )
-                .subscribeOn(ioScheduler)
-                .subscribeScoped()
+                    )
+                    .subscribeOn(ioScheduler)
+                    .subscribeScoped()
+            )
         }
     }
 
@@ -395,25 +385,6 @@ internal class ScheduleStoreProvider(
                 is Msg.ExerciseDeletingFinished -> copy(
                     deleteExerciseRequests = deleteExerciseRequests.minus(msg.exerciseId)
                 )
-//                is Msg.ApproachDeleted -> copy(
-//                    trainingProgram = trainingProgram?.copy(
-//                        training = trainingProgram.training.copy(
-//                            exercises =
-//                                    trainingProgram.training.exercises
-//                                        .find { it.id == msg.exerciseId }
-//                                        ?.let { exercise ->
-//                                            trainingProgram.training.exercises
-//                                                .dropWhile { it.id == msg.exerciseId }
-//                                                .plus(
-//                                                    exercise.copy(
-//                                                        approaches = exercise.approaches
-//                                                            .dropWhile { it.id == msg.approachId }
-//                                                    )
-//                                                )
-//                                        } ?: trainingProgram.training.exercises
-//                        )
-//                    )
-//                )
             }
     }
 }

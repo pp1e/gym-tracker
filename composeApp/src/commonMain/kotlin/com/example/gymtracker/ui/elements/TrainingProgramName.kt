@@ -45,12 +45,13 @@ private val ICON_PADDING = 8.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ColumnScope.TrainingProgramName(
+fun ColumnScope.TrainingTitle(
     value: String?,
     onValueChange: (String) -> Unit,
     trainingProgramChoices: List<TrainingProgramShort>,
     onTrainingProgramChoose: (Long) -> Unit,
-    onCreateNewTrainingProgramClick: () -> Unit,
+    onCreateNewClick: () -> Unit,
+    createNewPlaceholder: String,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -128,10 +129,8 @@ fun ColumnScope.TrainingProgramName(
                 }
 
                 ComboBoxItem(
-                    text = "Создать новую программу",
-                    onChosen = {
-                        onCreateNewTrainingProgramClick()
-                    },
+                    text = createNewPlaceholder,
+                    onChosen = onCreateNewClick,
                     isFontBold = true,
                 )
                 if (trainingProgramChoices.isNotEmpty()) {

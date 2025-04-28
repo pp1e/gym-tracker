@@ -3,30 +3,33 @@ package com.example.gymtracker.database.queryExecutors
 import app.cash.sqldelight.Query
 import app.cash.sqldelight.async.coroutines.awaitAsList
 import com.example.gymtracker.domain.Approach
-import com.example.gymtracker.domain.CurrentTraining
 import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.domain.Training
+import com.example.gymtracker.domain.TrainingProgram
 import com.example.gymtracker.utils.safeLet
-import database.currentTraining.Get
+import database.trainingProgram.Get
 
-suspend fun executeGetCurrentTrainingQuery(
-    getCurrentTrainingQuery: Query<Get>,
-) =
-    groupCurrentTrainingEntities(
-        currentTraining = getCurrentTrainingQuery.awaitAsList()
-    )
-        .firstOrNull()
+suspend fun executeGetTrainingProgramQuery(
+    getTrainingProgramQuery: Query<Get>,
+) = groupTrainingProgramEntities(
+    trainingProgram = getTrainingProgramQuery.awaitAsList(),
+).firstOrNull()
 
-private fun groupCurrentTrainingEntities(currentTraining: List<Get>) =
-    currentTraining
+private fun groupTrainingProgramEntities(trainingProgram: List<Get>) =
+    trainingProgram
         .groupBy { it.id }
         .map { (_, trainingRows) ->
-            trainingRows.firstOrNull()?.let { trainingRow ->
-                CurrentTraining(
-                    name = trainingRow.name,
+            safeLet(
+                trainingRows.firstOrNull()?.id,
+                trainingRows.firstOrNull()?.name,
+                trainingRows.firstOrNull()?.training_id,
+            ) { trainingProgramId, trainingProgramName, trainingId ->
+                TrainingProgram(
+                    id = trainingProgramId,
+                    name = trainingProgramName,
                     training = Training(
-                        id = trainingRow.training_id,
+                        id = trainingId,
                         exercises = trainingRows
                             .groupBy { it.id_ }
                             .mapNotNull { (exerciseId, exerciseRows) ->
@@ -61,7 +64,7 @@ private fun groupCurrentTrainingEntities(currentTraining: List<Get>) =
                                     )
                                 }
                             }
-                    )
+                    ),
                 )
             }
         }

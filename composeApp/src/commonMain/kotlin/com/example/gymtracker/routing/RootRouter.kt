@@ -117,6 +117,7 @@ class RootRouter(
                         componentContext = componentContext,
                         storeFactory = storeFactory,
                         database = databasesBuilder.createCurrentTrainingDatabase(),
+                        output = Consumer(::onCurrentTrainingOutput),
                     ),
                 )
 
@@ -135,6 +136,7 @@ class RootRouter(
                     HistoryComponent(
                         componentContext = componentContext,
                         storeFactory = storeFactory,
+                        database = databasesBuilder.createHistoryDatabase(),
                         output = Consumer(::onHistoryOutput),
                     ),
                 )
@@ -152,6 +154,13 @@ class RootRouter(
     fun onBackClicked() {
         router.pop()
     }
+
+    fun onCurrentTrainingOutput(output: CurrentTrainingComponent.Output) =
+        when (output) {
+            is CurrentTrainingComponent.Output.HistoryTransit -> {
+                router.navigateToHistoryScreen()
+            }
+        }
 
     fun onHistoryOutput(output: HistoryComponent.Output) =
         when (output) {
@@ -197,7 +206,11 @@ class RootRouter(
     }
 
     fun onHistoryScreenMenuButtonClicked() {
-        router.navigate { stack ->
+        router.navigateToHistoryScreen()
+    }
+
+    private fun StackNavigation<ScreenConfig>.navigateToHistoryScreen() {
+        this.navigate { stack ->
             stack
                 .find { it == ScreenConfig.History }
                 ?.let { historyScreenConfig ->

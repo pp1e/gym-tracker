@@ -9,11 +9,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
-suspend fun CoroutineScope.executeAddTrainingOperation(
+suspend fun executeAddTrainingOperation(
     training: TrainingInsert,
     trainingQueries: TrainingQueries,
     exerciseQueries: ExerciseQueries,
     approachQueries: ApproachQueries,
+    coroutineScope: CoroutineScope,
 ): Long {
     val trainingId = trainingQueries
         .maxId()
@@ -22,7 +23,7 @@ suspend fun CoroutineScope.executeAddTrainingOperation(
         id = trainingId
     )
     training.exercises.map { exercise ->
-        launch {
+        coroutineScope.launch {
             val exerciseId = exerciseQueries
                 .maxId()
                 .awaitMaxId { it.MAX }

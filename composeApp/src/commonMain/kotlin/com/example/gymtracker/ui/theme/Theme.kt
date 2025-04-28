@@ -10,34 +10,48 @@ import androidx.compose.ui.graphics.Color
 private val DarkColorScheme =
     darkColorScheme(
 //    primary = Color(0xFF64B5F6), // Нежный голубой для акцентных элементов
-        primary = Color(0xFF4E8DC3),
+        primary = LightBlue,
 //    onPrimary = Color.Black, // Черный текст или иконки на голубом фоне
-        onPrimary = Color(0xFFE0E0E0),
-        secondary = Color(0xFF90A4AE), // Серый с легким синим оттенком для второстепенных акцентов
-        onSecondary = Color.Black, // Черный текст на сером фоне
-        tertiary = Color(0xFF546E7A), // Темно-синий/серый для дополнительных акцентов
-        onTertiary = Color.White, // Белый текст на темно-сером фоне
-        background = Color(0xFF121212), // Глубокий черный для основного фона
-        onBackground = Color(0xFFE0E0E0), // Светло-серый текст на черном фоне
+        onPrimary = LightGray,
+        secondary = GreyBlue,
+        onSecondary = Color.Black,
+        tertiary = DarkGreyBlue,
+        onTertiary = Color.White,
+        background = DeepBlack,
+        onBackground = LightGray,
         surface = Color(0xFF1E1E1E), // Темно-серый для карточек, всплывающих меню и других поверхностей
         onSurface = Color(0xFFB9C7CE), // Серо-голубой текст на темно-сером фоне
     )
 
 private val LightColorScheme =
     lightColorScheme(
-        primary = Purple40,
-        secondary = PurpleGrey40,
-        tertiary = Pink40,
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-     */
+        primary = LightBlue,
+        onPrimary = Color.White,
+        secondary = GreyBlue,
+        onSecondary = Color.Black,
+        tertiary = DarkGreyBlue,
+        onTertiary = Color.White,
+        background = Color(0xFFF5F5F5), // Светло-серый для основного фона
+        onBackground = DeepBlack,
+        surface = Color.White,
+        onSurface = Color(0xFF37474F), // Темно-серый текст на белом фоне
     )
+
+//private val LightColorScheme =
+//    lightColorScheme(
+//        primary = Purple40,
+//        secondary = PurpleGrey40,
+//        tertiary = Pink40,
+//    /* Other default colors to override
+//    background = Color(0xFFFFFBFE),
+//    surface = Color(0xFFFFFBFE),
+//    onPrimary = Color.White,
+//    onSecondary = Color.White,
+//    onTertiary = Color.White,
+//    onBackground = Color(0xFF1C1B1F),
+//    onSurface = Color(0xFF1C1B1F),
+//     */
+//    )
 
 @Composable
 fun GymTrackerTheme(
@@ -46,16 +60,10 @@ fun GymTrackerTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme =
-        when {
-//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//            val context = LocalContext.current
-//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//        }
-
-            darkTheme -> DarkColorScheme
-            else -> LightColorScheme
-        }
+    val colorScheme = when {
+        dynamicColor -> provideDynamicColorScheme(darkTheme) ?: defaultColorScheme(darkTheme)
+        else -> defaultColorScheme(darkTheme)
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -63,3 +71,6 @@ fun GymTrackerTheme(
         content = content,
     )
 }
+
+private fun defaultColorScheme(darkTheme: Boolean) =
+    if (darkTheme) DarkColorScheme else LightColorScheme

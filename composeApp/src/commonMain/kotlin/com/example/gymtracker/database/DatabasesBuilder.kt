@@ -11,6 +11,7 @@ import com.badoo.reaktive.single.map
 import com.badoo.reaktive.single.observeOn
 import com.badoo.reaktive.single.singleOf
 import com.example.gymtracker.database.databases.CurrentTrainingDatabase
+import com.example.gymtracker.database.databases.HistoryDatabase
 import com.example.gymtracker.database.databases.ScheduleDatabase
 import kotlinx.datetime.DayOfWeek
 
@@ -69,11 +70,19 @@ class DatabasesBuilder(
             it.exerciseTemplateQueries
         }
 
+    private val completeTrainingQueries = rootDatabase
+        .observeQueries {
+            it.completeTrainingQueries
+        }
+
     fun createCurrentTrainingDatabase() = CurrentTrainingDatabase(
         currentTrainingQueries = currentTrainingQueries,
+        trainingProgramQueries = trainingProgramQueries,
         trainingQueries = trainingQueries,
         exerciseQueries = exerciseQueries,
         approachQueries = approachQueries,
+        exerciseTemplateQueries = exerciseTemplateQueries,
+        completeTrainingQueries = completeTrainingQueries,
     )
 
     fun createScheduleDatabase(dayOfWeek: DayOfWeek) = ScheduleDatabase(
@@ -84,5 +93,9 @@ class DatabasesBuilder(
         approachQueries = approachQueries,
         exerciseTemplateQueries = exerciseTemplateQueries,
         dayOfWeek = dayOfWeek,
+    )
+
+    fun createHistoryDatabase() = HistoryDatabase(
+        completeTrainingQueries = completeTrainingQueries,
     )
 }

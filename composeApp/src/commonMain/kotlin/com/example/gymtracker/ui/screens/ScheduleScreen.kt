@@ -27,7 +27,7 @@ import com.example.gymtracker.components.schedule.ScheduleComponent
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
 import com.example.gymtracker.ui.elements.TrainingFull
-import com.example.gymtracker.ui.elements.TrainingProgramName
+import com.example.gymtracker.ui.elements.TrainingTitle
 
 @Composable
 fun ScheduleScreen(
@@ -49,12 +49,13 @@ fun ScheduleScreen(
                 },
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            TrainingProgramName(
+            TrainingTitle(
                 value = model.trainingProgram?.name,
                 onValueChange = component::onTrainingProgramNameChange,
                 trainingProgramChoices = model.trainingProgramsShort,
                 onTrainingProgramChoose = component::changeTrainingProgram,
-                onCreateNewTrainingProgramClick = component::createNewTrainingProgram,
+                onCreateNewClick = component::createNewTrainingProgram,
+                createNewPlaceholder = "Создать новую программу",
             )
 
             if (model.trainingProgram != null) {

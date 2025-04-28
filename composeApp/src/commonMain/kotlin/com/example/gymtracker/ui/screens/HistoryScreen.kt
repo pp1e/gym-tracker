@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -31,50 +33,56 @@ fun HistoryScreen(
             .padding(paddingValues)
             .fillMaxSize(),
     ) {
-        Column( // TODO lazy column
+        LazyColumn (
             modifier =
                 Modifier
                     .align(Alignment.Center)
                     .fillMaxHeight()
-                    .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
-                    .verticalScroll(rememberScrollState()),
+                    .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SubtitleText(
-                text = "Эта неделя",
-            )
+            items(model.completeTrainings) { completedTraining ->
+                CompletedTrainingEntry(
+                    onClicked = component::onTrainingClicked,
+                    completedTraining = completedTraining,
+                )
+            }
 
-            CompletedTrainingEntry(
-                onClicked = component::onTrainingClicked,
-            )
-
-            CompletedTrainingEntry(
-                onClicked = component::onTrainingClicked,
-            )
-
-            CompletedTrainingEntry(
-                onClicked = component::onTrainingClicked,
-            )
-
-            SubtitleText(
-                text = "Прошлая неделя",
-            )
-
-            CompletedTrainingEntry(
-                onClicked = component::onTrainingClicked,
-            )
-
-            SubtitleText(
-                text = "Две недели назад",
-            )
-
-            CompletedTrainingEntry(
-                onClicked = component::onTrainingClicked,
-            )
-
-            CompletedTrainingEntry(
-                onClicked = component::onTrainingClicked,
-            )
+//            SubtitleText(
+//                text = "Эта неделя",
+//            )
+//
+//            CompletedTrainingEntry(
+//                onClicked = component::onTrainingClicked,
+//            )
+//
+//            CompletedTrainingEntry(
+//                onClicked = component::onTrainingClicked,
+//            )
+//
+//            CompletedTrainingEntry(
+//                onClicked = component::onTrainingClicked,
+//            )
+//
+//            SubtitleText(
+//                text = "Прошлая неделя",
+//            )
+//
+//            CompletedTrainingEntry(
+//                onClicked = component::onTrainingClicked,
+//            )
+//
+//            SubtitleText(
+//                text = "Две недели назад",
+//            )
+//
+//            CompletedTrainingEntry(
+//                onClicked = component::onTrainingClicked,
+//            )
+//
+//            CompletedTrainingEntry(
+//                onClicked = component::onTrainingClicked,
+//            )
         }
     }
 }

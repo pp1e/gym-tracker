@@ -5,26 +5,46 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.reaktive.ReaktiveExecutor
+import com.badoo.reaktive.observable.map
+import com.badoo.reaktive.observable.observeOn
+import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.scheduler.mainScheduler
+import com.example.gymtracker.database.databases.HistoryDatabase
+import com.example.gymtracker.domain.CompleteTraining
 
 internal class HistoryStoreProvider(
     private val storeFactory: StoreFactory,
+    private val database: HistoryDatabase,
 ) {
     fun provide(): HistoryStore =
         object :
             HistoryStore,
             Store<HistoryStore.Intent, HistoryStore.State, Nothing> by storeFactory.create(
                 name = "HistoryStore",
-                initialState = HistoryStore.State,
+                initialState = HistoryStore.State(),
                 bootstrapper = SimpleBootstrapper(Unit),
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl,
             ) {}
 
-    private object Msg
+    private sealed class Msg {
+        data class CompleteTrainingsLoaded(
+            val completeTrainings: List<CompleteTraining>
+        ) : Msg()
+    }
 
     private inner class ExecutorImpl : ReaktiveExecutor<HistoryStore.Intent, Unit, HistoryStore.State, Msg, Nothing>() {
-//        override fun executeAction(action: Unit, getState: () -> MainStore.State) {
-//        }
+        override fun executeAction(action: Unit, getState: () -> HistoryStore.State) {
+            database
+                .observeCompleteTrainings()
+                .observeOn(mainScheduler)
+                .map(Msg::CompleteTrainingsLoaded)
+                .subscribeScoped (
+                    onNext = { completeTrainingsLoadedMessage ->
+                        dispatch(completeTrainingsLoadedMessage)
+                    }
+                )
+        }
     }
 
     private object ReducerImpl :
@@ -42,6 +62,11 @@ internal class HistoryStoreProvider(
 //                is Msg.AmountChanged -> copy(amount = msg.amount)
 //                is Msg.MessageChanged -> copy(message = msg.message)
 //            }
-        override fun HistoryStore.State.reduce(msg: Msg): HistoryStore.State = HistoryStore.State
+        override fun HistoryStore.State.reduce(msg: Msg): HistoryStore.State =
+            when (msg) {
+                is Msg.CompleteTrainingsLoaded -> copy(
+                    completeTrainings = msg.completeTrainings,
+                )
+            }
     }
 }

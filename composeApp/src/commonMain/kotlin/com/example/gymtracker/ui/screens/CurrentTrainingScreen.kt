@@ -2,6 +2,7 @@ package com.example.gymtracker.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import com.example.gymtracker.components.currentTraining.CurrentTrainingComponen
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
 import com.example.gymtracker.ui.elements.TrainingFull
+import com.example.gymtracker.ui.elements.TrainingTitle
 
 private val FAB_SPACE_BETWEEN = 12.dp
 
@@ -48,51 +50,64 @@ fun CurrentTrainingScreen(
                 .padding(paddingValues)
                 .fillMaxSize(),
     ) {
-        if (model.training != null) {
-            TrainingFull(
-                snackbarHostState = snackbarHostState,
-                training = model.training!!,
-                onApproachAdd = {},
-                onRepetitionsChange = { _, _ -> },
-                onWeightChange = { _, _ -> },
-                requestExerciseDeleting = {},
-                cancelExerciseDeleting = {},
-                requestApproachDeleting = {},
-                cancelApproachDeleting = {},
+        Column(modifier = Modifier.fillMaxWidth()) {
+            TrainingTitle(
+                value = model.currentTraining?.name,
+                onValueChange = component::onCurrentTrainingNameChange,
+                trainingProgramChoices = model.trainingProgramsShort,
+                onTrainingProgramChoose = component::changeTrainingProgram,
+                onCreateNewClick = component::createNewTraining,
+                createNewPlaceholder = "Создать пустую тренировку"
             )
+
+            if (model.currentTraining != null) {
+                TrainingFull(
+                    snackbarHostState = snackbarHostState,
+                    training = model.currentTraining!!.training,
+                    onApproachAdd = component::onApproachAdd,
+                    onRepetitionsChange = component::onApproachRepetitionsChange,
+                    onWeightChange = component::onApproachWeightChange,
+                    requestExerciseDeleting = component::requestExerciseDeleting,
+                    cancelExerciseDeleting = component::cancelExerciseDeleting,
+                    requestApproachDeleting = component::requestApproachDeleting,
+                    cancelApproachDeleting = component::cancelApproachDeleting,
+                )
+            }
         }
 
-        Row(
-            modifier =
-                Modifier
-                    .padding(UiConstants.FABPanelPadding)
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            ExtendedFloatingActionButton(
-                onClick = { showBottomSheet = true },
+        if (model.currentTraining != null) {
+            Row(
                 modifier =
                     Modifier
-                        .padding(
-                            end = FAB_SPACE_BETWEEN,
-                        )
-                        .weight(UiConstants.FAB_ADD_WEIGHT),
+                        .padding(UiConstants.FABPanelPadding)
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Icon(Icons.Rounded.Add, contentDescription = "Добавить")
-                Text("Добавить")
-            }
+                ExtendedFloatingActionButton(
+                    onClick = { showBottomSheet = true },
+                    modifier =
+                        Modifier
+                            .padding(
+                                end = FAB_SPACE_BETWEEN,
+                            )
+                            .weight(UiConstants.FAB_ADD_WEIGHT),
+                ) {
+                    Icon(Icons.Rounded.Add, contentDescription = "Добавить")
+                    Text("Добавить")
+                }
 
-            ExtendedFloatingActionButton(
-                onClick = { showCompleteTrainingDialog = true },
-                modifier =
-                    Modifier
-                        .padding(
-                            start = FAB_SPACE_BETWEEN,
-                        )
-                        .weight(1 - UiConstants.FAB_ADD_WEIGHT),
-            ) {
-                Icon(Icons.Rounded.Done, contentDescription = "Завершить")
+                ExtendedFloatingActionButton(
+                    onClick = { showCompleteTrainingDialog = true },
+                    modifier =
+                        Modifier
+                            .padding(
+                                start = FAB_SPACE_BETWEEN,
+                            )
+                            .weight(1 - UiConstants.FAB_ADD_WEIGHT),
+                ) {
+                    Icon(Icons.Rounded.Done, contentDescription = "Завершить")
+                }
             }
         }
     }
@@ -102,7 +117,12 @@ fun CurrentTrainingScreen(
             onDismissRequest = { showCompleteTrainingDialog = false },
             title = { Text("Завершить тренировку?") },
             confirmButton = {
-                TextButton(onClick = {}) {
+                TextButton(
+                    onClick = {
+                        showCompleteTrainingDialog = false
+                        component.onCompleteTrainingClick()
+                    }
+                ) {
                     Text("Да")
                 }
             },
@@ -118,15 +138,18 @@ fun CurrentTrainingScreen(
         AddExerciseSheet(
             onDismissRequest = { showBottomSheet = false },
             exerciseTemplateNames = emptyList(),
-            exerciseName = "",
-            onExerciseNameChanged = {},
-            approachesCount = 3,
-            onApproachesCountChanged = {},
-            repetitionsCount = 3,
-            onRepetitionsCountChanged = {},
-            weight = 3f,
-            onWeightChanged = {},
-            onAddExerciseClicked = {},
+            exerciseName = model.exerciseName,
+            onExerciseNameChanged = component::onExerciseNameChange,
+            approachesCount = model.approachesCount,
+            onApproachesCountChanged = component::onApproachCountChange,
+            repetitionsCount = model.repetitionsCount,
+            onRepetitionsCountChanged = component::onRepetitionsCountChange,
+            weight = model.weight,
+            onWeightChanged = component::onWeightChange,
+            onAddExerciseClicked = {
+                component.onAddExerciseClick()
+                showBottomSheet = false
+            },
         )
     }
 }
