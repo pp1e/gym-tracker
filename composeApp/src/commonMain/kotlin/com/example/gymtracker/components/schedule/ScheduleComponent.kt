@@ -17,7 +17,6 @@ class ScheduleComponent(
     data class Model(
         val trainingProgram: TrainingProgram?,
         val trainingProgramsShort: List<TrainingProgramShort>,
-
         val exerciseTemplateNames: List<String>,
         val exerciseName: String,
         val approachesCount: Int,
@@ -43,40 +42,40 @@ class ScheduleComponent(
         store.accept(ScheduleStore.Intent.ChangeTrainingProgram(trainingProgramId))
     }
 
-    fun requestExerciseDeleting(
-        exerciseId: Long,
-    ) {
-        store.accept(ScheduleStore.Intent.RequestExerciseDeleting(
-            exerciseId = exerciseId,
-        ))
+    fun requestExerciseDeleting(exerciseId: Long) {
+        store.accept(
+            ScheduleStore.Intent.RequestExerciseDeleting(
+                exerciseId = exerciseId,
+            ),
+        )
     }
 
-    fun cancelExerciseDeleting(
-        exerciseId: Long,
-    ) {
-        store.accept(ScheduleStore.Intent.CancelExerciseDeleting(
-            exerciseId = exerciseId,
-        ))
+    fun cancelExerciseDeleting(exerciseId: Long) {
+        store.accept(
+            ScheduleStore.Intent.CancelExerciseDeleting(
+                exerciseId = exerciseId,
+            ),
+        )
     }
 
     fun onApproachAdd(exerciseId: Long) {
         store.accept(ScheduleStore.Intent.AddApproach(exerciseId))
     }
 
-    fun requestApproachDeleting(
-        approachId: Long,
-    ) {
-        store.accept(ScheduleStore.Intent.RequestApproachDeleting(
-            approachId = approachId,
-        ))
+    fun requestApproachDeleting(approachId: Long) {
+        store.accept(
+            ScheduleStore.Intent.RequestApproachDeleting(
+                approachId = approachId,
+            ),
+        )
     }
 
-    fun cancelApproachDeleting(
-        approachId: Long,
-    ) {
-        store.accept(ScheduleStore.Intent.CancelApproachDeleting(
-            approachId = approachId,
-        ))
+    fun cancelApproachDeleting(approachId: Long) {
+        store.accept(
+            ScheduleStore.Intent.CancelApproachDeleting(
+                approachId = approachId,
+            ),
+        )
     }
 
     fun onAddExerciseClick() {
@@ -107,19 +106,23 @@ class ScheduleComponent(
         approachId: Long,
         weight: Float,
     ) {
-        store.accept(ScheduleStore.Intent.ChangeApproachWeight(
-            approachId = approachId,
-            weight = weight,
-        ))
+        store.accept(
+            ScheduleStore.Intent.ChangeApproachWeight(
+                approachId = approachId,
+                weight = weight,
+            ),
+        )
     }
 
     fun onApproachRepetitionsChange(
         approachId: Long,
-        repetitions: Int
+        repetitions: Int,
     ) {
-        store.accept(ScheduleStore.Intent.ChangeApproachRepetitions(
-            approachId = approachId,
-            repetitions = repetitions,
-        ))
+        store.accept(
+            ScheduleStore.Intent.ChangeApproachRepetitions(
+                approachId = approachId,
+                repetitions = repetitions,
+            ),
+        )
     }
 }

@@ -20,8 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.gymtracker.routing.RootRouter
 import com.example.gymtracker.ui.UiConstants.WeekdaySwitcherDaySize
 import com.example.gymtracker.ui.UiConstants.WeekdaySwitcherPaddingValues
+import com.example.gymtracker.utils.currentDayOfWeek
 import kotlinx.datetime.DayOfWeek
 
 private val WEEKDAY_SWITCHER_FULL_HEIGHT =
@@ -30,14 +32,20 @@ private val WEEKDAY_SWITCHER_FULL_HEIGHT =
         WeekdaySwitcherDaySize
 private val TODO_APP_BAR_HORIZONTAL_PADDING = 16.dp
 
+private fun generateScreenTitle(activeScreen: RootRouter.ScreenConfig) =
+    when (activeScreen) {
+        is RootRouter.ScreenConfig.CurrentTraining -> "Текущая тренировка, ${currentDayOfWeek().russianName()}"
+        is RootRouter.ScreenConfig.EditTraining -> "Изменить тренировку"
+        RootRouter.ScreenConfig.History -> "История тренировок"
+        is RootRouter.ScreenConfig.Schedule -> "Изменить расписание"
+    }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    screenTitle: String,
-    isScheduleScreenActive: Boolean,
-    isHistoryScreenActive: Boolean,
-    isEditTrainingScreenActive: Boolean,
+    activeScreen: RootRouter.ScreenConfig,
     onBackClicked: () -> Unit,
+    selectedWeekday: DayOfWeek,
     onWeekdaySwitch: (DayOfWeek) -> Unit,
 ) {
     TopAppBar(
@@ -55,7 +63,7 @@ fun TopBar(
                             .height(TopAppBarDefaults.TopAppBarExpandedHeight),
                 ) {
                     Text(
-                        text = screenTitle,
+                        text = generateScreenTitle(activeScreen),
                         modifier = Modifier.align(Alignment.CenterStart),
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Start,
@@ -64,18 +72,19 @@ fun TopBar(
                     )
                 }
 
-                if (isScheduleScreenActive) {
+                if (activeScreen is RootRouter.ScreenConfig.Schedule) {
                     WeekdaySwitcher(
                         modifier =
                             Modifier
                                 .align(Alignment.CenterHorizontally),
                         onWeekdaySwitch = onWeekdaySwitch,
+                        selectedWeekday = selectedWeekday,
                     )
                 }
             }
         },
         navigationIcon = {
-            if (isEditTrainingScreenActive) {
+            if (activeScreen is RootRouter.ScreenConfig.EditTraining) {
                 IconButton(
                     modifier =
                         Modifier
@@ -90,7 +99,7 @@ fun TopBar(
             }
         },
         actions = {
-            if (isHistoryScreenActive) {
+            if (activeScreen is RootRouter.ScreenConfig.History) {
                 IconButton(
                     onClick = {},
                 ) {
@@ -102,7 +111,7 @@ fun TopBar(
             }
         },
         expandedHeight =
-            if (isScheduleScreenActive) {
+            if (activeScreen is RootRouter.ScreenConfig.Schedule) {
                 TopAppBarDefaults.TopAppBarExpandedHeight + WEEKDAY_SWITCHER_FULL_HEIGHT
             } else {
                 TopAppBarDefaults.TopAppBarExpandedHeight

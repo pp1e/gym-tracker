@@ -1,7 +1,5 @@
 package com.example.gymtracker.database.databases
 
-import app.cash.sqldelight.async.coroutines.awaitAsList
-import app.cash.sqldelight.async.coroutines.awaitAsOne
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.map
 import com.badoo.reaktive.single.zip
@@ -18,18 +16,16 @@ import database.ExerciseTemplateQueries
 import database.TrainingProgramQueries
 import database.TrainingQueries
 import database.TrainingScheduleQueries
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.isoDayNumber
 
-sealed class NewOrExistingExerciseTemplate{
+sealed class NewOrExistingExerciseTemplate {
     data class NewExerciseTemplate(
-        val name: String
+        val name: String,
     ) : NewOrExistingExerciseTemplate()
 
     data class ExistingExerciseTemplate(
-        val id: Long
+        val id: Long,
     ) : NewOrExistingExerciseTemplate()
 }
 
@@ -42,56 +38,61 @@ class ScheduleDatabase(
     private val exerciseTemplateQueries: Single<ExerciseTemplateQueries>,
     private val dayOfWeek: DayOfWeek,
 ) {
-    fun observeTrainingSchedule() = trainingScheduleQueries
-        .map { it.get(dayOfWeek.isoDayNumber.toLong()) }
-        .observe(::executeGetTrainingScheduleQuery)
+    fun observeTrainingSchedule() =
+        trainingScheduleQueries
+            .map { it.get(dayOfWeek.isoDayNumber.toLong()) }
+            .observe(::executeGetTrainingScheduleQuery)
 
-    fun observeTrainingProgramList() = trainingProgramQueries
-        .map(TrainingProgramQueries::getList)
-        .observe(::executeGetTrainingProgramListQuery)
+    fun observeTrainingProgramList() =
+        trainingProgramQueries
+            .map(TrainingProgramQueries::getList)
+            .observe(::executeGetTrainingProgramListQuery)
 
-    fun observeExerciseTemplateList() = exerciseTemplateQueries
-        .map(ExerciseTemplateQueries::getList)
-        .observe(::executeGetExerciseTemplateListQuery)
+    fun observeExerciseTemplateList() =
+        exerciseTemplateQueries
+            .map(ExerciseTemplateQueries::getList)
+            .observe(::executeGetExerciseTemplateListQuery)
 
-    fun createAndSetEmptyProgram() = zip(
-        trainingScheduleQueries,
-        trainingProgramQueries,
-        trainingQueries,
-    ) { trainingScheduleQueries, trainingProgramQueries, trainingQueries ->
-        Triple(trainingScheduleQueries, trainingProgramQueries, trainingQueries)
-    }
-        .execute { (trainingScheduleQueries, trainingProgramQueries, trainingQueries) ->
-            val trainingId = trainingQueries
-                .maxId()
-                .awaitMaxId { it.MAX }
-            trainingQueries.insert(
-                id = trainingId
-            )
-            val trainingProgramId = trainingProgramQueries
-                .maxId()
-                .awaitMaxId { it.MAX }
-            trainingProgramQueries.insert(
-                id = trainingProgramId,
-                training_id = trainingId,
-            )
-            trainingScheduleQueries
-                .insert(
-                    dayOfWeek = dayOfWeek.isoDayNumber.toLong(),
-                    training_program_id = trainingProgramId,
-                )
+    fun createAndSetEmptyProgram() =
+        zip(
+            trainingScheduleQueries,
+            trainingProgramQueries,
+            trainingQueries,
+        ) { trainingScheduleQueries, trainingProgramQueries, trainingQueries ->
+            Triple(trainingScheduleQueries, trainingProgramQueries, trainingQueries)
         }
-
-    fun setProgram(
-        trainingProgramId: Long,
-    ) = trainingScheduleQueries
-        .execute {
-            it
-                .insert(
-                    dayOfWeek = dayOfWeek.isoDayNumber.toLong(),
-                    training_program_id = trainingProgramId,
+            .execute { (trainingScheduleQueries, trainingProgramQueries, trainingQueries) ->
+                val trainingId =
+                    trainingQueries
+                        .maxId()
+                        .awaitMaxId { it.MAX }
+                trainingQueries.insert(
+                    id = trainingId,
                 )
-        }
+                val trainingProgramId =
+                    trainingProgramQueries
+                        .maxId()
+                        .awaitMaxId { it.MAX }
+                trainingProgramQueries.insert(
+                    id = trainingProgramId,
+                    training_id = trainingId,
+                )
+                trainingScheduleQueries
+                    .insert(
+                        dayOfWeek = dayOfWeek.isoDayNumber.toLong(),
+                        training_program_id = trainingProgramId,
+                    )
+            }
+
+    fun setProgram(trainingProgramId: Long) =
+        trainingScheduleQueries
+            .execute {
+                it
+                    .insert(
+                        dayOfWeek = dayOfWeek.isoDayNumber.toLong(),
+                        training_program_id = trainingProgramId,
+                    )
+            }
 
     fun addExercise(
         trainingId: Long,
@@ -119,14 +120,15 @@ class ScheduleDatabase(
         )
     }
 
-    fun addApproach(exerciseId: Long) = approachQueries
-        .execute {
-            it.insertSingle(
-                exercise_id = exerciseId,
-                weight = null,
-                repetitions = 5,
+    fun addApproach(exerciseId: Long) =
+        approachQueries
+            .execute {
+                it.insertSingle(
+                    exercise_id = exerciseId,
+                    weight = null,
+                    repetitions = 5,
                 )
-        }
+            }
 
     fun updateRepetitions(
         approachId: Long,
@@ -161,17 +163,15 @@ class ScheduleDatabase(
             )
         }
 
-    fun deleteApproach(
-        approachId: Long,
-    ) = approachQueries
-        .execute {
-            it.delete(approachId)
-        }
+    fun deleteApproach(approachId: Long) =
+        approachQueries
+            .execute {
+                it.delete(approachId)
+            }
 
-    fun deleteExercise(
-        exerciseId: Long,
-    ) = exerciseQueries
-        .execute {
-            it.delete(exerciseId)
-        }
+    fun deleteExercise(exerciseId: Long) =
+        exerciseQueries
+            .execute {
+                it.delete(exerciseId)
+            }
 }

@@ -3,48 +3,39 @@ package com.example.gymtracker.routing
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.StackNavigator
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
 import com.example.gymtracker.components.history.HistoryComponent
-import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.components.schedule.ScheduleComponent
 import com.example.gymtracker.database.DatabasesBuilder
 import com.example.gymtracker.utils.Consumer
-import com.example.gymtracker.utils.now
-import com.example.gymtracker.utils.russianName
+import com.example.gymtracker.utils.currentDayOfWeek
 import kotlinx.datetime.DayOfWeek
 import kotlinx.serialization.Serializable
-import kotlinx.datetime.LocalDate
 
 class RootRouter(
     componentContext: ComponentContext,
     private val storeFactory: StoreFactory,
     val databasesBuilder: DatabasesBuilder,
 ) : ComponentContext by componentContext {
-    companion object {
-        private fun generateCurrentTrainingScreenTitle() =
-            "Текущая тренировка, ${LocalDate.now().dayOfWeek.russianName()}"
-    }
-
     data class Model(
-        val screenTitle: String = "",
-        val isCurrentTrainingScreenActive: Boolean = false,
-        val isScheduleScreenActive: Boolean = false,
-        val isHistoryScreenActive: Boolean = false,
-        val isEditTrainingScreenActive: Boolean = false,
+        val selectedWeekday: DayOfWeek = currentDayOfWeek(),
+        val activeScreenConfig: ScreenConfig = ScreenConfig.CurrentTraining,
     )
 
     val model: MutableValue<Model> = MutableValue(Model())
 
     @Serializable
-    private sealed class ScreenConfig {
+    sealed class ScreenConfig {
         @Serializable
         data object CurrentTraining : ScreenConfig()
 
@@ -55,7 +46,7 @@ class RootRouter(
         data object History : ScreenConfig()
 
         @Serializable
-        data class EditTraining(val trainingId: Long) : ScreenConfig()
+        data class EditTraining(val completedTrainingId: Long) : ScreenConfig()
     }
 
     private val router = StackNavigation<ScreenConfig>()
@@ -72,34 +63,30 @@ class RootRouter(
     val childStack: Value<ChildStack<*, Child>> = stack
 
     init {
-        stack.subscribe {
-            when (it.active.configuration) {
+        stack.subscribe { stack ->
+            when (stack.active.configuration) {
                 ScreenConfig.CurrentTraining ->
                     model.update {
-                        Model(
-                            isCurrentTrainingScreenActive = true,
-                            screenTitle = generateCurrentTrainingScreenTitle(),
+                        it.copy(
+                            activeScreenConfig = stack.active.configuration,
                         )
                     }
                 is ScreenConfig.EditTraining ->
                     model.update {
-                        Model(
-                            isEditTrainingScreenActive = true,
-                            screenTitle = "Изменить тренировку",
+                        it.copy(
+                            activeScreenConfig = stack.active.configuration,
                         )
                     }
                 ScreenConfig.History ->
                     model.update {
-                        Model(
-                            isHistoryScreenActive = true,
-                            screenTitle = "История тренировок",
+                        it.copy(
+                            activeScreenConfig = stack.active.configuration,
                         )
                     }
                 is ScreenConfig.Schedule ->
                     model.update {
-                        Model(
-                            isScheduleScreenActive = true,
-                            screenTitle = "Изменить расписание",
+                        it.copy(
+                            activeScreenConfig = stack.active.configuration,
                         )
                     }
             }
@@ -121,15 +108,17 @@ class RootRouter(
                     ),
                 )
 
-            is ScreenConfig.Schedule -> Child.Schedule(
-                ScheduleComponent(
-                    componentContext = componentContext,
-                    storeFactory = storeFactory,
-                    database = databasesBuilder.createScheduleDatabase(
-                        dayOfWeek = screenConfig.dayOfWeek
-                    )
+            is ScreenConfig.Schedule ->
+                Child.Schedule(
+                    ScheduleComponent(
+                        componentContext = componentContext,
+                        storeFactory = storeFactory,
+                        database =
+                            databasesBuilder.createScheduleDatabase(
+                                dayOfWeek = screenConfig.dayOfWeek,
+                            ),
+                    ),
                 )
-            )
 
             is ScreenConfig.History ->
                 Child.History(
@@ -146,7 +135,8 @@ class RootRouter(
                     EditTrainingComponent(
                         componentContext = componentContext,
                         storeFactory = storeFactory,
-                        trainingId = screenConfig.trainingId,
+                        completedTrainingId = screenConfig.completedTrainingId,
+                        database = databasesBuilder.createEditTrainingDatabase(),
                     ),
                 )
         }
@@ -158,66 +148,56 @@ class RootRouter(
     fun onCurrentTrainingOutput(output: CurrentTrainingComponent.Output) =
         when (output) {
             is CurrentTrainingComponent.Output.HistoryTransit -> {
-                router.navigateToHistoryScreen()
+                router.bringToFront(ScreenConfig.History)
             }
         }
 
     fun onHistoryOutput(output: HistoryComponent.Output) =
         when (output) {
             is HistoryComponent.Output.EditTrainingTransit -> {
-                router.push(
+                router.bringToFront(
                     ScreenConfig.EditTraining(
-                        trainingId = output.trainingId,
+                        completedTrainingId = output.completedTrainingId,
                     ),
                 )
             }
         }
 
     fun onCurrentTrainingScreenMenuButtonClicked() {
-        router.navigate { stack ->
-            stack
-                .find { it == ScreenConfig.CurrentTraining }
-                ?.let { currentTrainingScreenConfig ->
-                    stack
-                        .filter { it != ScreenConfig.CurrentTraining }
-                        .plus(currentTrainingScreenConfig)
-                } ?: (stack + ScreenConfig.CurrentTraining)
-        }
+        router.moveToFront(ScreenConfig.CurrentTraining)
     }
 
     fun onScheduleScreenMenuButtonClicked() {
-        router.navigate { stack ->
-            stack
-                .find { it is ScreenConfig.Schedule }
-                ?.let { scheduleScreenConfig ->
-                    stack
-                        .filterNot { it is ScreenConfig.Schedule }
-                        .plus(scheduleScreenConfig)
-                } ?: (stack + ScreenConfig.Schedule(LocalDate.now().dayOfWeek))
-        }
+        router.moveToFront(
+            ScreenConfig.Schedule(model.value.selectedWeekday),
+        )
     }
 
     fun onWeekdaySwitch(dayOfWeek: DayOfWeek) {
-        router.navigate { stack ->
-            stack
-                .filterNot { it is ScreenConfig.Schedule }
-                .plus(ScreenConfig.Schedule(dayOfWeek))
+        model.update {
+            it.copy(
+                selectedWeekday = dayOfWeek,
+            )
         }
+        router.bringToFront(
+            ScreenConfig.Schedule(dayOfWeek),
+        )
     }
 
     fun onHistoryScreenMenuButtonClicked() {
-        router.navigateToHistoryScreen()
+        router.moveToFront(ScreenConfig.History)
     }
 
-    private fun StackNavigation<ScreenConfig>.navigateToHistoryScreen() {
+    private fun <C : Any> StackNavigator<C>.moveToFront(newConfiguration: C) {
         this.navigate { stack ->
             stack
-                .find { it == ScreenConfig.History }
-                ?.let { historyScreenConfig ->
+                .find { it::class == newConfiguration::class }
+                ?.let { existentConfiguration ->
+                    println(existentConfiguration)
                     stack
-                        .filter { it != ScreenConfig.History }
-                        .plus(historyScreenConfig)
-                } ?: (stack + ScreenConfig.History)
+                        .filterNot { it::class == newConfiguration::class }
+                        .plus(existentConfiguration)
+                } ?: (stack + newConfiguration)
         }
     }
 }

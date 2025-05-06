@@ -1,12 +1,6 @@
 package com.example.gymtracker.ui.elements
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -18,43 +12,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.ripple.createRippleModifierNode
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.ui.UiConstants
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun NumberInput(
@@ -64,8 +44,6 @@ fun NumberInput(
     maxValue: Int = 99,
     minValue: Int = 0,
 ) {
-
-
 //    LaunchedEffect(isHolding) {
 //        var increment = 1
 //        while (isHolding) {
@@ -102,11 +80,6 @@ fun NumberInput(
 //            TextFieldDefaults.colors(
 //                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
 //            ),
-
-
-
-
-
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -184,24 +157,24 @@ private fun NumberInputButton(
     }
 
     Box(
-        modifier = Modifier
-            .clip(CircleShape)
-            .indication(
-                interactionSource = interactionSource,
-                indication = ripple(bounded = false)
-            )
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        isPressing = true
-                        tryAwaitRelease()
-                        isPressing = false
-                    },
+        modifier =
+            Modifier
+                .clip(CircleShape)
+                .indication(
+                    interactionSource = interactionSource,
+                    indication = ripple(bounded = false),
                 )
-            }
-
-            .padding(8.dp),
-        contentAlignment = Alignment.Center
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = {
+                            isPressing = true
+                            tryAwaitRelease()
+                            isPressing = false
+                        },
+                    )
+                }
+                .padding(8.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(imageVector = Icons.Rounded.KeyboardArrowUp, contentDescription = "Increment")
     }

@@ -9,23 +9,31 @@ import com.example.gymtracker.components.entities.ExerciseInsert
 import com.example.gymtracker.components.entities.TrainingInsert
 import com.example.gymtracker.database.QueryTuple5
 import com.example.gymtracker.database.awaitMaxId
-import com.example.gymtracker.database.queryExecutors.executeGetCurrentTrainingQuery
 import com.example.gymtracker.database.execute
 import com.example.gymtracker.database.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.operations.executeAddTrainingOperation
+import com.example.gymtracker.database.queryExecutors.executeGetCurrentTrainingQuery
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramQuery
+import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
+import com.example.gymtracker.domain.TrainingProgram
+import com.example.gymtracker.utils.currentDayOfWeek
 import database.ApproachQueries
+import database.CompletedTrainingQueries
 import database.CurrentTrainingQueries
 import database.ExerciseQueries
 import database.ExerciseTemplateQueries
-import database.CompleteTrainingQueries
 import database.TrainingProgramQueries
 import database.TrainingQueries
+import database.TrainingScheduleQueries
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.toInstant
 
 class CurrentTrainingDatabase(
     private val currentTrainingQueries: Single<CurrentTrainingQueries>,
@@ -34,15 +42,53 @@ class CurrentTrainingDatabase(
     private val exerciseQueries: Single<ExerciseQueries>,
     private val approachQueries: Single<ApproachQueries>,
     private val exerciseTemplateQueries: Single<ExerciseTemplateQueries>,
-    private val completeTrainingQueries: Single<CompleteTrainingQueries>,
+    private val completedTrainingQueries: Single<CompletedTrainingQueries>,
+    private val trainingScheduleQueries: Single<TrainingScheduleQueries>,
 ) {
+    private suspend fun insertCurrentTrainingFromProgram(
+        trainingProgram: TrainingProgram,
+        currentTrainingQueries: CurrentTrainingQueries,
+        approachQueries: ApproachQueries,
+        exerciseQueries: ExerciseQueries,
+        trainingQueries: TrainingQueries,
+        coroutineScope: CoroutineScope,
+    ) = currentTrainingQueries.insert(
+        training_id =
+            executeAddTrainingOperation(
+                training =
+                    TrainingInsert(
+                        exercises =
+                            trainingProgram.training.exercises.map { exercise ->
+                                ExerciseInsert(
+                                    ordinal = exercise.ordinal,
+                                    exerciseTemplateId = exercise.template.id,
+                                    approaches =
+                                        exercise.approaches.map { approach ->
+                                            ApproachInsert(
+                                                ordinal = approach.ordinal,
+                                                repetitions = approach.repetitions,
+                                                weight = approach.weight,
+                                            )
+                                        },
+                                )
+                            },
+                    ),
+                approachQueries = approachQueries,
+                exerciseQueries = exerciseQueries,
+                trainingQueries = trainingQueries,
+                coroutineScope = coroutineScope,
+            ),
+        name = trainingProgram.name,
+    )
+
     private suspend fun deleteCurrentTrainingCascade(
         currentTrainingQueries: CurrentTrainingQueries,
         trainingQueries: TrainingQueries,
     ) {
-        val trainingIds = currentTrainingQueries
-                    .getTrainingIds()
-                    .awaitAsList()
+        val trainingIds =
+            currentTrainingQueries
+                .getTrainingIds()
+                .awaitAsList()
         currentTrainingQueries.clean()
         trainingQueries.delete(trainingIds)
     }
@@ -52,83 +98,91 @@ class CurrentTrainingDatabase(
             .map(CurrentTrainingQueries::get)
             .observe(::executeGetCurrentTrainingQuery)
 
-    fun observeTrainingProgramList() = trainingProgramQueries
-        .map(TrainingProgramQueries::getList)
-        .observe(::executeGetTrainingProgramListQuery)
+    fun observeTrainingProgramList() =
+        trainingProgramQueries
+            .map(TrainingProgramQueries::getList)
+            .observe(::executeGetTrainingProgramListQuery)
 
-    fun observeExerciseTemplateList() = exerciseTemplateQueries
-        .map(ExerciseTemplateQueries::getList)
-        .observe(::executeGetExerciseTemplateListQuery)
+    fun observeExerciseTemplateList() =
+        exerciseTemplateQueries
+            .map(ExerciseTemplateQueries::getList)
+            .observe(::executeGetExerciseTemplateListQuery)
 
-    fun createAndSetEmptyTraining() = zip(
-        currentTrainingQueries,
-        trainingQueries,
-    ) { currentTrainingQueries, trainingQueries ->
-        Pair(currentTrainingQueries, trainingQueries)
-    }
-        .execute { (currentTrainingQueries, trainingQueries) ->
-            deleteCurrentTrainingCascade(
-                currentTrainingQueries = currentTrainingQueries,
-                trainingQueries = trainingQueries,
-            )
-
-            val trainingId = trainingQueries
-                .maxId()
-                .awaitMaxId { it.MAX }
-            trainingQueries.insert(
-                id = trainingId
-            )
-            currentTrainingQueries.insertDefaults(
-                training_id = trainingId,
-            )
+    fun startTraining() =
+        zip(
+            trainingScheduleQueries,
+            currentTrainingQueries,
+            trainingQueries,
+            exerciseQueries,
+            approachQueries,
+        ) { trainingScheduleQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries ->
+            QueryTuple5(trainingScheduleQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries)
         }
-
-    fun setTrainingByProgram(
-        trainingProgramId: Long,
-    ) = zip(
-        trainingProgramQueries,
-        currentTrainingQueries,
-        trainingQueries,
-        exerciseQueries,
-        approachQueries,
-    ) { trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries ->
-        QueryTuple5(trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries)
-    }
-        .execute { (trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries) ->
-            executeGetTrainingProgramQuery(
-                getTrainingProgramQuery = trainingProgramQueries.get(trainingProgramId),
-            )?.let { trainingProgram ->
+            .execute { (trainingScheduleQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries) ->
                 deleteCurrentTrainingCascade(
                     currentTrainingQueries = currentTrainingQueries,
                     trainingQueries = trainingQueries,
                 )
 
-                currentTrainingQueries.insert(
-                    training_id = executeAddTrainingOperation(
-                        training = TrainingInsert(
-                            exercises = trainingProgram.training.exercises.map { exercise ->
-                                ExerciseInsert(
-                                    ordinal = exercise.ordinal,
-                                    exerciseTemplateId = exercise.template.id,
-                                    approaches = exercise.approaches.map { approach ->
-                                        ApproachInsert(
-                                            ordinal = approach.ordinal,
-                                            repetitions = approach.repetitions,
-                                            weight = approach.weight,
-                                        )
-                                    }
-                                )
-                            }
-                        ),
+                val trainingProgram =
+                    executeGetTrainingScheduleQuery(
+                        getTrainingScheduleQuery =
+                            trainingScheduleQueries.get(
+                                dayOfWeek = currentDayOfWeek().isoDayNumber.toLong(),
+                            ),
+                    )
+                if (trainingProgram != null) {
+                    insertCurrentTrainingFromProgram(
+                        trainingProgram = trainingProgram,
+                        currentTrainingQueries = currentTrainingQueries,
+                        trainingQueries = trainingQueries,
                         approachQueries = approachQueries,
                         exerciseQueries = exerciseQueries,
-                        trainingQueries = trainingQueries,
                         coroutineScope = this,
-                    ),
-                    name = trainingProgram.name,
-                )
+                    )
+                } else {
+                    val trainingId =
+                        trainingQueries
+                            .maxId()
+                            .awaitMaxId { it.MAX }
+                    trainingQueries.insert(
+                        id = trainingId,
+                    )
+                    currentTrainingQueries.insertDefaults(
+                        training_id = trainingId,
+                    )
+                }
             }
+
+    fun setTrainingByProgram(trainingProgramId: Long) =
+        zip(
+            trainingProgramQueries,
+            currentTrainingQueries,
+            trainingQueries,
+            exerciseQueries,
+            approachQueries,
+        ) { trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries ->
+            QueryTuple5(trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries)
         }
+            .execute { (trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries) ->
+                executeGetTrainingProgramQuery(
+                    getTrainingProgramQuery = trainingProgramQueries.get(trainingProgramId),
+                )?.let { trainingProgram ->
+                    deleteCurrentTrainingCascade(
+                        currentTrainingQueries = currentTrainingQueries,
+                        trainingQueries = trainingQueries,
+                    )
+
+                    insertCurrentTrainingFromProgram(
+                        trainingProgram = trainingProgram,
+                        currentTrainingQueries = currentTrainingQueries,
+                        trainingQueries = trainingQueries,
+                        approachQueries = approachQueries,
+                        exerciseQueries = exerciseQueries,
+                        coroutineScope = this,
+                    )
+                }
+            }
 
     fun addExercise(
         trainingId: Long,
@@ -156,14 +210,15 @@ class CurrentTrainingDatabase(
         )
     }
 
-    fun addApproach(exerciseId: Long) = approachQueries
-        .execute {
-            it.insertSingle(
-                exercise_id = exerciseId,
-                weight = null,
-                repetitions = 5,
-            )
-        }
+    fun addApproach(exerciseId: Long) =
+        approachQueries
+            .execute {
+                it.insertSingle(
+                    exercise_id = exerciseId,
+                    weight = null,
+                    repetitions = 5,
+                )
+            }
 
     fun updateRepetitions(
         approachId: Long,
@@ -187,42 +242,62 @@ class CurrentTrainingDatabase(
             )
         }
 
-    fun updateCurrentTrainingName(
-        name: String,
-    ) = currentTrainingQueries
-        .execute {
-            it.updateName(name)
-        }
+    fun updateCurrentTrainingName(name: String) =
+        currentTrainingQueries
+            .execute {
+                it.updateName(name)
+            }
 
-    fun deleteApproach(
-        approachId: Long,
-    ) = approachQueries
-        .execute {
-            it.delete(approachId)
-        }
+    fun deleteApproach(approachId: Long) =
+        approachQueries
+            .execute {
+                it.delete(approachId)
+            }
 
-    fun deleteExercise(
-        exerciseId: Long,
-    ) = exerciseQueries
-        .execute {
-            it.delete(exerciseId)
-        }
+    fun deleteExercise(exerciseId: Long) =
+        exerciseQueries
+            .execute {
+                it.delete(exerciseId)
+            }
 
     fun moveTrainingToHistory(
         name: String,
-        trainingId: Long
+        trainingId: Long,
+        startedAt: LocalDateTime,
     ) = zip(
-        completeTrainingQueries,
+        completedTrainingQueries,
         currentTrainingQueries,
-    ) { completeTrainingQueries, currentTrainingQueries ->
-        Pair(completeTrainingQueries, currentTrainingQueries)
-    }.execute { (completeTrainingQueries, currentTrainingQueries) ->
-        completeTrainingQueries
+    ) { completedTrainingQueries, currentTrainingQueries ->
+        Pair(completedTrainingQueries, currentTrainingQueries)
+    }.execute { (completedTrainingQueries, currentTrainingQueries) ->
+        completedTrainingQueries
             .insert(
                 name = name,
                 training_id = trainingId,
+                started_at = startedAt.toString(),
+                duration =
+                    Clock.System.now()
+                        .minus(
+                            startedAt.toInstant(
+                                TimeZone.currentSystemDefault(),
+                            ),
+                        )
+                        .toIsoString(),
             )
         currentTrainingQueries
             .clean()
     }
+
+    fun deleteTraining() =
+        zip(
+            currentTrainingQueries,
+            trainingQueries,
+        ) { currentTrainingQueries, trainingQueries ->
+            Pair(currentTrainingQueries, trainingQueries)
+        }.execute { (currentTrainingQueries, trainingQueries) ->
+            deleteCurrentTrainingCascade(
+                currentTrainingQueries = currentTrainingQueries,
+                trainingQueries = trainingQueries,
+            )
+        }
 }

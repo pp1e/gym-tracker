@@ -26,8 +26,10 @@ object UiConstants {
         )
 
     val numberInputFontSize = 20.sp
+
     @Composable
     fun calculateNumberInputHeight() = numberInputFontSize.toDp() + 32.dp
+
     @Composable
     fun getApproachFontColor() = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
 }

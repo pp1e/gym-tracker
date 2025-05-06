@@ -8,16 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,22 +21,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.example.gymtracker.components.editTraining.EditTrainingComponent
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
+import com.example.gymtracker.ui.elements.CompletedTrainingTitle
+import com.example.gymtracker.ui.elements.TrainingFull
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTrainingScreen(
-//    component: MainComponent,
+    component: EditTrainingComponent,
     paddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
 ) {
+    val model by component.model.subscribeAsState()
+
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Box(
@@ -54,63 +47,27 @@ fun EditTrainingScreen(
         Column(
             modifier =
                 Modifier
-                    .verticalScroll(rememberScrollState()),
+                    .fillMaxWidth(),
         ) {
-            BasicTextField(
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(
-                            top = 8.dp,
-//                        bottom = 8.dp,
-                        )
-                        .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
-                value = "Грудь + ноги",
-                onValueChange = {},
-                textStyle =
-                    TextStyle(
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Start,
-                    ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-            )
+            if (model.completedTraining != null) {
+                CompletedTrainingTitle(
+                    value = model.completedTraining!!.name,
+                    onValueChange = component::onCompletedTrainingNameChange,
+                    startedAt = model.completedTraining!!.startedAt,
+                )
 
-            Text(
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(
-                            bottom = 8.dp,
-                        )
-                        .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
-                text = "Понедельник, 17 февраля",
-                textAlign = TextAlign.Start,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-            )
-
-            HorizontalDivider(
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
-            )
-//            CurrentExercise(
-//                snackbarHostState = snackbarHostState,
-//            )
-//            CurrentExercise(
-//                snackbarHostState = snackbarHostState,
-//            )
-//            CurrentExercise(
-//                snackbarHostState = snackbarHostState,
-//            )
-//            CurrentExercise(
-//                snackbarHostState = snackbarHostState,
-//            )
-//            CurrentExercise(
-//                snackbarHostState = snackbarHostState,
-//            )
+                TrainingFull(
+                    snackbarHostState = snackbarHostState,
+                    training = model.completedTraining!!.training,
+                    onApproachAdd = component::onApproachAdd,
+                    onRepetitionsChange = component::onApproachRepetitionsChange,
+                    onWeightChange = component::onApproachWeightChange,
+                    requestExerciseDeleting = component::requestExerciseDeleting,
+                    cancelExerciseDeleting = component::cancelExerciseDeleting,
+                    requestApproachDeleting = component::requestApproachDeleting,
+                    cancelApproachDeleting = component::cancelApproachDeleting,
+                )
+            }
 
             Spacer(
                 modifier =
@@ -121,32 +78,37 @@ fun EditTrainingScreen(
             )
         }
 
-        ExtendedFloatingActionButton(
-            onClick = { showBottomSheet = true },
-            modifier =
-                Modifier
-                    .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
-                    .padding(UiConstants.FABPanelPadding)
-                    .align(Alignment.BottomCenter),
-        ) {
-            Icon(Icons.Rounded.Add, contentDescription = "Добавить")
-            Text("Добавить")
+        if (model.completedTraining != null) {
+            ExtendedFloatingActionButton(
+                onClick = { showBottomSheet = true },
+                modifier =
+                    Modifier
+                        .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
+                        .padding(UiConstants.FABPanelPadding)
+                        .align(Alignment.BottomCenter),
+            ) {
+                Icon(Icons.Rounded.Add, contentDescription = "Добавить")
+                Text("Добавить")
+            }
         }
     }
 
     if (showBottomSheet) {
         AddExerciseSheet(
             onDismissRequest = { showBottomSheet = false },
-            exerciseTemplateNames = emptyList(),
-            exerciseName = "",
-            onExerciseNameChanged = {},
-            approachesCount = 3,
-            onApproachesCountChanged = {},
-            repetitionsCount = 3,
-            onRepetitionsCountChanged = {},
-            weight = 3f,
-            onWeightChanged = {},
-            onAddExerciseClicked = {},
+            exerciseTemplateNames = model.exerciseTemplateNames,
+            exerciseName = model.exerciseName,
+            onExerciseNameChanged = component::onExerciseNameChange,
+            approachesCount = model.approachesCount,
+            onApproachesCountChanged = component::onApproachCountChange,
+            repetitionsCount = model.repetitionsCount,
+            onRepetitionsCountChanged = component::onRepetitionsCountChange,
+            weight = model.weight,
+            onWeightChanged = component::onWeightChange,
+            onAddExerciseClicked = {
+                component.onAddExerciseClick()
+                showBottomSheet = false
+            },
         )
     }
 }

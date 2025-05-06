@@ -97,9 +97,7 @@ internal fun CurrentExerciseShort(
     }
 }
 
-private fun generateRepetitionsMessage(
-    repetitions: List<Int>,
-): String {
+private fun generateRepetitionsMessage(repetitions: List<Int>): String {
     val maxRepetitions = repetitions.maxOrNull() ?: 0
     val minRepetitions = repetitions.minOrNull() ?: 0
 

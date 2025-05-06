@@ -8,9 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.example.gymtracker.database.DatabasesBuilder
 import com.example.gymtracker.routing.RootContent
@@ -22,10 +21,11 @@ import com.example.gymtracker.ui.theme.GymTrackerTheme
 @Composable
 fun GymTrackerApplication(
     databasesBuilder: DatabasesBuilder,
+    componentContext: ComponentContext,
 ) {
     val router =
         RootRouter(
-            componentContext = DefaultComponentContext(LifecycleRegistry()),
+            componentContext = componentContext,
             storeFactory = DefaultStoreFactory(),
             databasesBuilder = databasesBuilder,
         )
@@ -38,12 +38,10 @@ fun GymTrackerApplication(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopBar(
-                    screenTitle = model.screenTitle,
-                    isScheduleScreenActive = model.isScheduleScreenActive,
-                    isHistoryScreenActive = model.isHistoryScreenActive,
-                    isEditTrainingScreenActive = model.isEditTrainingScreenActive,
+                    activeScreen = model.activeScreenConfig,
                     onBackClicked = router::onBackClicked,
                     onWeekdaySwitch = router::onWeekdaySwitch,
+                    selectedWeekday = model.selectedWeekday,
                 )
             },
             bottomBar = {
@@ -51,9 +49,7 @@ fun GymTrackerApplication(
                     onTrainingClicked = router::onCurrentTrainingScreenMenuButtonClicked,
                     onScheduleClicked = router::onScheduleScreenMenuButtonClicked,
                     onHistoryClicked = router::onHistoryScreenMenuButtonClicked,
-                    isTrainingScreenActive = model.isCurrentTrainingScreenActive,
-                    isScheduleScreenActive = model.isScheduleScreenActive,
-                    isHistoryScreenActive = model.isHistoryScreenActive,
+                    activeScreen = model.activeScreenConfig,
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },

@@ -43,11 +43,11 @@ internal class ScheduleStoreProvider(
 
     private sealed class Msg {
         data class TrainingProgramLoaded(
-            val trainingProgram: TrainingProgram?
+            val trainingProgram: TrainingProgram?,
         ) : Msg()
 
         data class TrainingProgramsShortLoaded(
-            val trainingProgramsShort: List<TrainingProgramShort>
+            val trainingProgramsShort: List<TrainingProgramShort>,
         ) : Msg()
 
         data class ExerciseTemplatesLoaded(
@@ -116,7 +116,10 @@ internal class ScheduleStoreProvider(
         private val pendingExerciseDeletions = AtomicReference(emptyMap<Long, Disposable>())
         private val pendingApproachDeletions = AtomicReference(emptyMap<Long, Disposable>())
 
-        override fun executeAction(action: Unit, getState: () -> ScheduleStore.State) {
+        override fun executeAction(
+            action: Unit,
+            getState: () -> ScheduleStore.State,
+        ) {
             database
                 .observeTrainingSchedule()
                 .observeOn(mainScheduler)
@@ -124,7 +127,7 @@ internal class ScheduleStoreProvider(
                 .subscribeScoped(
                     onNext = { trainingProgramLoadedMessage ->
                         dispatch(trainingProgramLoadedMessage)
-                    }
+                    },
                 )
 
             database
@@ -134,7 +137,7 @@ internal class ScheduleStoreProvider(
                 .subscribeScoped(
                     onNext = { trainingProgramsShortLoadedMessage ->
                         dispatch(trainingProgramsShortLoadedMessage)
-                    }
+                    },
                 )
 
             database
@@ -144,65 +147,79 @@ internal class ScheduleStoreProvider(
                 .subscribeScoped(
                     onNext = { exerciseTemplatesLoadedMessage ->
                         dispatch(exerciseTemplatesLoadedMessage)
-                    }
+                    },
                 )
         }
 
-        override fun executeIntent(intent: ScheduleStore.Intent, getState: () -> ScheduleStore.State) =
-            when (intent) {
-                is ScheduleStore.Intent.CreateNewTrainingProgram -> createNewTrainingProgram()
-                is ScheduleStore.Intent.ChangeTrainingProgram -> changeTrainingProgram(
+        override fun executeIntent(
+            intent: ScheduleStore.Intent,
+            getState: () -> ScheduleStore.State,
+        ) = when (intent) {
+            is ScheduleStore.Intent.CreateNewTrainingProgram -> createNewTrainingProgram()
+            is ScheduleStore.Intent.ChangeTrainingProgram ->
+                changeTrainingProgram(
                     trainingProgramId = intent.trainingProgramId,
                 )
-                is ScheduleStore.Intent.AddExercise -> addExercise(
+            is ScheduleStore.Intent.AddExercise ->
+                addExercise(
                     getState = getState,
                 )
-                is ScheduleStore.Intent.AddApproach -> addApproach(
+            is ScheduleStore.Intent.AddApproach ->
+                addApproach(
                     exerciseId = intent.exerciseId,
                 )
-                is ScheduleStore.Intent.ChangeApproachWeight -> changeWeight(
+            is ScheduleStore.Intent.ChangeApproachWeight ->
+                changeWeight(
                     approachId = intent.approachId,
                     weight = intent.weight,
                 )
-                is ScheduleStore.Intent.ChangeApproachRepetitions -> changeRepetitions(
+            is ScheduleStore.Intent.ChangeApproachRepetitions ->
+                changeRepetitions(
                     approachId = intent.approachId,
                     repetitions = intent.repetitions,
                 )
-                is ScheduleStore.Intent.ChangeTrainingProgramName -> changeTrainingProgramName(
+            is ScheduleStore.Intent.ChangeTrainingProgramName ->
+                changeTrainingProgramName(
                     name = intent.name,
                     getState = getState,
                 )
-                is ScheduleStore.Intent.RequestApproachDeleting -> requestApproachDeleting(
+            is ScheduleStore.Intent.RequestApproachDeleting ->
+                requestApproachDeleting(
                     approachId = intent.approachId,
                     getState = getState,
                 )
-                is ScheduleStore.Intent.CancelApproachDeleting -> dispatch(
-                    Msg.ApproachDeletingFinished(intent.approachId)
+            is ScheduleStore.Intent.CancelApproachDeleting ->
+                dispatch(
+                    Msg.ApproachDeletingFinished(intent.approachId),
                 )
-                is ScheduleStore.Intent.RequestExerciseDeleting -> requestExerciseDeleting(
+            is ScheduleStore.Intent.RequestExerciseDeleting ->
+                requestExerciseDeleting(
                     exerciseId = intent.exerciseId,
                     getState = getState,
                 )
-                is ScheduleStore.Intent.CancelExerciseDeleting -> dispatch(
-                    Msg.ExerciseDeletingFinished(intent.exerciseId)
+            is ScheduleStore.Intent.CancelExerciseDeleting ->
+                dispatch(
+                    Msg.ExerciseDeletingFinished(intent.exerciseId),
                 )
-                is ScheduleStore.Intent.ChangeApproachesCount -> dispatch(
-                    Msg.ApproachesCountChanged(intent.approachesCount)
+            is ScheduleStore.Intent.ChangeApproachesCount ->
+                dispatch(
+                    Msg.ApproachesCountChanged(intent.approachesCount),
                 )
-                is ScheduleStore.Intent.ChangeExerciseName -> dispatch(
-                    Msg.ExerciseNameChanged(intent.name)
+            is ScheduleStore.Intent.ChangeExerciseName ->
+                dispatch(
+                    Msg.ExerciseNameChanged(intent.name),
                 )
-                is ScheduleStore.Intent.ChangeRepetitionsCount -> dispatch(
-                    Msg.RepetitionsCountChanged(intent.repetitionsCount)
+            is ScheduleStore.Intent.ChangeRepetitionsCount ->
+                dispatch(
+                    Msg.RepetitionsCountChanged(intent.repetitionsCount),
                 )
-                is ScheduleStore.Intent.ChangeWeight -> dispatch(
+            is ScheduleStore.Intent.ChangeWeight ->
+                dispatch(
                     Msg.WeightChanged(intent.weight),
                 )
-            }
+        }
 
-        private fun addExercise(
-            getState: () -> ScheduleStore.State,
-        ) {
+        private fun addExercise(getState: () -> ScheduleStore.State) {
             val state = getState()
             state.trainingProgram?.let { trainingProgram ->
                 database
@@ -211,15 +228,16 @@ internal class ScheduleStoreProvider(
                         approachesCount = state.approachesCount,
                         weight = state.weight,
                         repetitionsCount = state.repetitionsCount,
-                        exerciseTemplate = state.exerciseTemplates
-                            .find { it.name == state.exerciseName }
-                            ?.let {
-                                NewOrExistingExerciseTemplate.ExistingExerciseTemplate(
-                                    id = it.id
-                                )
-                            } ?: NewOrExistingExerciseTemplate.NewExerciseTemplate(
+                        exerciseTemplate =
+                            state.exerciseTemplates
+                                .find { it.name == state.exerciseName }
+                                ?.let {
+                                    NewOrExistingExerciseTemplate.ExistingExerciseTemplate(
+                                        id = it.id,
+                                    )
+                                } ?: NewOrExistingExerciseTemplate.NewExerciseTemplate(
                                 name = state.exerciseName,
-                            )
+                            ),
                     )
                     .subscribeScoped()
             }
@@ -231,9 +249,7 @@ internal class ScheduleStoreProvider(
                 .subscribeScoped()
         }
 
-        private fun changeTrainingProgram(
-            trainingProgramId: Long,
-        ) {
+        private fun changeTrainingProgram(trainingProgramId: Long) {
             database
                 .setProgram(trainingProgramId)
                 .subscribeScoped()
@@ -241,7 +257,7 @@ internal class ScheduleStoreProvider(
 
         private fun addApproach(exerciseId: Long) {
             database.addApproach(
-                exerciseId = exerciseId
+                exerciseId = exerciseId,
             )
                 .subscribeScoped()
         }
@@ -274,13 +290,13 @@ internal class ScheduleStoreProvider(
         ) {
             dispatch(Msg.TrainingProgramNameChanged(name))
             getState().trainingProgram?.let { trainingProgram ->
-               database
-                   .updateTrainingProgramName(
-                       id = trainingProgram.id,
-                       name = name,
-                   )
-                   .subscribeScoped()
-           }
+                database
+                    .updateTrainingProgramName(
+                        id = trainingProgram.id,
+                        name = name,
+                    )
+                    .subscribeScoped()
+            }
         }
 
         private fun requestApproachDeleting(
@@ -291,25 +307,26 @@ internal class ScheduleStoreProvider(
             dispatch(Msg.ApproachDeletingRequested(approachId))
             pendingApproachDeletions.add(
                 key = approachId,
-                value = completableTimer(4500, ioScheduler) // This delay is need to wait for possible deleting cancellation
-                    .andThen (
-                        completableDefer {
-                            if (approachId in getState().deleteApproachRequests) {
-                                database
-                                    .deleteApproach(approachId)
-                                    .delay(500, ioScheduler) // This delay is need to wait for approaches list update
-                                    .doOnAfterComplete {
-                                        mainScheduler.newExecutor().submit {
-                                            dispatch(Msg.ApproachDeletingFinished(approachId))
+                value =
+                    completableTimer(4500, ioScheduler) // This delay is need to wait for possible deleting cancellation
+                        .andThen(
+                            completableDefer {
+                                if (approachId in getState().deleteApproachRequests) {
+                                    database
+                                        .deleteApproach(approachId)
+                                        .delay(500, ioScheduler) // This delay is need to wait for approaches list update
+                                        .doOnAfterComplete {
+                                            mainScheduler.newExecutor().submit {
+                                                dispatch(Msg.ApproachDeletingFinished(approachId))
+                                            }
                                         }
-                                    }
-                            } else {
-                                completableOfEmpty()
-                            }
-                        }
-                    )
-                    .subscribeOn(ioScheduler)
-                    .subscribeScoped()
+                                } else {
+                                    completableOfEmpty()
+                                }
+                            },
+                        )
+                        .subscribeOn(ioScheduler)
+                        .subscribeScoped(),
             )
         }
 
@@ -321,25 +338,26 @@ internal class ScheduleStoreProvider(
             dispatch(Msg.ExerciseDeletingRequested(exerciseId))
             pendingExerciseDeletions.add(
                 key = exerciseId,
-                value = completableTimer(5000, ioScheduler) // This delay is need to wait for possible deleting cancellation
-                    .andThen (
-                        completableDefer {
-                            if (exerciseId in getState().deleteExerciseRequests) {
-                                database
-                                    .deleteExercise(exerciseId)
-                                    .delay(500, ioScheduler) // This delay is need to wait for approaches list update
-                                    .doOnAfterComplete {
-                                        mainScheduler.newExecutor().submit {
-                                            dispatch(Msg.ExerciseDeletingFinished(exerciseId))
+                value =
+                    completableTimer(5000, ioScheduler) // This delay is need to wait for possible deleting cancellation
+                        .andThen(
+                            completableDefer {
+                                if (exerciseId in getState().deleteExerciseRequests) {
+                                    database
+                                        .deleteExercise(exerciseId)
+                                        .delay(500, ioScheduler) // This delay is need to wait for approaches list update
+                                        .doOnAfterComplete {
+                                            mainScheduler.newExecutor().submit {
+                                                dispatch(Msg.ExerciseDeletingFinished(exerciseId))
+                                            }
                                         }
-                                    }
-                            } else {
-                                completableOfEmpty()
-                            }
-                        }
-                    )
-                    .subscribeOn(ioScheduler)
-                    .subscribeScoped()
+                                } else {
+                                    completableOfEmpty()
+                                }
+                            },
+                        )
+                        .subscribeOn(ioScheduler)
+                        .subscribeScoped(),
             )
         }
     }
@@ -347,44 +365,57 @@ internal class ScheduleStoreProvider(
     private object ReducerImpl : Reducer<ScheduleStore.State, Msg> {
         override fun ScheduleStore.State.reduce(msg: Msg): ScheduleStore.State =
             when (msg) {
-                is Msg.TrainingProgramLoaded -> copy(
+                is Msg.TrainingProgramLoaded ->
+                    copy(
                         trainingProgram = msg.trainingProgram,
                     )
-                is Msg.TrainingProgramsShortLoaded -> copy(
+                is Msg.TrainingProgramsShortLoaded ->
+                    copy(
                         trainingProgramsShort = msg.trainingProgramsShort,
                     )
-                is Msg.ExerciseTemplatesLoaded -> copy(
-                    exerciseTemplates = msg.exerciseTemplates,
-                )
-                is Msg.ExerciseNameChanged -> copy(
-                    exerciseName = msg.exerciseName,
-                )
-                is Msg.ApproachesCountChanged -> copy(
-                    approachesCount = msg.approachesCount,
-                )
-                is Msg.RepetitionsCountChanged -> copy(
-                    repetitionsCount = msg.repetitionsCount,
-                )
-                is Msg.WeightChanged -> copy(
-                    weight = msg.weight,
-                )
-                is Msg.TrainingProgramNameChanged -> copy(
-                    trainingProgram = trainingProgram?.copy(
-                        name = msg.name,
+                is Msg.ExerciseTemplatesLoaded ->
+                    copy(
+                        exerciseTemplates = msg.exerciseTemplates,
                     )
-                )
-                is Msg.ApproachDeletingRequested -> copy(
-                    deleteApproachRequests = deleteApproachRequests.plus(msg.approachId)
-                )
-                is Msg.ExerciseDeletingRequested -> copy(
-                    deleteExerciseRequests = deleteExerciseRequests.plus(msg.exerciseId)
-                )
-                is Msg.ApproachDeletingFinished -> copy(
-                    deleteApproachRequests = deleteApproachRequests.minus(msg.approachId)
-                )
-                is Msg.ExerciseDeletingFinished -> copy(
-                    deleteExerciseRequests = deleteExerciseRequests.minus(msg.exerciseId)
-                )
+                is Msg.ExerciseNameChanged ->
+                    copy(
+                        exerciseName = msg.exerciseName,
+                    )
+                is Msg.ApproachesCountChanged ->
+                    copy(
+                        approachesCount = msg.approachesCount,
+                    )
+                is Msg.RepetitionsCountChanged ->
+                    copy(
+                        repetitionsCount = msg.repetitionsCount,
+                    )
+                is Msg.WeightChanged ->
+                    copy(
+                        weight = msg.weight,
+                    )
+                is Msg.TrainingProgramNameChanged ->
+                    copy(
+                        trainingProgram =
+                            trainingProgram?.copy(
+                                name = msg.name,
+                            ),
+                    )
+                is Msg.ApproachDeletingRequested ->
+                    copy(
+                        deleteApproachRequests = deleteApproachRequests.plus(msg.approachId),
+                    )
+                is Msg.ExerciseDeletingRequested ->
+                    copy(
+                        deleteExerciseRequests = deleteExerciseRequests.plus(msg.exerciseId),
+                    )
+                is Msg.ApproachDeletingFinished ->
+                    copy(
+                        deleteApproachRequests = deleteApproachRequests.minus(msg.approachId),
+                    )
+                is Msg.ExerciseDeletingFinished ->
+                    copy(
+                        deleteExerciseRequests = deleteExerciseRequests.minus(msg.exerciseId),
+                    )
             }
     }
 }

@@ -11,22 +11,24 @@ import com.badoo.reaktive.single.map
 import com.badoo.reaktive.single.observeOn
 import com.badoo.reaktive.single.singleOf
 import com.example.gymtracker.database.databases.CurrentTrainingDatabase
+import com.example.gymtracker.database.databases.EditTrainingDatabase
 import com.example.gymtracker.database.databases.HistoryDatabase
 import com.example.gymtracker.database.databases.ScheduleDatabase
 import kotlinx.datetime.DayOfWeek
 
 class DatabasesBuilder(
-    driverFactory: DriverFactory
+    driverFactory: DriverFactory,
 ) {
-    private val rootDatabase = singleOf(
-        driverFactory
-            .createDriver()
-    ).map {
-        it.execute(null, "PRAGMA foreign_keys = ON;", 0)
-        Database(it)
-    }
+    private val rootDatabase =
+        singleOf(
+            driverFactory
+                .createDriver(),
+        ).map {
+            it.execute(null, "PRAGMA foreign_keys = ON;", 0)
+            Database(it)
+        }
 
-    private fun <T: SuspendingTransacterImpl> Single<Database>.observeQueries(getQuery: (Database) -> T) =
+    private fun <T : SuspendingTransacterImpl> Single<Database>.observeQueries(getQuery: (Database) -> T) =
         this
             .map(getQuery)
             .asObservable()
@@ -35,67 +37,87 @@ class DatabasesBuilder(
             .firstOrError()
             .observeOn(ioScheduler)
 
-    private val currentTrainingQueries = rootDatabase
-        .observeQueries {
-            it.currentTrainingQueries
-        }
+    private val currentTrainingQueries =
+        rootDatabase
+            .observeQueries {
+                it.currentTrainingQueries
+            }
 
-    private val trainingQueries = rootDatabase
-        .observeQueries {
-            it.trainingQueries
-        }
+    private val trainingQueries =
+        rootDatabase
+            .observeQueries {
+                it.trainingQueries
+            }
 
-    private val exerciseQueries = rootDatabase
-        .observeQueries {
-            it.exerciseQueries
-        }
+    private val exerciseQueries =
+        rootDatabase
+            .observeQueries {
+                it.exerciseQueries
+            }
 
-    private val approachQueries = rootDatabase
-        .observeQueries {
-            it.approachQueries
-        }
+    private val approachQueries =
+        rootDatabase
+            .observeQueries {
+                it.approachQueries
+            }
 
-    private val trainingScheduleQueries = rootDatabase
-        .observeQueries {
-            it.trainingScheduleQueries
-        }
+    private val trainingScheduleQueries =
+        rootDatabase
+            .observeQueries {
+                it.trainingScheduleQueries
+            }
 
-    private val trainingProgramQueries = rootDatabase
-        .observeQueries {
-            it.trainingProgramQueries
-        }
+    private val trainingProgramQueries =
+        rootDatabase
+            .observeQueries {
+                it.trainingProgramQueries
+            }
 
-    private val exerciseTemplateQueries = rootDatabase
-        .observeQueries {
-            it.exerciseTemplateQueries
-        }
+    private val exerciseTemplateQueries =
+        rootDatabase
+            .observeQueries {
+                it.exerciseTemplateQueries
+            }
 
-    private val completeTrainingQueries = rootDatabase
-        .observeQueries {
-            it.completeTrainingQueries
-        }
+    private val completedTrainingQueries =
+        rootDatabase
+            .observeQueries {
+                it.completedTrainingQueries
+            }
 
-    fun createCurrentTrainingDatabase() = CurrentTrainingDatabase(
-        currentTrainingQueries = currentTrainingQueries,
-        trainingProgramQueries = trainingProgramQueries,
-        trainingQueries = trainingQueries,
-        exerciseQueries = exerciseQueries,
-        approachQueries = approachQueries,
-        exerciseTemplateQueries = exerciseTemplateQueries,
-        completeTrainingQueries = completeTrainingQueries,
-    )
+    fun createCurrentTrainingDatabase() =
+        CurrentTrainingDatabase(
+            currentTrainingQueries = currentTrainingQueries,
+            trainingProgramQueries = trainingProgramQueries,
+            trainingQueries = trainingQueries,
+            exerciseQueries = exerciseQueries,
+            approachQueries = approachQueries,
+            exerciseTemplateQueries = exerciseTemplateQueries,
+            completedTrainingQueries = completedTrainingQueries,
+            trainingScheduleQueries = trainingScheduleQueries,
+        )
 
-    fun createScheduleDatabase(dayOfWeek: DayOfWeek) = ScheduleDatabase(
-        trainingScheduleQueries = trainingScheduleQueries,
-        trainingProgramQueries = trainingProgramQueries,
-        trainingQueries = trainingQueries,
-        exerciseQueries = exerciseQueries,
-        approachQueries = approachQueries,
-        exerciseTemplateQueries = exerciseTemplateQueries,
-        dayOfWeek = dayOfWeek,
-    )
+    fun createScheduleDatabase(dayOfWeek: DayOfWeek) =
+        ScheduleDatabase(
+            trainingScheduleQueries = trainingScheduleQueries,
+            trainingProgramQueries = trainingProgramQueries,
+            trainingQueries = trainingQueries,
+            exerciseQueries = exerciseQueries,
+            approachQueries = approachQueries,
+            exerciseTemplateQueries = exerciseTemplateQueries,
+            dayOfWeek = dayOfWeek,
+        )
 
-    fun createHistoryDatabase() = HistoryDatabase(
-        completeTrainingQueries = completeTrainingQueries,
-    )
+    fun createHistoryDatabase() =
+        HistoryDatabase(
+            completedTrainingQueries = completedTrainingQueries,
+        )
+
+    fun createEditTrainingDatabase() =
+        EditTrainingDatabase(
+            completedTrainingQueries = completedTrainingQueries,
+            exerciseQueries = exerciseQueries,
+            approachQueries = approachQueries,
+            exerciseTemplateQueries = exerciseTemplateQueries,
+        )
 }

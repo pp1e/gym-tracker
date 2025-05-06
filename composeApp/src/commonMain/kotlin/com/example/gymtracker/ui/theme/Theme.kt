@@ -37,7 +37,7 @@ private val LightColorScheme =
         onSurface = Color(0xFF37474F), // Темно-серый текст на белом фоне
     )
 
-//private val LightColorScheme =
+// private val LightColorScheme =
 //    lightColorScheme(
 //        primary = Purple40,
 //        secondary = PurpleGrey40,
@@ -60,10 +60,11 @@ fun GymTrackerTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor -> provideDynamicColorScheme(darkTheme) ?: defaultColorScheme(darkTheme)
-        else -> defaultColorScheme(darkTheme)
-    }
+    val colorScheme =
+        when {
+            dynamicColor -> provideDynamicColorScheme(darkTheme) ?: defaultColorScheme(darkTheme)
+            else -> defaultColorScheme(darkTheme)
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -72,5 +73,4 @@ fun GymTrackerTheme(
     )
 }
 
-private fun defaultColorScheme(darkTheme: Boolean) =
-    if (darkTheme) DarkColorScheme else LightColorScheme
+private fun defaultColorScheme(darkTheme: Boolean) = if (darkTheme) DarkColorScheme else LightColorScheme

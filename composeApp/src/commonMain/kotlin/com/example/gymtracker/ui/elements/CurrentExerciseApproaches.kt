@@ -3,7 +3,6 @@ package com.example.gymtracker.ui.elements
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -21,11 +20,11 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -87,11 +86,12 @@ fun CurrentExerciseApproaches(
             LaunchedEffect(id) {
                 delay(UiConstants.ANIMATION_DEFAULT_DURATION_MILLIS)
                 snackbarHostState.currentSnackbarData?.dismiss()
-                val result = snackbarHostState.showSnackbar(
-                    message = "Подход удалён",
-                    actionLabel = "Отменить",
-                    duration = SnackbarDuration.Short,
-                )
+                val result =
+                    snackbarHostState.showSnackbar(
+                        message = "Подход удалён",
+                        actionLabel = "Отменить",
+                        duration = SnackbarDuration.Short,
+                    )
                 if (result == SnackbarResult.ActionPerformed) {
                     cancelApproachDeleting(id)
                 }
@@ -138,8 +138,10 @@ fun CurrentExerciseApproaches(
                             )
 
                             NumberInput(
-                                value = approach.weight?.toInt()
-                                    ?: 0, // TODO Сделать по нормальному
+                                value =
+                                    approach.weight?.toInt()
+                                        ?: 0,
+                                // TODO Сделать по нормальному
                                 onValueChange = { onWeightChange(approach.id, it.toFloat()) },
                                 modifier = numberInputModifier,
                             )
@@ -150,17 +152,19 @@ fun CurrentExerciseApproaches(
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
-                .align(Alignment.CenterHorizontally),
+            modifier =
+                Modifier
+                    .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
+                    .align(Alignment.CenterHorizontally),
         ) {
             IconButton(
                 onClick = onApproachAdd,
             ) {
                 Icon(
-                    modifier = Modifier
-                        .size(UiConstants.calculateNumberInputHeight())
-                        .align(Alignment.CenterStart),
+                    modifier =
+                        Modifier
+                            .size(UiConstants.calculateNumberInputHeight())
+                            .align(Alignment.CenterStart),
                     imageVector = Icons.Default.Add,
                     contentDescription = "Добавить подход",
                     tint = UiConstants.getApproachFontColor(),

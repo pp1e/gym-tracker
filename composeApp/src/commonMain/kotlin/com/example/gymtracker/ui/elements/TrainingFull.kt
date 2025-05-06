@@ -34,9 +34,10 @@ fun TrainingFull(
     onWeightChange: (Long, Float) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .animateContentSize()
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            Modifier
+                .animateContentSize()
+                .verticalScroll(rememberScrollState()),
     ) {
         val pendingDeletes = remember { mutableStateListOf<Long>() }
 
@@ -44,11 +45,12 @@ fun TrainingFull(
             LaunchedEffect(id) {
                 delay(UiConstants.ANIMATION_DEFAULT_DURATION_MILLIS)
                 snackbarHostState.currentSnackbarData?.dismiss()
-                val result = snackbarHostState.showSnackbar(
-                    message = "Упражнение удалёно",
-                    actionLabel = "Отменить",
-                    duration = SnackbarDuration.Short,
-                )
+                val result =
+                    snackbarHostState.showSnackbar(
+                        message = "Упражнение удалёно",
+                        actionLabel = "Отменить",
+                        duration = SnackbarDuration.Short,
+                    )
                 if (result == SnackbarResult.ActionPerformed) {
                     cancelExerciseDeleting(id)
                 }
@@ -76,10 +78,10 @@ fun TrainingFull(
 
         Spacer(
             modifier =
-            Modifier
-                .padding(UiConstants.FABPanelPadding)
-                .fillMaxWidth()
-                .height(UiConstants.FABHeight),
+                Modifier
+                    .padding(UiConstants.FABPanelPadding)
+                    .fillMaxWidth()
+                    .height(UiConstants.FABHeight),
         )
     }
 }

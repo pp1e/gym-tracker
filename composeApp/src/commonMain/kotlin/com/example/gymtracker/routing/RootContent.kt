@@ -44,6 +44,7 @@ fun RootContent(
 
             is Child.EditTraining ->
                 EditTrainingScreen(
+                    component = child.component,
                     paddingValues = paddingValues,
                     snackbarHostState = snackbarHostState,
                 )

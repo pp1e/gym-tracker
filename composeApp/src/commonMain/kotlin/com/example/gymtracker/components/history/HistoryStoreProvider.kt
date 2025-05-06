@@ -7,10 +7,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.reaktive.ReaktiveExecutor
 import com.badoo.reaktive.observable.map
 import com.badoo.reaktive.observable.observeOn
-import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.scheduler.mainScheduler
 import com.example.gymtracker.database.databases.HistoryDatabase
-import com.example.gymtracker.domain.CompleteTraining
+import com.example.gymtracker.domain.CompletedTrainingShort
 
 internal class HistoryStoreProvider(
     private val storeFactory: StoreFactory,
@@ -28,21 +27,24 @@ internal class HistoryStoreProvider(
             ) {}
 
     private sealed class Msg {
-        data class CompleteTrainingsLoaded(
-            val completeTrainings: List<CompleteTraining>
+        data class CompletedTrainingsLoaded(
+            val completedTrainings: List<CompletedTrainingShort>,
         ) : Msg()
     }
 
     private inner class ExecutorImpl : ReaktiveExecutor<HistoryStore.Intent, Unit, HistoryStore.State, Msg, Nothing>() {
-        override fun executeAction(action: Unit, getState: () -> HistoryStore.State) {
+        override fun executeAction(
+            action: Unit,
+            getState: () -> HistoryStore.State,
+        ) {
             database
-                .observeCompleteTrainings()
+                .observeCompletedTrainings()
                 .observeOn(mainScheduler)
-                .map(Msg::CompleteTrainingsLoaded)
-                .subscribeScoped (
-                    onNext = { completeTrainingsLoadedMessage ->
-                        dispatch(completeTrainingsLoadedMessage)
-                    }
+                .map(Msg::CompletedTrainingsLoaded)
+                .subscribeScoped(
+                    onNext = { completedTrainingsLoadedMessage ->
+                        dispatch(completedTrainingsLoadedMessage)
+                    },
                 )
         }
     }
@@ -64,9 +66,10 @@ internal class HistoryStoreProvider(
 //            }
         override fun HistoryStore.State.reduce(msg: Msg): HistoryStore.State =
             when (msg) {
-                is Msg.CompleteTrainingsLoaded -> copy(
-                    completeTrainings = msg.completeTrainings,
-                )
+                is Msg.CompletedTrainingsLoaded ->
+                    copy(
+                        completedTrainings = msg.completedTrainings,
+                    )
             }
     }
 }

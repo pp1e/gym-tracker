@@ -13,8 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,28 +20,26 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.utils.now
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
 
-private fun DayOfWeek.toRusShortName() = when(this) {
-    DayOfWeek.MONDAY -> "Пн"
-    DayOfWeek.TUESDAY -> "Вт"
-    DayOfWeek.WEDNESDAY -> "Ср"
-    DayOfWeek.THURSDAY -> "Чт"
-    DayOfWeek.FRIDAY -> "Пт"
-    DayOfWeek.SATURDAY -> "Сб"
-    DayOfWeek.SUNDAY -> "Вс"
-    else -> ""
-}
+private fun DayOfWeek.toRusShortName() =
+    when (this) {
+        DayOfWeek.MONDAY -> "Пн"
+        DayOfWeek.TUESDAY -> "Вт"
+        DayOfWeek.WEDNESDAY -> "Ср"
+        DayOfWeek.THURSDAY -> "Чт"
+        DayOfWeek.FRIDAY -> "Пт"
+        DayOfWeek.SATURDAY -> "Сб"
+        DayOfWeek.SUNDAY -> "Вс"
+        else -> ""
+    }
 
 @Composable
 fun WeekdaySwitcher(
     modifier: Modifier = Modifier,
     onWeekdaySwitch: (DayOfWeek) -> Unit,
+    selectedWeekday: DayOfWeek,
 ) {
-    var selectedWeekday by remember { mutableStateOf(LocalDate.now().dayOfWeek) }
-
     val days = DayOfWeek.entries
 
     Row(
@@ -62,7 +58,6 @@ fun WeekdaySwitcher(
                     Modifier
                         .size(UiConstants.WeekdaySwitcherDaySize)
                         .clickable {
-                            selectedWeekday = day
                             onWeekdaySwitch(day)
                         }
                         .background(

@@ -30,17 +30,17 @@ private fun <T : Any> Query<T>.observed(): Observable<Query<T>> =
         emitter.setCancellable { removeListener(listener) }
     }
 
-fun <T: Any> Single<T>.execute(
-    block: suspend CoroutineScope.(T) -> Unit
-) = this
-    .flatMapCompletable {
-        completableFromCoroutine {
-            block(it)
+fun <T : Any> Single<T>.execute(block: suspend CoroutineScope.(T) -> Unit) =
+    this
+        .flatMapCompletable {
+            completableFromCoroutine {
+                block(it)
+            }
         }
-    }
 
-suspend fun <T: Any> Query<T>.awaitMaxId(getMax: (T) -> Long?) = this
-    .awaitAsOne()
-    .let(getMax)
-    ?.plus(1)
-    ?: 1
+suspend fun <T : Any> Query<T>.awaitMaxId(getMax: (T) -> Long?) =
+    this
+        .awaitAsOne()
+        .let(getMax)
+        ?.plus(1)
+        ?: 1

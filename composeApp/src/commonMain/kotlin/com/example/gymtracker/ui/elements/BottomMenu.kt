@@ -9,33 +9,32 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.gymtracker.routing.RootRouter
 
 @Composable
 fun BottomMenu(
     onScheduleClicked: () -> Unit = {},
     onTrainingClicked: () -> Unit = {},
     onHistoryClicked: () -> Unit = {},
-    isTrainingScreenActive: Boolean = false,
-    isScheduleScreenActive: Boolean = false,
-    isHistoryScreenActive: Boolean = false,
+    activeScreen: RootRouter.ScreenConfig,
 ) {
     NavigationBar {
         NavigationBarItem(
             icon = { Icon(Icons.Rounded.FitnessCenter, contentDescription = "Тренировка") },
             label = { Text("Тренировка") },
-            selected = isTrainingScreenActive,
+            selected = activeScreen is RootRouter.ScreenConfig.CurrentTraining,
             onClick = onTrainingClicked,
         )
         NavigationBarItem(
             icon = { Icon(Icons.Rounded.EditCalendar, contentDescription = "Расписание") },
             label = { Text("Расписание") },
-            selected = isScheduleScreenActive,
+            selected = activeScreen is RootRouter.ScreenConfig.Schedule,
             onClick = onScheduleClicked,
         )
         NavigationBarItem(
             icon = { Icon(Icons.Rounded.AccessTime, contentDescription = "История") },
             label = { Text("История") },
-            selected = isHistoryScreenActive,
+            selected = activeScreen is RootRouter.ScreenConfig.History,
             onClick = onHistoryClicked,
         )
     }

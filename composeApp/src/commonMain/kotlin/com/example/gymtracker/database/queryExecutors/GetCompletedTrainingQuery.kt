@@ -3,26 +3,25 @@ package com.example.gymtracker.database.queryExecutors
 import app.cash.sqldelight.Query
 import app.cash.sqldelight.async.coroutines.awaitAsList
 import com.example.gymtracker.domain.Approach
-import com.example.gymtracker.domain.CurrentTraining
+import com.example.gymtracker.domain.CompletedTraining
 import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.domain.Training
 import com.example.gymtracker.utils.safeLet
-import database.currentTraining.Get
+import database.GetById
 import kotlinx.datetime.LocalDateTime
 
-suspend fun executeGetCurrentTrainingQuery(getCurrentTrainingQuery: Query<Get>) =
-    groupCurrentTrainingEntities(
-        currentTraining = getCurrentTrainingQuery.awaitAsList(),
-    )
-        .firstOrNull()
+suspend fun getCompletedTrainingQuery(getCompletedTrainingQuery: Query<GetById>) =
+    groupCompletedTrainingEntities(
+        currentTraining = getCompletedTrainingQuery.awaitAsList(),
+    ).firstOrNull()
 
-private fun groupCurrentTrainingEntities(currentTraining: List<Get>) =
+private fun groupCompletedTrainingEntities(currentTraining: List<GetById>) =
     currentTraining
         .groupBy { it.id }
         .map { (_, trainingRows) ->
             trainingRows.firstOrNull()?.let { trainingRow ->
-                CurrentTraining(
+                CompletedTraining(
                     name = trainingRow.name,
                     startedAt =
                         LocalDateTime.parse(

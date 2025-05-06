@@ -21,24 +21,26 @@ suspend fun executeAddExerciseOperation(
     approachQueries: ApproachQueries,
     coroutineScope: CoroutineScope,
 ) {
-    val exerciseId = exerciseQueries
-        .maxId()
-        .awaitMaxId { it.MAX }
+    val exerciseId =
+        exerciseQueries
+            .maxId()
+            .awaitMaxId { it.MAX }
     exerciseQueries.insertSingle(
         id = exerciseId,
         training_id = trainingId,
-        exercise_template_id = when (exerciseTemplate) {
-            is NewOrExistingExerciseTemplate.ExistingExerciseTemplate -> exerciseTemplate.id
-            is NewOrExistingExerciseTemplate.NewExerciseTemplate -> {
-                exerciseTemplateQueries.insert(
-                    name = exerciseTemplate.name,
-                    muscle_group_id = null,
-                )
-                exerciseTemplateQueries
-                    .getId(exerciseTemplate.name)
-                    .awaitAsOne()
-            }
-        },
+        exercise_template_id =
+            when (exerciseTemplate) {
+                is NewOrExistingExerciseTemplate.ExistingExerciseTemplate -> exerciseTemplate.id
+                is NewOrExistingExerciseTemplate.NewExerciseTemplate -> {
+                    exerciseTemplateQueries.insert(
+                        name = exerciseTemplate.name,
+                        muscle_group_id = null,
+                    )
+                    exerciseTemplateQueries
+                        .getId(exerciseTemplate.name)
+                        .awaitAsOne()
+                }
+            },
     )
     var ordinal = 1L
     List(approachesCount) {

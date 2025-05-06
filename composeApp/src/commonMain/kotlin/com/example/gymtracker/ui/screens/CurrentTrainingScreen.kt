@@ -1,19 +1,16 @@
 package com.example.gymtracker.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.RocketLaunch
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,17 +19,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
-import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
+import com.example.gymtracker.ui.elements.CurrentTrainingTitle
+import com.example.gymtracker.ui.elements.DualFloatingButtonModule
+import com.example.gymtracker.ui.elements.SingleFloatingButtonModule
 import com.example.gymtracker.ui.elements.TrainingFull
-import com.example.gymtracker.ui.elements.TrainingTitle
+import com.example.gymtracker.ui.elements.formatDatetime
+import com.example.gymtracker.ui.elements.russianInPreposition
 
-private val FAB_SPACE_BETWEEN = 12.dp
+private val IRRELEVANT_TRAINING_DIALOG_FONT_SIZE = 16.sp
 
 @Composable
 fun CurrentTrainingScreen(
@@ -51,16 +50,14 @@ fun CurrentTrainingScreen(
                 .fillMaxSize(),
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            TrainingTitle(
-                value = model.currentTraining?.name,
-                onValueChange = component::onCurrentTrainingNameChange,
-                trainingProgramChoices = model.trainingProgramsShort,
-                onTrainingProgramChoose = component::changeTrainingProgram,
-                onCreateNewClick = component::createNewTraining,
-                createNewPlaceholder = "Создать пустую тренировку"
-            )
-
             if (model.currentTraining != null) {
+                CurrentTrainingTitle(
+                    value = model.currentTraining!!.name,
+                    onValueChange = component::onCurrentTrainingNameChange,
+                    trainingProgramChoices = model.trainingProgramsShort,
+                    onTrainingProgramChoose = component::changeTrainingProgram,
+                )
+
                 TrainingFull(
                     snackbarHostState = snackbarHostState,
                     training = model.currentTraining!!.training,
@@ -76,39 +73,20 @@ fun CurrentTrainingScreen(
         }
 
         if (model.currentTraining != null) {
-            Row(
-                modifier =
-                    Modifier
-                        .padding(UiConstants.FABPanelPadding)
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                ExtendedFloatingActionButton(
-                    onClick = { showBottomSheet = true },
-                    modifier =
-                        Modifier
-                            .padding(
-                                end = FAB_SPACE_BETWEEN,
-                            )
-                            .weight(UiConstants.FAB_ADD_WEIGHT),
-                ) {
-                    Icon(Icons.Rounded.Add, contentDescription = "Добавить")
-                    Text("Добавить")
-                }
-
-                ExtendedFloatingActionButton(
-                    onClick = { showCompleteTrainingDialog = true },
-                    modifier =
-                        Modifier
-                            .padding(
-                                start = FAB_SPACE_BETWEEN,
-                            )
-                            .weight(1 - UiConstants.FAB_ADD_WEIGHT),
-                ) {
-                    Icon(Icons.Rounded.Done, contentDescription = "Завершить")
-                }
-            }
+            DualFloatingButtonModule(
+                bigButtonImageVector = Icons.Rounded.Add,
+                onBigButtonClicked = { showBottomSheet = true },
+                bigButtonText = "Добавить",
+                smallButtonIconVector = Icons.Rounded.Done,
+                onSmallButtonClicked = { showCompleteTrainingDialog = true },
+                smallButtonText = "Завершить",
+            )
+        } else {
+            SingleFloatingButtonModule(
+                iconVector = Icons.Rounded.RocketLaunch,
+                onClick = component::onStartTrainingClick,
+                text = "Начать тренировку",
+            )
         }
     }
 
@@ -121,7 +99,7 @@ fun CurrentTrainingScreen(
                     onClick = {
                         showCompleteTrainingDialog = false
                         component.onCompleteTrainingClick()
-                    }
+                    },
                 ) {
                     Text("Да")
                 }
@@ -134,10 +112,47 @@ fun CurrentTrainingScreen(
         )
     }
 
+    if (model.isTrainingIrrelevant) {
+        AlertDialog(
+            onDismissRequest = {
+                component.onDeleteTrainingClick()
+            },
+            title = {
+                Text(
+                    text =
+                        "Вы не сохранили тренировку, начатую" +
+                            " ${model.currentTraining!!.startedAt.dayOfWeek.russianInPreposition()}" +
+                            " ${formatDatetime(model.currentTraining!!.startedAt)}." +
+                            " Желаете сохранить эту тренировку?" +
+                            "\n* Сохранённые тренировки можно редактировать в истории.",
+                    fontSize = IRRELEVANT_TRAINING_DIALOG_FONT_SIZE,
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        component.onCompleteTrainingClick()
+                    },
+                ) {
+                    Text("Сохранить")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        component.onDeleteTrainingClick()
+                    },
+                ) {
+                    Text("Удалить")
+                }
+            },
+        )
+    }
+
     if (showBottomSheet) {
         AddExerciseSheet(
             onDismissRequest = { showBottomSheet = false },
-            exerciseTemplateNames = emptyList(),
+            exerciseTemplateNames = model.exerciseTemplateNames,
             exerciseName = model.exerciseName,
             onExerciseNameChanged = component::onExerciseNameChange,
             approachesCount = model.approachesCount,

@@ -1,7 +1,6 @@
 package com.example.gymtracker.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,7 +16,6 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.history.HistoryComponent
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.CompletedTrainingEntry
-import com.example.gymtracker.ui.elements.SubtitleText
 
 @Composable
 fun HistoryScreen(
@@ -33,7 +29,7 @@ fun HistoryScreen(
             .padding(paddingValues)
             .fillMaxSize(),
     ) {
-        LazyColumn (
+        LazyColumn(
             modifier =
                 Modifier
                     .align(Alignment.Center)
@@ -41,7 +37,7 @@ fun HistoryScreen(
                     .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            items(model.completeTrainings) { completedTraining ->
+            items(model.completedTrainings) { completedTraining ->
                 CompletedTrainingEntry(
                     onClicked = component::onTrainingClicked,
                     completedTraining = completedTraining,

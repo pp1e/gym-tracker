@@ -16,17 +16,19 @@ suspend fun executeAddTrainingOperation(
     approachQueries: ApproachQueries,
     coroutineScope: CoroutineScope,
 ): Long {
-    val trainingId = trainingQueries
-        .maxId()
-        .awaitMaxId { it.MAX }
+    val trainingId =
+        trainingQueries
+            .maxId()
+            .awaitMaxId { it.MAX }
     trainingQueries.insert(
-        id = trainingId
+        id = trainingId,
     )
     training.exercises.map { exercise ->
         coroutineScope.launch {
-            val exerciseId = exerciseQueries
-                .maxId()
-                .awaitMaxId { it.MAX }
+            val exerciseId =
+                exerciseQueries
+                    .maxId()
+                    .awaitMaxId { it.MAX }
             exerciseQueries.insert(
                 id = exerciseId,
                 ordinal = exercise.ordinal.toLong(),
@@ -43,7 +45,6 @@ suspend fun executeAddTrainingOperation(
                         exercise_id = exerciseId,
                     )
                 }
-
             }.joinAll()
         }
     }.joinAll()

@@ -9,25 +9,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.schedule.ScheduleComponent
-import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
+import com.example.gymtracker.ui.elements.SingleFloatingButtonModule
 import com.example.gymtracker.ui.elements.TrainingFull
-import com.example.gymtracker.ui.elements.TrainingTitle
+import com.example.gymtracker.ui.elements.TrainingProgramTitle
 
 @Composable
 fun ScheduleScreen(
@@ -49,13 +45,12 @@ fun ScheduleScreen(
                 },
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            TrainingTitle(
+            TrainingProgramTitle(
                 value = model.trainingProgram?.name,
                 onValueChange = component::onTrainingProgramNameChange,
                 trainingProgramChoices = model.trainingProgramsShort,
                 onTrainingProgramChoose = component::changeTrainingProgram,
                 onCreateNewClick = component::createNewTrainingProgram,
-                createNewPlaceholder = "Создать новую программу",
             )
 
             if (model.trainingProgram != null) {
@@ -74,17 +69,11 @@ fun ScheduleScreen(
         }
 
         if (model.trainingProgram != null) {
-            ExtendedFloatingActionButton(
+            SingleFloatingButtonModule(
+                iconVector = Icons.Rounded.Add,
+                text = "Добавить",
                 onClick = { showBottomSheet = true },
-                modifier =
-                    Modifier
-                        .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION)
-                        .padding(UiConstants.FABPanelPadding)
-                        .align(Alignment.BottomCenter),
-            ) {
-                Icon(Icons.Rounded.Add, contentDescription = "Добавить")
-                Text("Добавить")
-            }
+            )
         }
     }
 
