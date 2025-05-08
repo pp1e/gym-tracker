@@ -137,12 +137,9 @@ fun CurrentExerciseApproaches(
                                 modifier = numberInputModifier,
                             )
 
-                            NumberInput(
-                                value =
-                                    approach.weight?.toInt()
-                                        ?: 0,
-                                // TODO Сделать по нормальному
-                                onValueChange = { onWeightChange(approach.id, it.toFloat()) },
+                            NumberInputEditable(
+                                value = approach.weight,
+                                onValueChange = { onWeightChange(approach.id, it) },
                                 modifier = numberInputModifier,
                             )
                         }

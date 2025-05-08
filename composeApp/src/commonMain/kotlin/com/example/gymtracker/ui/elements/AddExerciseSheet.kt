@@ -16,6 +16,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymtracker.ui.UiConstants
@@ -46,6 +47,8 @@ fun AddExerciseSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
     ) {
+        val focusManager = LocalFocusManager.current
+
         Column(
             modifier =
                 Modifier
@@ -116,63 +119,23 @@ fun AddExerciseSheet(
                         onValueChange = onRepetitionsCountChanged,
                     )
 
-                    NumberInput(
+                    NumberInputEditable(
                         modifier = modifier,
-                        value = weight.toInt(),
-                        onValueChange = { onWeightChanged(it.toFloat()) },
+                        value = weight,
+                        onValueChange = { onWeightChanged(it) },
                     )
                 }
             }
-
-//            Row(
-//                modifier =
-//                    Modifier
-//                        .fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//            ) {
-//                Column {
-//                    Label(
-//                        text = "Подходы",
-//                        modifier =
-//                            Modifier
-//                                .align(Alignment.CenterHorizontally),
-//                    )
-//
-//                    NumberInput(
-//                        value = approachesCount,
-//                        onValueChange = onApproachesCountChanged,
-//                    )
-//                }
-//                Column {
-//                    Label(
-//                        text = "Повторения",
-//                        modifier =
-//                            Modifier
-//                                .align(Alignment.CenterHorizontally),
-//                    )
-//
-//                    NumberInput(
-//                        value = repetitionsCount,
-//                        onValueChange = onRepetitionsCountChanged,
-//                    )
-//                }
-//            }
-//
-//            Label(
-//                text = "Вес",
-//            )
-//
-//            NumberInput(
-//                value = weight.toInt(),
-//                onValueChange = { onWeightChanged(it.toFloat()) },
-//            )
 
             Button(
                 modifier =
                     Modifier
                         .padding(vertical = ELEMENTS_VERTICAL_PADDING)
                         .fillMaxWidth(),
-                onClick = onAddExerciseClicked,
+                onClick = {
+                    focusManager.clearFocus()
+                    onAddExerciseClicked()
+                },
             ) {
                 Text(
                     text = "Готово",

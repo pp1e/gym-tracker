@@ -15,7 +15,7 @@ suspend fun executeAddExerciseOperation(
     exerciseTemplate: NewOrExistingExerciseTemplate,
     approachesCount: Int,
     repetitionsCount: Int,
-    weight: Float?,
+    weight: Float,
     exerciseQueries: ExerciseQueries,
     exerciseTemplateQueries: ExerciseTemplateQueries,
     approachQueries: ApproachQueries,
@@ -50,7 +50,7 @@ suspend fun executeAddExerciseOperation(
                     ordinal = ordinal++,
                     exercise_id = exerciseId,
                     repetitions = repetitionsCount.toLong(),
-                    weight = weight?.toDouble(),
+                    weight = weight.toDouble(),
                 )
         }
     }.joinAll()

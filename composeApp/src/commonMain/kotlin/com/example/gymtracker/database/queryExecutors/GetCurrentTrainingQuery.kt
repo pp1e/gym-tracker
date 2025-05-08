@@ -56,12 +56,13 @@ private fun groupCurrentTrainingEntities(currentTraining: List<Get>) =
                                                             it.id____,
                                                             it.ordinal_,
                                                             it.repetitions,
-                                                        ) { approachId, ordinal, repetitions ->
+                                                            it.weight,
+                                                        ) { approachId, ordinal, repetitions, weight ->
                                                             Approach(
                                                                 id = approachId,
                                                                 ordinal = ordinal.toInt(),
                                                                 repetitions = repetitions.toInt(),
-                                                                weight = it.weight?.toFloat(),
+                                                                weight = weight.toFloat(),
                                                             )
                                                         }
                                                     },

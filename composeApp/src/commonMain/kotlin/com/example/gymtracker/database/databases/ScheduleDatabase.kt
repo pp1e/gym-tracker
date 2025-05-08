@@ -99,7 +99,7 @@ class ScheduleDatabase(
         exerciseTemplate: NewOrExistingExerciseTemplate,
         approachesCount: Int,
         repetitionsCount: Int,
-        weight: Float?,
+        weight: Float,
     ) = zip(
         exerciseQueries,
         approachQueries,
@@ -125,7 +125,7 @@ class ScheduleDatabase(
             .execute {
                 it.insertSingle(
                     exercise_id = exerciseId,
-                    weight = null,
+                    weight = 0.0,
                     repetitions = 5,
                 )
             }
@@ -143,12 +143,12 @@ class ScheduleDatabase(
 
     fun updateWeight(
         approachId: Long,
-        weight: Float?,
+        weight: Float,
     ) = approachQueries
         .execute {
             it.updateWeight(
                 id = approachId,
-                weight = weight?.toDouble(),
+                weight = weight.toDouble(),
             )
         }
 

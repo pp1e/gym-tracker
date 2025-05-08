@@ -40,7 +40,7 @@ suspend fun executeAddTrainingOperation(
                 launch {
                     approachQueries.insert(
                         ordinal = approach.ordinal.toLong(),
-                        weight = approach.weight?.toDouble(),
+                        weight = approach.weight.toDouble(),
                         repetitions = approach.repetitions.toLong(),
                         exercise_id = exerciseId,
                     )

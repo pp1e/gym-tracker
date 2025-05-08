@@ -1,7 +1,7 @@
 CREATE TABLE approach(
     id INTEGER PRIMARY KEY,
     ordinal INTEGER NOT NULL,
-    weight REAL,
+    weight REAL NOT NULL,
     repetitions INTEGER NOT NULL,
     exercise_id INTEGER NOT NULL,
 
