@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.coroutines.delay
@@ -186,7 +185,7 @@ private fun RowScope.ApproachLabel(
         text = text,
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
+        fontSize = UiConstants.defaultFontSize,
         color = UiConstants.getApproachFontColor(),
     )
 }

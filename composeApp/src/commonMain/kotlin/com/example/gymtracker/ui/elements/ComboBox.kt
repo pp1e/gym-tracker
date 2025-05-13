@@ -21,6 +21,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +34,7 @@ fun ComboBoxWithInput(
     onValueChange: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
 
     ExposedDropdownMenuBox(
         modifier = modifier,
@@ -39,15 +42,13 @@ fun ComboBoxWithInput(
         onExpandedChange = { expanded = it },
     ) {
         TextField(
-            value = value,
-            onValueChange = onValueChange,
+            value = textFieldValue,
+            onValueChange = {
+                textFieldValue = it
+                onValueChange(it.text)
+            },
             label = { Text("Название упражнения") },
             trailingIcon = {
-//                if (expanded) {
-//                    Icon(Icons.Default.ArrowDropUp, contentDescription = "Drop Up")
-//                } else {
-//                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Drop Down")
-//                }
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
             modifier =
@@ -69,6 +70,10 @@ fun ComboBoxWithInput(
                         Text(text = item)
                     },
                     onClick = {
+                        textFieldValue = TextFieldValue(
+                            text = item,
+                            selection = TextRange(item.length),
+                        )
                         onValueChange(item)
                         expanded = false
                     },

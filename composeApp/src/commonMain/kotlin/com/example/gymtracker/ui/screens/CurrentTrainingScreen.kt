@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.RocketLaunch
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.ui.elements.AddExerciseSheet
@@ -30,8 +30,6 @@ import com.example.gymtracker.ui.elements.SingleFloatingButtonModule
 import com.example.gymtracker.ui.elements.TrainingFull
 import com.example.gymtracker.ui.elements.formatDatetime
 import com.example.gymtracker.ui.elements.russianInPreposition
-
-private val IRRELEVANT_TRAINING_DIALOG_FONT_SIZE = 16.sp
 
 @Composable
 fun CurrentTrainingScreen(
@@ -125,7 +123,7 @@ fun CurrentTrainingScreen(
                             " ${formatDatetime(model.currentTraining!!.startedAt)}." +
                             " Желаете сохранить эту тренировку?" +
                             "\n* Сохранённые тренировки можно редактировать в истории.",
-                    fontSize = IRRELEVANT_TRAINING_DIALOG_FONT_SIZE,
+                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 )
             },
             confirmButton = {

@@ -88,7 +88,7 @@ fun NumberInput(
 
             Text(
                 text = value.toString(),
-                fontSize = UiConstants.numberInputFontSize,
+                fontSize = UiConstants.defaultFontSize,
                 textAlign = TextAlign.Center,
             )
 
@@ -186,14 +186,14 @@ fun NumberInputEditable(
                 },
                 textStyle =
                     TextStyle(
-                        fontSize = UiConstants.numberInputFontSize,
+                        fontSize = UiConstants.defaultFontSize,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface,
                     ),
                 singleLine = true,
                 keyboardOptions =
                     KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done,
                     ),
                 keyboardActions =

@@ -12,6 +12,8 @@ object UiConstants {
     const val COMMON_WIDTH_FRACTION = 0.9f
     const val FAB_ADD_WEIGHT = 0.75f
 
+    val defaultPadding = 8.dp
+
     val WeekdaySwitcherPaddingValues =
         PaddingValues(
             bottom = 10.dp,
@@ -25,10 +27,10 @@ object UiConstants {
             horizontal = 20.dp,
         )
 
-    val numberInputFontSize = 20.sp
+    val defaultFontSize = 20.sp
 
     @Composable
-    fun calculateNumberInputHeight() = numberInputFontSize.toDp() + 32.dp
+    fun calculateNumberInputHeight() = defaultFontSize.toDp() + 32.dp
 
     @Composable
     fun getApproachFontColor() = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)

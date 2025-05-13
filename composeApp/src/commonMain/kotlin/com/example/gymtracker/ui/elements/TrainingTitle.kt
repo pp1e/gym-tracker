@@ -31,14 +31,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.gymtracker.domain.TrainingProgramShort
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.datetime.LocalDateTime
 
 private val TRAINING_TITLE_PADDING = 20.dp
-
-private val FONT_SIZE = 24.sp
 private val ICON_PADDING = 8.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -254,7 +251,7 @@ private fun EditableTitle(
             onValueChange = onValueChange,
             textStyle =
                 TextStyle(
-                    fontSize = FONT_SIZE,
+                    fontSize = MaterialTheme.typography.headlineSmall.fontSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                 ),
@@ -297,7 +294,7 @@ private fun ExpandedMenuItem(
                 text = text,
                 maxLines = 1,
                 fontWeight = if (isFontBold) FontWeight.ExtraBold else null,
-                fontSize = 17.sp,
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
             )
         },
         onClick = {

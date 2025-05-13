@@ -1,6 +1,7 @@
 package com.example.gymtracker.ui.elements
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymtracker.ui.UiConstants
@@ -41,25 +43,29 @@ internal fun CurrentExerciseShort(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background),
     ) {
-        Box(
+        Row (
             Modifier
                 .align(Alignment.Center)
                 .fillMaxHeight()
                 .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 modifier =
                     Modifier
-                        .align(Alignment.CenterStart),
+                        .align(Alignment.CenterVertically)
+                        .weight(1f),
                 fontSize = EXERCISE_NAME_FONT_SIZE,
-//                fontWeight = FontWeight.Medium,
                 text = title,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
             )
 
             Row(
                 modifier =
                     Modifier
-                        .align(Alignment.CenterEnd),
+                        .align(Alignment.CenterVertically)
+                        ,
             ) {
                 Text(
                     modifier =
@@ -85,14 +91,6 @@ internal fun CurrentExerciseShort(
                     contentDescription = "Expand less/more",
                 )
             }
-        }
-
-        if (!expanded) {
-//            HorizontalDivider(
-//                modifier = Modifier
-//                    .align(Alignment.BottomCenter)
-//                    .fillMaxWidth(UiConstants.CURRENT_EXERCISE_WIDTH_FRACTION)
-//            )
         }
     }
 }

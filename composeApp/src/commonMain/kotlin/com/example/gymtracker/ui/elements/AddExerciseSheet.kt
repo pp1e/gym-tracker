@@ -18,10 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.gymtracker.ui.UiConstants
 
-private val LABEL_FONT_SIZE = 20.sp
 private val ELEMENTS_VERTICAL_PADDING = 10.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,7 +137,7 @@ fun AddExerciseSheet(
             ) {
                 Text(
                     text = "Готово",
-                    fontSize = LABEL_FONT_SIZE,
+                    fontSize = UiConstants.defaultFontSize,
                 )
             }
         }
@@ -159,6 +157,6 @@ private fun Label(
                 .padding(
                     vertical = ELEMENTS_VERTICAL_PADDING,
                 ),
-        fontSize = LABEL_FONT_SIZE,
+        fontSize = UiConstants.defaultFontSize,
     )
 }

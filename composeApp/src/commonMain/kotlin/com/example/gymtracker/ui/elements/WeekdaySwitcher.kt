@@ -12,13 +12,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.datetime.DayOfWeek
 
@@ -69,7 +66,7 @@ fun WeekdaySwitcher(
                     text = day.toRusShortName(),
                     style =
                         TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
                             fontWeight = if (day == selectedWeekday) FontWeight.Bold else FontWeight.Normal,
                             color = if (day == selectedWeekday) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                         ),

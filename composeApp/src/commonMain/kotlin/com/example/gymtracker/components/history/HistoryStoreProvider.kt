@@ -10,6 +10,14 @@ import com.badoo.reaktive.observable.observeOn
 import com.badoo.reaktive.scheduler.mainScheduler
 import com.example.gymtracker.database.databases.HistoryDatabase
 import com.example.gymtracker.domain.CompletedTrainingShort
+import com.example.gymtracker.utils.now
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.minus
 
 internal class HistoryStoreProvider(
     private val storeFactory: StoreFactory,
@@ -27,8 +35,8 @@ internal class HistoryStoreProvider(
             ) {}
 
     private sealed class Msg {
-        data class CompletedTrainingsLoaded(
-            val completedTrainings: List<CompletedTrainingShort>,
+        data class CompletedTrainingMonthsLoaded(
+            val completedTrainingMonths: List<CompletedTrainingMonth>,
         ) : Msg()
     }
 
@@ -40,35 +48,65 @@ internal class HistoryStoreProvider(
             database
                 .observeCompletedTrainings()
                 .observeOn(mainScheduler)
-                .map(Msg::CompletedTrainingsLoaded)
+                .map {
+                    Msg.CompletedTrainingMonthsLoaded(
+                        completedTrainingMonths = groupCompletedTrainingsByMonthAndWeek(
+                            trainings = it,
+                        )
+                    )
+                }
                 .subscribeScoped(
-                    onNext = { completedTrainingsLoadedMessage ->
-                        dispatch(completedTrainingsLoadedMessage)
+                    onNext = { completedTrainingWeeksLoadedMessage ->
+                        dispatch(completedTrainingWeeksLoadedMessage)
                     },
                 )
+        }
+
+        private fun groupCompletedTrainingsByMonthAndWeek(
+            trainings: List<CompletedTrainingShort>,
+        ): List<CompletedTrainingMonth> {
+            val currentWeekStart = LocalDateTime
+                .now().date
+                .startOfWeek()
+
+            return trainings
+                .groupBy {
+                    it.startedAt.year to it.startedAt.month
+                }
+                .map { (yearAndMonth, completedTrainings) ->
+                    CompletedTrainingMonth(
+                        year = yearAndMonth.first,
+                        month = yearAndMonth.second,
+                        completedTrainingWeeks = completedTrainings.groupBy { training ->
+                            val trainingsWeekStart = training.startedAt.date
+                                .startOfWeek()
+                            val weeksBetween = currentWeekStart
+                                .daysUntil(trainingsWeekStart) / 7
+                            -weeksBetween
+                        }.map { (weekOrdinal, completedTrainings) ->
+                            CompletedTrainingWeek(
+                                weekOrdinal = weekOrdinal,
+                                completedTrainings = completedTrainings,
+                            )
+                        }
+                            .sortedBy { it.weekOrdinal }
+                    )
+                }
+        }
+
+        fun LocalDate.startOfWeek(): LocalDate {
+            val dayOfWeekIso = this.dayOfWeek.isoDayNumber
+            return this.minus(dayOfWeekIso - 1, DateTimeUnit.DAY)
         }
     }
 
     private object ReducerImpl :
         Reducer<HistoryStore.State, Msg> {
-        //        override fun MainStore.State.reduce(msg: Msg): MainStore.State =
-//            when (msg) {
-//                is Msg.ExistCategoriesLoaded -> copy(
-//                    existCategories = msg.existCategories,
-//                    category = msg.categoryId?.let { categoryId ->
-//                        msg.existCategories.find { it.id == categoryId }?.name
-//                    } ?: category
-//                )
-//                is Msg.CategoryChanged -> copy(category = msg.category)
-//                is Msg.TypeChanged -> copy(type = msg.type)
-//                is Msg.AmountChanged -> copy(amount = msg.amount)
-//                is Msg.MessageChanged -> copy(message = msg.message)
-//            }
         override fun HistoryStore.State.reduce(msg: Msg): HistoryStore.State =
             when (msg) {
-                is Msg.CompletedTrainingsLoaded ->
+                is Msg.CompletedTrainingMonthsLoaded ->
                     copy(
-                        completedTrainings = msg.completedTrainings,
+                        completedTrainingMonths = msg.completedTrainingMonths,
                     )
             }
     }

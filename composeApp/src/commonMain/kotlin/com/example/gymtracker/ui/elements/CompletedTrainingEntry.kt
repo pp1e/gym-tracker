@@ -13,10 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.gymtracker.domain.CompletedTrainingShort
 
 private val CARD_HEIGHT = 80.dp
@@ -56,8 +54,8 @@ fun CompletedTrainingEntry(
             Text(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 text = completedTraining.name,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
                 textAlign = TextAlign.Center,
             )
         }
@@ -72,7 +70,7 @@ fun CompletedTrainingEntry(
             Text(
                 modifier = Modifier.align(Alignment.Center),
                 text = formatDatetime(completedTraining.startedAt),
-                fontSize = 14.sp,
+                fontSize = MaterialTheme.typography.labelLarge.fontSize,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )

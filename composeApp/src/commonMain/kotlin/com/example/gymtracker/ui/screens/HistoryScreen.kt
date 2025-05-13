@@ -8,14 +8,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.history.HistoryComponent
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.CompletedTrainingEntry
+import com.example.gymtracker.ui.elements.russianName
+import com.example.gymtracker.utils.now
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun HistoryScreen(
@@ -37,48 +47,54 @@ fun HistoryScreen(
                     .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            items(model.completedTrainings) { completedTraining ->
-                CompletedTrainingEntry(
-                    onClicked = component::onTrainingClicked,
-                    completedTraining = completedTraining,
-                )
-            }
+            items(model.completedTrainingMonths) { completedTrainingMonth ->
+                val currentYear = LocalDateTime.now().year
 
-//            SubtitleText(
-//                text = "Эта неделя",
-//            )
-//
-//            CompletedTrainingEntry(
-//                onClicked = component::onTrainingClicked,
-//            )
-//
-//            CompletedTrainingEntry(
-//                onClicked = component::onTrainingClicked,
-//            )
-//
-//            CompletedTrainingEntry(
-//                onClicked = component::onTrainingClicked,
-//            )
-//
-//            SubtitleText(
-//                text = "Прошлая неделя",
-//            )
-//
-//            CompletedTrainingEntry(
-//                onClicked = component::onTrainingClicked,
-//            )
-//
-//            SubtitleText(
-//                text = "Две недели назад",
-//            )
-//
-//            CompletedTrainingEntry(
-//                onClicked = component::onTrainingClicked,
-//            )
-//
-//            CompletedTrainingEntry(
-//                onClicked = component::onTrainingClicked,
-//            )
+                Text(
+                    modifier = Modifier
+                        .padding(UiConstants.defaultPadding)
+                        .fillParentMaxWidth(),
+                    text = completedTrainingMonth.month
+                        .russianName()
+                        .replaceFirstChar { it.titlecase() }
+                        .plus(
+                            if (completedTrainingMonth.year != currentYear) {
+                                ", ${completedTrainingMonth.year}"
+                            } else ""
+                        ),
+                    style = MaterialTheme.typography.headlineMedium,
+                )
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(
+                            bottom = UiConstants.defaultPadding,
+                        )
+                )
+
+                for (completedTrainingWeek in completedTrainingMonth.completedTrainingWeeks) {
+                    Text(
+                        modifier = Modifier
+                            .fillParentMaxWidth(),
+                        text = when (completedTrainingWeek.weekOrdinal) {
+                            0 -> "Текущая неделя"
+                            1 -> "Прошлая неделя"
+                            2, 3, 4 -> "${completedTrainingWeek.weekOrdinal} недели назад"
+                            else -> "${completedTrainingWeek.weekOrdinal} недель назад"
+                        },
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+//                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+//                        fontWeight = FontWeight.SemiBold,
+//                        textAlign = TextAlign.Start,
+                    )
+
+                    for (completedTraining in completedTrainingWeek.completedTrainings)
+                        CompletedTrainingEntry(
+                            onClicked = component::onTrainingClicked,
+                            completedTraining = completedTraining,
+                        )
+                }
+            }
         }
     }
 }
