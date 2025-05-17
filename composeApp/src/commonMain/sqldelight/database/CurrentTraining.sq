@@ -33,3 +33,6 @@ insert:
 
 updateName:
     UPDATE current_training SET name = :name;
+
+resetTime:
+    UPDATE current_training SET started_at = strftime('%Y-%m-%dT%H:%M:%S', 'now', 'localtime');

@@ -19,7 +19,8 @@ insert:
 getList:
     SELECT exercise_template.id, exercise_template.name, muscle_group.name
     FROM exercise_template
-    LEFT JOIN muscle_group ON muscle_group.id = exercise_template.muscle_group_id;
+    LEFT JOIN muscle_group ON muscle_group.id = exercise_template.muscle_group_id
+    ORDER BY exercise_template.name;
 
 getId:
     SELECT id FROM exercise_template WHERE name = :name;

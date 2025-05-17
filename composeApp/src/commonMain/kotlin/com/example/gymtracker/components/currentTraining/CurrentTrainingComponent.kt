@@ -142,4 +142,8 @@ class CurrentTrainingComponent(
     fun onDeleteTrainingClick() {
         store.accept(CurrentTrainingStore.Intent.DeleteTraining)
     }
+
+    fun onResetTrainingTimeClick() {
+        store.accept(CurrentTrainingStore.Intent.ResetTrainingTime)
+    }
 }

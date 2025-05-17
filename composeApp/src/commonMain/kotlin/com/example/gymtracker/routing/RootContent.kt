@@ -16,6 +16,7 @@ fun RootContent(
     router: RootRouter,
     paddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
+    isTopBarExpanded: Boolean,
 ) {
     Children(
         stack = router.childStack,
@@ -27,6 +28,7 @@ fun RootContent(
                     component = child.component,
                     paddingValues = paddingValues,
                     snackbarHostState = snackbarHostState,
+                    isTopBarExpanded = isTopBarExpanded,
                 )
 
             is Child.Schedule ->

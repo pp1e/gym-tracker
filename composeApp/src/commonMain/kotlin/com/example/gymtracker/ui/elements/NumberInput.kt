@@ -265,10 +265,14 @@ private fun NumberInputButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     var isPressing by remember { mutableStateOf(false) }
+    var pressInteraction: PressInteraction.Press? by remember { mutableStateOf(null) }
 
     LaunchedEffect(isPressing) {
         if (isPressing) {
-            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+            val press = PressInteraction.Press(Offset.Zero)
+            pressInteraction = press
+            interactionSource.emit(press)
+
             var changeMagnitude = step
             while (isPressing && enabled) {
                 onValueChange(value + changeMagnitude)
@@ -276,7 +280,10 @@ private fun NumberInputButton(
                 changeMagnitude += step
             }
         } else {
-            interactionSource.emit(PressInteraction.Release(PressInteraction.Press(Offset.Zero)))
+            pressInteraction?.let {
+                interactionSource.emit(PressInteraction.Release(it))
+                pressInteraction = null
+            }
         }
     }
 

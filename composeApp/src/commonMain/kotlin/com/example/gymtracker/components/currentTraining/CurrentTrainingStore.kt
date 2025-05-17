@@ -66,6 +66,8 @@ internal interface CurrentTrainingStore : Store<CurrentTrainingStore.Intent, Cur
         data object SaveTrainingToHistory : Intent()
 
         data object DeleteTraining : Intent()
+
+        data object ResetTrainingTime : Intent()
     }
 
     data class State(

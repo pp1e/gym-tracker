@@ -198,6 +198,7 @@ internal class CurrentTrainingStoreProvider(
                     Msg.WeightChanged(intent.weight),
                 )
             is CurrentTrainingStore.Intent.SaveTrainingToHistory -> saveTrainingToHistory(getState)
+            is CurrentTrainingStore.Intent.ResetTrainingTime -> resetTrainingTime()
         }
 
         private fun addExercise(getState: () -> CurrentTrainingStore.State) {
@@ -351,6 +352,12 @@ internal class CurrentTrainingStoreProvider(
                 )
                     .subscribeScoped()
             }
+        }
+
+        private fun resetTrainingTime() {
+            database
+                .resetCurrentTrainingTime()
+                .subscribeScoped()
         }
     }
 

@@ -63,6 +63,7 @@ fun HistoryScreen(
                             } else ""
                         ),
                     style = MaterialTheme.typography.headlineMedium,
+                    textAlign = TextAlign.Center,
                 )
                 HorizontalDivider(
                     modifier = Modifier
@@ -83,9 +84,6 @@ fun HistoryScreen(
                         },
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-//                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
-//                        fontWeight = FontWeight.SemiBold,
-//                        textAlign = TextAlign.Start,
                     )
 
                     for (completedTraining in completedTrainingWeek.completedTrainings)

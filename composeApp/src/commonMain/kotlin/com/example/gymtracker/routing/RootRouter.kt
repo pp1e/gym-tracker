@@ -30,6 +30,7 @@ class RootRouter(
     data class Model(
         val selectedWeekday: DayOfWeek = currentDayOfWeek(),
         val activeScreenConfig: ScreenConfig = ScreenConfig.CurrentTraining,
+        val isTopBarExpanded: Boolean = false,
     )
 
     val model: MutableValue<Model> = MutableValue(Model())
@@ -186,6 +187,14 @@ class RootRouter(
 
     fun onHistoryScreenMenuButtonClicked() {
         router.moveToFront(ScreenConfig.History)
+    }
+
+    fun toggleTopBar() {
+        model.update {
+            it.copy(
+                isTopBarExpanded = !it.isTopBarExpanded,
+            )
+        }
     }
 
     private fun <C : Any> StackNavigator<C>.moveToFront(newConfiguration: C) {

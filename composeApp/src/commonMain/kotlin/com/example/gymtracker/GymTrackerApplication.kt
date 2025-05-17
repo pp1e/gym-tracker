@@ -45,6 +45,8 @@ fun GymTrackerApplication(
                     onBackClicked = router::onBackClicked,
                     onWeekdaySwitch = router::onWeekdaySwitch,
                     selectedWeekday = model.selectedWeekday,
+                    isTopAppBarExpanded = model.isTopBarExpanded,
+                    toggleTopAppBar = router::toggleTopBar,
                 )
             },
             bottomBar = {
@@ -62,6 +64,7 @@ fun GymTrackerApplication(
                 router = router,
                 paddingValues = paddingValues,
                 snackbarHostState = snackbarHostState,
+                isTopBarExpanded = model.isTopBarExpanded,
             )
         }
     }
