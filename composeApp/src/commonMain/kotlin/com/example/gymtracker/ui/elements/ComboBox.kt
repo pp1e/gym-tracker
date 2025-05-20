@@ -29,6 +29,10 @@ fun ComboBoxWithInput(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
+    val filteredItems = remember(textFieldValue.text, items) {
+        if (textFieldValue.text.isBlank()) items
+        else items.filter { it.contains(textFieldValue.text, ignoreCase = true) }
+    }
 
     ExposedDropdownMenuBox(
         modifier = modifier,
@@ -40,6 +44,7 @@ fun ComboBoxWithInput(
             onValueChange = {
                 textFieldValue = it
                 onValueChange(it.text)
+                expanded = true
             },
             label = { Text("Название упражнения") },
             trailingIcon = {
@@ -58,7 +63,7 @@ fun ComboBoxWithInput(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            items.forEach { item ->
+            filteredItems.forEach { item ->
                 DropdownMenuItem(
                     text = {
                         Text(text = item)
