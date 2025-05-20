@@ -10,6 +10,7 @@ import com.example.gymtracker.database.databases.CurrentTrainingDatabase
 import com.example.gymtracker.domain.CurrentTraining
 import com.example.gymtracker.domain.TrainingProgramShort
 import com.example.gymtracker.utils.asValue
+import kotlinx.datetime.LocalDateTime
 
 class CurrentTrainingComponent(
     componentContext: ComponentContext,
@@ -143,7 +144,9 @@ class CurrentTrainingComponent(
         store.accept(CurrentTrainingStore.Intent.DeleteTraining)
     }
 
-    fun onResetTrainingTimeClick() {
-        store.accept(CurrentTrainingStore.Intent.ResetTrainingTime)
+    fun onStartedAtUpdate(startedAt: LocalDateTime) {
+        store.accept(
+            CurrentTrainingStore.Intent.UpdateStartedAt(startedAt)
+        )
     }
 }

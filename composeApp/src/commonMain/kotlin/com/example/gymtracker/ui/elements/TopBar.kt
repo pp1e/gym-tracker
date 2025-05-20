@@ -37,7 +37,11 @@ import kotlinx.datetime.DayOfWeek
 
 private fun generateScreenTitle(activeScreen: RootRouter.ScreenConfig) =
     when (activeScreen) {
-        is RootRouter.ScreenConfig.CurrentTraining -> "Текущая тренировка, ${currentDayOfWeek().russianName()}"
+        is RootRouter.ScreenConfig.CurrentTraining -> "${
+            currentDayOfWeek()
+                .russianName()
+                .replaceFirstChar { it.titlecase() }
+        }, текущая тренировка"
         is RootRouter.ScreenConfig.EditTraining -> "Изменить тренировку"
         RootRouter.ScreenConfig.History -> "История тренировок"
         is RootRouter.ScreenConfig.Schedule -> "Изменить расписание"
@@ -131,13 +135,13 @@ fun TopBar(
                         contentDescription = null,
                     )
                 }
-            } else if (activeScreen is RootRouter.ScreenConfig.CurrentTraining) {
-            IconButton(
-                onClick = toggleTopAppBar,
-            ) {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isTopAppBarExpanded)
+            } else if (activeScreen is RootRouter.ScreenConfig.CurrentTraining || activeScreen is RootRouter.ScreenConfig.EditTraining) {
+                IconButton(
+                    onClick = toggleTopAppBar,
+                ) {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isTopAppBarExpanded)
+                }
             }
-        }
         },
         expandedHeight = animatedHeight,
     )

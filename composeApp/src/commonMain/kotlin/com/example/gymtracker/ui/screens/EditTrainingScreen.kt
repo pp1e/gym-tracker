@@ -25,18 +25,35 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
+import com.example.gymtracker.ui.elements.AdditionalTopBar
 import com.example.gymtracker.ui.elements.CompletedTrainingTitle
+import com.example.gymtracker.ui.elements.ConfirmationDialog
+import com.example.gymtracker.ui.elements.TimeRangeBar
+import com.example.gymtracker.ui.elements.TimeRangePickerDialog
 import com.example.gymtracker.ui.elements.TrainingFull
+import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atDate
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration
 
 @Composable
 fun EditTrainingScreen(
     component: EditTrainingComponent,
     paddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
+    isTopBarExpanded: Boolean,
 ) {
     val model by component.model.subscribeAsState()
 
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showChangeTrainingDurationDialog by remember { mutableStateOf(false) }
+    var showDeleteTrainingDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier =
@@ -50,6 +67,16 @@ fun EditTrainingScreen(
                     .fillMaxWidth(),
         ) {
             if (model.completedTraining != null) {
+                AdditionalTopBar(
+                    isTopBarExpanded = isTopBarExpanded
+                ) {
+                    TimeRangeBar(
+                        duration = model.completedTraining!!.duration,
+                        onEditClick = { showChangeTrainingDurationDialog = true },
+                        onDeleteClick = { showDeleteTrainingDialog = true },
+                    )
+                }
+
                 CompletedTrainingTitle(
                     value = model.completedTraining!!.name,
                     onValueChange = component::onCompletedTrainingNameChange,
@@ -91,6 +118,45 @@ fun EditTrainingScreen(
                 Text("Добавить")
             }
         }
+    }
+
+    if (showDeleteTrainingDialog) {
+        ConfirmationDialog(
+            title = "Удалить тренировку из истории?",
+            onConfirm = { component.onDeleteTrainingClick() },
+            onDismiss = { showDeleteTrainingDialog = false }
+        )
+    }
+
+    if (showChangeTrainingDurationDialog && model.completedTraining != null) {
+        TimeRangePickerDialog(
+            title = "Укажите время начала и конца тренировки",
+            initialStartTime = model.completedTraining!!.startedAt.time,
+            initialEndTime = model.completedTraining!!.let {
+                val timeZone = TimeZone.currentSystemDefault()
+                it.startedAt
+                    .toInstant(timeZone)
+                    .plus(it.duration)
+                    .toLocalDateTime(timeZone)
+                    .time
+            },
+            onTimeRangeSelected = { startTime, endTime ->
+                val dummyDateStart = LocalDate(2000, 1, 1)
+                val dummyDateEnd = if (startTime > endTime) {
+                    dummyDateStart.plus(1, DateTimeUnit.DAY)
+                } else dummyDateStart
+                val timeZone = TimeZone.currentSystemDefault()
+                component.onTimeUpdate(
+                    startedAt = LocalDateTime(
+                        date = model.completedTraining!!.startedAt.date,
+                        time = startTime,
+                    ),
+                    duration = endTime.atDate(dummyDateEnd).toInstant(timeZone)
+                            - startTime.atDate(dummyDateStart).toInstant(timeZone),
+                )
+            },
+            onDismiss = { showChangeTrainingDurationDialog = false }
+        )
     }
 
     if (showBottomSheet) {

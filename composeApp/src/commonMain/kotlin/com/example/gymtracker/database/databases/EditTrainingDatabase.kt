@@ -12,6 +12,8 @@ import database.ApproachQueries
 import database.CompletedTrainingQueries
 import database.ExerciseQueries
 import database.ExerciseTemplateQueries
+import kotlinx.datetime.LocalDateTime
+import kotlin.time.Duration
 
 class EditTrainingDatabase(
     private val completedTrainingQueries: Single<CompletedTrainingQueries>,
@@ -87,10 +89,16 @@ class EditTrainingDatabase(
             )
         }
 
-    fun updateCompletedTrainingName(name: String) =
+    fun updateCompletedTrainingName(
+        completedTrainingId: Long,
+        name: String
+    ) =
         completedTrainingQueries
             .execute {
-                it.updateName(name)
+                it.updateName(
+                    id = completedTrainingId,
+                    name = name
+                )
             }
 
     fun deleteApproach(approachId: Long) =
@@ -104,4 +112,23 @@ class EditTrainingDatabase(
             .execute {
                 it.delete(exerciseId)
             }
+
+    fun deleteTraining(completedTrainingId: Long) =
+        completedTrainingQueries
+            .execute {
+                it.delete(completedTrainingId)
+            }
+
+    fun updateTime(
+        completedTrainingId: Long,
+        startedAt: LocalDateTime,
+        duration: Duration,
+    ) = completedTrainingQueries
+        .execute {
+            it.updateTime(
+                id = completedTrainingId,
+                started_at = startedAt.toString(),
+                duration = duration.toIsoString(),
+            )
+        }
 }

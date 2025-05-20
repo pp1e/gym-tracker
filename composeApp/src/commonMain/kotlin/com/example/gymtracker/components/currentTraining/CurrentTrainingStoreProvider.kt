@@ -26,6 +26,7 @@ import com.example.gymtracker.domain.TrainingProgramShort
 import com.example.gymtracker.utils.add
 import com.example.gymtracker.utils.remove
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 
@@ -198,7 +199,7 @@ internal class CurrentTrainingStoreProvider(
                     Msg.WeightChanged(intent.weight),
                 )
             is CurrentTrainingStore.Intent.SaveTrainingToHistory -> saveTrainingToHistory(getState)
-            is CurrentTrainingStore.Intent.ResetTrainingTime -> resetTrainingTime()
+            is CurrentTrainingStore.Intent.UpdateStartedAt -> updateStartedAt(intent.startedAt)
         }
 
         private fun addExercise(getState: () -> CurrentTrainingStore.State) {
@@ -354,9 +355,9 @@ internal class CurrentTrainingStoreProvider(
             }
         }
 
-        private fun resetTrainingTime() {
+        private fun updateStartedAt(startedAt: LocalDateTime) {
             database
-                .resetCurrentTrainingTime()
+                .updateStartedAt(startedAt)
                 .subscribeScoped()
         }
     }

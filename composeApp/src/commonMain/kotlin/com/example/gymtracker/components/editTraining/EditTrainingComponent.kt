@@ -4,16 +4,23 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.badoo.reaktive.base.Consumer
+import com.badoo.reaktive.base.invoke
+import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
+import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent.Output
 import com.example.gymtracker.database.databases.EditTrainingDatabase
 import com.example.gymtracker.domain.CompletedTraining
 import com.example.gymtracker.domain.TrainingProgramShort
 import com.example.gymtracker.utils.asValue
+import kotlinx.datetime.LocalDateTime
+import kotlin.time.Duration
 
 class EditTrainingComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     database: EditTrainingDatabase,
     completedTrainingId: Long,
+    private val output: Consumer<Output>,
 ) : ComponentContext by componentContext {
     data class Model(
         val completedTraining: CompletedTraining?,
@@ -23,6 +30,10 @@ class EditTrainingComponent(
         val repetitionsCount: Int,
         val weight: Float,
     )
+
+    sealed class Output {
+        data object HistoryTransit : Output()
+    }
 
     private val store =
         instanceKeeper.getStore {
@@ -117,5 +128,20 @@ class EditTrainingComponent(
                 repetitions = repetitions,
             ),
         )
+    }
+
+    fun onDeleteTrainingClick() {
+        store.accept(EditTrainingStore.Intent.DeleteTraining)
+        output(Output.HistoryTransit)
+    }
+
+    fun onTimeUpdate(
+        startedAt: LocalDateTime,
+        duration: Duration,
+    ) {
+        store.accept(EditTrainingStore.Intent.UpdateTime(
+            startedAt = startedAt,
+            duration = duration,
+        ))
     }
 }

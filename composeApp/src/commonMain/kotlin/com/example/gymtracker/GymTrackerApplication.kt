@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -58,7 +59,8 @@ fun GymTrackerApplication(
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
-            contentWindowInsets = WindowInsets.displayCutout,
+//            contentWindowInsets = WindowInsets.displayCutout,
+            contentWindowInsets = WindowInsets.systemBars,
         ) { paddingValues ->
             RootContent(
                 router = router,

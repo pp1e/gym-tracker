@@ -49,6 +49,7 @@ fun RootContent(
                     component = child.component,
                     paddingValues = paddingValues,
                     snackbarHostState = snackbarHostState,
+                    isTopBarExpanded = isTopBarExpanded,
                 )
         }
     }

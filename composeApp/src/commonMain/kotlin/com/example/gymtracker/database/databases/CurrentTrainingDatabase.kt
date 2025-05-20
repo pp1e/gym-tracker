@@ -248,10 +248,10 @@ class CurrentTrainingDatabase(
                 it.updateName(name)
             }
 
-    fun resetCurrentTrainingTime() =
+    fun updateStartedAt(startedAt: LocalDateTime) =
         currentTrainingQueries
             .execute {
-                it.resetTime()
+                it.updateStartedAt(startedAt.toString())
             }
 
     fun deleteApproach(approachId: Long) =

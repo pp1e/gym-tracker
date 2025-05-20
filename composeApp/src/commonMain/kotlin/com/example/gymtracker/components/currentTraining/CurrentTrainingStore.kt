@@ -4,6 +4,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.example.gymtracker.domain.CurrentTraining
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.domain.TrainingProgramShort
+import kotlinx.datetime.LocalDateTime
 
 internal interface CurrentTrainingStore : Store<CurrentTrainingStore.Intent, CurrentTrainingStore.State, Nothing> {
     sealed class Intent {
@@ -67,7 +68,9 @@ internal interface CurrentTrainingStore : Store<CurrentTrainingStore.Intent, Cur
 
         data object DeleteTraining : Intent()
 
-        data object ResetTrainingTime : Intent()
+        data class UpdateStartedAt(
+            val startedAt: LocalDateTime,
+        ) : Intent()
     }
 
     data class State(

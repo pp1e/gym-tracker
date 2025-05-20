@@ -3,6 +3,8 @@ package com.example.gymtracker.components.editTraining
 import com.arkivanov.mvikotlin.core.store.Store
 import com.example.gymtracker.domain.CompletedTraining
 import com.example.gymtracker.domain.ExerciseTemplate
+import kotlinx.datetime.LocalDateTime
+import kotlin.time.Duration
 
 internal interface EditTrainingStore : Store<EditTrainingStore.Intent, EditTrainingStore.State, Nothing> {
     sealed class Intent {
@@ -55,6 +57,13 @@ internal interface EditTrainingStore : Store<EditTrainingStore.Intent, EditTrain
         data class ChangeWeight(
             val weight: Float,
         ) : Intent()
+
+        data object DeleteTraining: Intent()
+
+        data class UpdateTime(
+            val startedAt: LocalDateTime,
+            val duration: Duration,
+        ): Intent()
     }
 
     data class State(

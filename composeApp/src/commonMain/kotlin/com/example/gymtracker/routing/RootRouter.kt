@@ -14,6 +14,7 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
+import com.example.gymtracker.components.editTraining.EditTrainingStore
 import com.example.gymtracker.components.history.HistoryComponent
 import com.example.gymtracker.components.schedule.ScheduleComponent
 import com.example.gymtracker.database.DatabasesBuilder
@@ -138,6 +139,7 @@ class RootRouter(
                         storeFactory = storeFactory,
                         completedTrainingId = screenConfig.completedTrainingId,
                         database = databasesBuilder.createEditTrainingDatabase(),
+                        output = Consumer(::onEditTrainingOutput),
                     ),
                 )
         }
@@ -162,6 +164,11 @@ class RootRouter(
                     ),
                 )
             }
+        }
+
+    fun onEditTrainingOutput(output: EditTrainingComponent.Output) =
+        when (output) {
+            EditTrainingComponent.Output.HistoryTransit -> router.pop()
         }
 
     fun onCurrentTrainingScreenMenuButtonClicked() {

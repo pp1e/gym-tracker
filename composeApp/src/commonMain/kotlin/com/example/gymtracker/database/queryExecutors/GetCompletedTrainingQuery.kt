@@ -10,6 +10,7 @@ import com.example.gymtracker.domain.Training
 import com.example.gymtracker.utils.safeLet
 import database.GetById
 import kotlinx.datetime.LocalDateTime
+import kotlin.time.Duration
 
 suspend fun getCompletedTrainingQuery(getCompletedTrainingQuery: Query<GetById>) =
     groupCompletedTrainingEntities(
@@ -22,11 +23,15 @@ private fun groupCompletedTrainingEntities(currentTraining: List<GetById>) =
         .map { (_, trainingRows) ->
             trainingRows.firstOrNull()?.let { trainingRow ->
                 CompletedTraining(
+                    id = trainingRow.id,
                     name = trainingRow.name,
                     startedAt =
                         LocalDateTime.parse(
                             trainingRow.started_at,
                         ),
+                    duration = Duration.parseIsoString(
+                        trainingRow.duration,
+                    ),
                     training =
                         Training(
                             id = trainingRow.training_id,

@@ -2,7 +2,7 @@ CREATE TABLE completed_training (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     started_at TEXT NOT NULL,
-    duration TEXT,
+    duration TEXT NOT NULL,
     training_id INTEGER NOT NULL,
 
     FOREIGN KEY (training_id) REFERENCES training(id)
@@ -28,4 +28,10 @@ getById:
     ORDER BY exercise.ordinal, approach.ordinal;
 
 updateName:
-    UPDATE completed_training SET name = :name;
+    UPDATE completed_training SET name = :name WHERE id = :id;
+
+updateTime:
+    UPDATE completed_training SET started_at = :started_at, duration = :duration WHERE id = :id;
+
+delete:
+    DELETE FROM completed_training WHERE id = :id;

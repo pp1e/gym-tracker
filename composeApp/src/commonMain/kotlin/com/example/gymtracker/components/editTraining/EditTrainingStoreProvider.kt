@@ -24,6 +24,8 @@ import com.example.gymtracker.domain.CompletedTraining
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.utils.add
 import com.example.gymtracker.utils.remove
+import kotlinx.datetime.LocalDateTime
+import kotlin.time.Duration
 
 internal class EditTrainingStoreProvider(
     private val storeFactory: StoreFactory,
@@ -141,6 +143,7 @@ internal class EditTrainingStoreProvider(
             is EditTrainingStore.Intent.ChangeCompletedTrainingName ->
                 changeCompletedTrainingName(
                     name = intent.name,
+                    getState = getState,
                 )
             is EditTrainingStore.Intent.RequestApproachDeleting ->
                 requestApproachDeleting(
@@ -176,6 +179,12 @@ internal class EditTrainingStoreProvider(
                 dispatch(
                     Msg.WeightChanged(intent.weight),
                 )
+            is EditTrainingStore.Intent.DeleteTraining -> deleteTraining(getState)
+            is EditTrainingStore.Intent.UpdateTime -> updateTime(
+                startedAt = intent.startedAt,
+                duration = intent.duration,
+                getState = getState,
+            )
         }
 
         private fun addExercise(getState: () -> EditTrainingStore.State) {
@@ -231,13 +240,19 @@ internal class EditTrainingStoreProvider(
                 .subscribeScoped()
         }
 
-        private fun changeCompletedTrainingName(name: String) {
-            dispatch(Msg.CompletedTrainingNameChanged(name))
-            database
-                .updateCompletedTrainingName(
-                    name = name,
-                )
-                .subscribeScoped()
+        private fun changeCompletedTrainingName(
+            name: String,
+            getState: () -> EditTrainingStore.State,
+        ) {
+            getState().completedTraining?.let { completedTraining ->
+                dispatch(Msg.CompletedTrainingNameChanged(name))
+                database
+                    .updateCompletedTrainingName(
+                        completedTrainingId = completedTraining.id,
+                        name = name,
+                    )
+                    .subscribeScoped()
+            }
         }
 
         private fun requestApproachDeleting(
@@ -300,6 +315,34 @@ internal class EditTrainingStoreProvider(
                         .subscribeOn(ioScheduler)
                         .subscribeScoped(),
             )
+        }
+
+        private fun deleteTraining(
+            getState: () -> EditTrainingStore.State,
+        ) {
+            getState().completedTraining?.let { completedTraining ->
+                database
+                    .deleteTraining(
+                        completedTrainingId = completedTraining.id,
+                    )
+                    .subscribeScoped()
+            }
+        }
+
+        private fun updateTime(
+            startedAt: LocalDateTime,
+            duration: Duration,
+            getState: () -> EditTrainingStore.State,
+        ) {
+            getState().completedTraining?.let { completedTraining ->
+                database
+                    .updateTime(
+                        completedTrainingId = completedTraining.id,
+                        startedAt = startedAt,
+                        duration = duration,
+                    )
+                    .subscribeScoped()
+            }
         }
     }
 

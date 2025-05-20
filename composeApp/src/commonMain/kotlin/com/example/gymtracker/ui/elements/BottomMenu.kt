@@ -5,6 +5,7 @@ import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material.icons.rounded.EditCalendar
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -33,7 +34,7 @@ fun BottomMenu(
             onClick = onScheduleClicked,
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.History, contentDescription = "История") },
+            icon = { Icon(Icons.Rounded.Storage, contentDescription = "История") },
             label = { Text("История") },
             selected = activeScreen is RootRouter.ScreenConfig.History,
             onClick = onHistoryClicked,
