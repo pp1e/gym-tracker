@@ -103,6 +103,8 @@ fun CurrentTrainingScreen(
                     cancelExerciseDeleting = component::cancelExerciseDeleting,
                     requestApproachDeleting = component::requestApproachDeleting,
                     cancelApproachDeleting = component::cancelApproachDeleting,
+                    onApproachesSwap = component::onApproachesSwap,
+                    onExercisesSwap = component::onExercisesSwap,
                 )
             }
         }

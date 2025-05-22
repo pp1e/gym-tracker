@@ -64,6 +64,8 @@ fun ScheduleScreen(
                     cancelApproachDeleting = component::cancelApproachDeleting,
                     onWeightChange = component::onApproachWeightChange,
                     onRepetitionsChange = component::onApproachRepetitionsChange,
+                    onApproachesSwap = component::onApproachesSwap,
+                    onExercisesSwap = component::onExercisesSwap,
                 )
             }
         }

@@ -6,8 +6,12 @@ import com.badoo.reaktive.single.zip
 import com.example.gymtracker.database.execute
 import com.example.gymtracker.database.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
+import com.example.gymtracker.database.operations.executeSwapApproachOrdinalsOperation
+import com.example.gymtracker.database.operations.executeSwapExerciseOrdinalsOperation
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
 import com.example.gymtracker.database.queryExecutors.getCompletedTrainingQuery
+import com.example.gymtracker.domain.Approach
+import com.example.gymtracker.domain.Exercise
 import database.ApproachQueries
 import database.CompletedTrainingQueries
 import database.ExerciseQueries
@@ -129,6 +133,35 @@ class EditTrainingDatabase(
                 id = completedTrainingId,
                 started_at = startedAt.toString(),
                 duration = duration.toIsoString(),
+            )
+        }
+
+
+    fun swapApproachOrdinals(
+        approachFrom: Approach,
+        approachTo: Approach,
+        exerciseId: Long,
+    ) = approachQueries
+        .execute { approachQueries ->
+            executeSwapApproachOrdinalsOperation(
+                approachFrom = approachFrom,
+                approachTo = approachTo,
+                exerciseId = exerciseId,
+                approachQueries = approachQueries,
+            )
+        }
+
+    fun swapExerciseOrdinals(
+        exerciseFrom: Exercise,
+        exerciseTo: Exercise,
+        trainingId: Long,
+    ) = exerciseQueries
+        .execute { exerciseQueries ->
+            executeSwapExerciseOrdinalsOperation(
+                exerciseFrom = exerciseFrom,
+                exerciseTo = exerciseTo,
+                trainingId = trainingId,
+                exerciseQueries = exerciseQueries,
             )
         }
 }

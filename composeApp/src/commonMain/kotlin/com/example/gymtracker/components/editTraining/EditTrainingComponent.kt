@@ -6,11 +6,10 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.base.invoke
-import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
-import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent.Output
 import com.example.gymtracker.database.databases.EditTrainingDatabase
+import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.CompletedTraining
-import com.example.gymtracker.domain.TrainingProgramShort
+import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.utils.asValue
 import kotlinx.datetime.LocalDateTime
 import kotlin.time.Duration
@@ -143,5 +142,31 @@ class EditTrainingComponent(
             startedAt = startedAt,
             duration = duration,
         ))
+    }
+
+    fun onApproachesSwap(
+        approachFrom: Approach,
+        approachTo: Approach,
+        exerciseId: Long,
+    ) {
+        store.accept(
+            EditTrainingStore.Intent.SwapApproachOrdinals(
+                approachFrom = approachFrom,
+                approachTo = approachTo,
+                exerciseId = exerciseId,
+            )
+        )
+    }
+
+    fun onExercisesSwap(
+        exerciseFrom: Exercise,
+        exerciseTo: Exercise,
+    ) {
+        store.accept(
+            EditTrainingStore.Intent.SwapExerciseOrdinals(
+                exerciseFrom = exerciseFrom,
+                exerciseTo = exerciseTo,
+            )
+        )
     }
 }

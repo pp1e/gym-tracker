@@ -46,6 +46,7 @@ kotlin {
             // Bundles
 
             implementation(libs.bundles.kotlinMultiplatformLibs)
+            implementation(libs.bundles.composeAddOns)
             implementation(libs.bundles.decompose)
             implementation(libs.bundles.mvikotlin)
             implementation(libs.bundles.reactive)

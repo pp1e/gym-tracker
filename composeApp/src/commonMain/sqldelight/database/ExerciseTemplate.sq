@@ -9,9 +9,6 @@ CREATE TABLE exercise_template (
 CREATE INDEX exercise_template_muscle_group_idx
     ON exercise_template(muscle_group_id);
 
-INSERT INTO exercise_template (id, muscle_group_id, name)
-    VALUES (1, 1, "Подтягивания с весом");
-
 insert:
     INSERT INTO exercise_template (muscle_group_id, name)
         VALUES (:muscle_group_id, :name);

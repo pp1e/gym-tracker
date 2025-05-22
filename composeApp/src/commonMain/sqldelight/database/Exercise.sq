@@ -15,6 +15,9 @@ CREATE INDEX exercise_exercise_template_idx ON exercise(exercise_template_id);
 
 CREATE INDEX exercise_training_idx ON exercise(training_id);
 
+get:
+    SELECT * FROM exercise WHERE training_id = :training_id;
+
 insertSingle:
     INSERT INTO exercise (id, ordinal, exercise_template_id, training_id)
         SELECT :id, COALESCE(
@@ -31,3 +34,9 @@ delete:
 
 maxId:
     SELECT MAX(id) FROM exercise;
+
+increaseOrdinal:
+    UPDATE exercise SET ordinal = ordinal + 1 WHERE id = :id;
+
+updateOrdinal:
+    UPDATE exercise SET ordinal = :ordinal WHERE id = :id;

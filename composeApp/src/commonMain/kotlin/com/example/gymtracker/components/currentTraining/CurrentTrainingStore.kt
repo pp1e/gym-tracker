@@ -1,7 +1,9 @@
 package com.example.gymtracker.components.currentTraining
 
 import com.arkivanov.mvikotlin.core.store.Store
+import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.CurrentTraining
+import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.domain.TrainingProgramShort
 import kotlinx.datetime.LocalDateTime
@@ -70,6 +72,17 @@ internal interface CurrentTrainingStore : Store<CurrentTrainingStore.Intent, Cur
 
         data class UpdateStartedAt(
             val startedAt: LocalDateTime,
+        ) : Intent()
+
+        data class SwapApproachOrdinals(
+            val approachFrom: Approach,
+            val approachTo: Approach,
+            val exerciseId: Long,
+        ) : Intent()
+
+        data class SwapExerciseOrdinals(
+            val exerciseFrom: Exercise,
+            val exerciseTo: Exercise,
         ) : Intent()
     }
 

@@ -20,7 +20,9 @@ import com.badoo.reaktive.scheduler.ioScheduler
 import com.badoo.reaktive.scheduler.mainScheduler
 import com.example.gymtracker.database.databases.CurrentTrainingDatabase
 import com.example.gymtracker.database.databases.NewOrExistingExerciseTemplate
+import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.CurrentTraining
+import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.domain.TrainingProgramShort
 import com.example.gymtracker.utils.add
@@ -200,6 +202,16 @@ internal class CurrentTrainingStoreProvider(
                 )
             is CurrentTrainingStore.Intent.SaveTrainingToHistory -> saveTrainingToHistory(getState)
             is CurrentTrainingStore.Intent.UpdateStartedAt -> updateStartedAt(intent.startedAt)
+            is CurrentTrainingStore.Intent.SwapApproachOrdinals -> swapApproachOrdinals(
+                approachFrom = intent.approachFrom,
+                approachTo = intent.approachTo,
+                exerciseId = intent.exerciseId,
+            )
+            is CurrentTrainingStore.Intent.SwapExerciseOrdinals -> swapExerciseOrdinals(
+                exerciseFrom = intent.exerciseFrom,
+                exerciseTo = intent.exerciseTo,
+                getState = getState,
+            )
         }
 
         private fun addExercise(getState: () -> CurrentTrainingStore.State) {
@@ -359,6 +371,36 @@ internal class CurrentTrainingStoreProvider(
             database
                 .updateStartedAt(startedAt)
                 .subscribeScoped()
+        }
+
+        private fun swapApproachOrdinals(
+            approachFrom: Approach,
+            approachTo: Approach,
+            exerciseId: Long,
+        ) {
+            database
+                .swapApproachOrdinals(
+                    approachFrom = approachFrom,
+                    approachTo = approachTo,
+                    exerciseId = exerciseId,
+                )
+                .subscribeScoped()
+        }
+
+        private fun swapExerciseOrdinals(
+            exerciseFrom: Exercise,
+            exerciseTo: Exercise,
+            getState: () -> CurrentTrainingStore.State,
+        ) {
+            getState().currentTraining?.let {
+                database
+                    .swapExerciseOrdinals(
+                        exerciseFrom = exerciseFrom,
+                        exerciseTo = exerciseTo,
+                        trainingId = it.training.id,
+                    )
+                    .subscribeScoped()
+            }
         }
     }
 

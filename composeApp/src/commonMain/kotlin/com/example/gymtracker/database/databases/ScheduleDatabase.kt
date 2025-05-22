@@ -7,9 +7,13 @@ import com.example.gymtracker.database.awaitMaxId
 import com.example.gymtracker.database.execute
 import com.example.gymtracker.database.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
+import com.example.gymtracker.database.operations.executeSwapApproachOrdinalsOperation
+import com.example.gymtracker.database.operations.executeSwapExerciseOrdinalsOperation
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
+import com.example.gymtracker.domain.Approach
+import com.example.gymtracker.domain.Exercise
 import database.ApproachQueries
 import database.ExerciseQueries
 import database.ExerciseTemplateQueries
@@ -174,4 +178,33 @@ class ScheduleDatabase(
             .execute {
                 it.delete(exerciseId)
             }
+
+
+    fun swapApproachOrdinals(
+        approachFrom: Approach,
+        approachTo: Approach,
+        exerciseId: Long,
+    ) = approachQueries
+        .execute { approachQueries ->
+            executeSwapApproachOrdinalsOperation(
+                approachFrom = approachFrom,
+                approachTo = approachTo,
+                exerciseId = exerciseId,
+                approachQueries = approachQueries,
+            )
+        }
+
+    fun swapExerciseOrdinals(
+        exerciseFrom: Exercise,
+        exerciseTo: Exercise,
+        trainingId: Long,
+    ) = exerciseQueries
+        .execute { exerciseQueries ->
+            executeSwapExerciseOrdinalsOperation(
+                exerciseFrom = exerciseFrom,
+                exerciseTo = exerciseTo,
+                trainingId = trainingId,
+                exerciseQueries = exerciseQueries,
+            )
+        }
 }

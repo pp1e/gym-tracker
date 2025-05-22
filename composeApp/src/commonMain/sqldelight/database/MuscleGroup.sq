@@ -3,9 +3,6 @@ CREATE TABLE muscle_group (
     name TEXT NOT NULL UNIQUE
 );
 
-INSERT INTO muscle_group (id, name)
-    VALUES (1, "Турник");
-
 insertOrNothing:
     INSERT OR IGNORE INTO muscle_group (name)
     VALUES (:name);

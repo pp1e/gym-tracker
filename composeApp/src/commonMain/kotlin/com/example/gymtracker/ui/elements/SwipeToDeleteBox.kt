@@ -36,11 +36,12 @@ fun SwipeToDeleteBox(
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
     doBeforeAnimation: () -> Unit = {},
+    initialVisibility: Boolean = false,
     content:
         @Composable()
         (RowScope.() -> Unit),
 ) {
-    var isVisible by rememberSaveable { mutableStateOf(false) }
+    var isVisible by rememberSaveable { mutableStateOf(initialVisibility) }
     LaunchedEffect(Unit) {
         isVisible = true
     }
@@ -101,16 +102,6 @@ fun SwipeToDeleteBox(
             delay(UiConstants.ANIMATION_DEFAULT_DURATION_MILLIS)
             onDelete()
             isVisible = false
-//            val result = snackbarHostState.showSnackbar(
-//                message = "Упражнение удалено",
-//                actionLabel = "Отменить",
-//                duration = SnackbarDuration.Short,
-//            )
-//            if (result == SnackbarResult.ActionPerformed) {
-//                onDeleteCancel()
-//                isVisible = true
-//                dismissState.snapTo(SwipeToDismissBoxValue.Settled)
-//            }
         }
     }
 }

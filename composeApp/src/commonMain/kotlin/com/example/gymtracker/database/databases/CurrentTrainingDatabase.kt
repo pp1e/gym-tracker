@@ -13,11 +13,18 @@ import com.example.gymtracker.database.execute
 import com.example.gymtracker.database.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.operations.executeAddTrainingOperation
+import com.example.gymtracker.database.operations.executeSwapApproachOrdinalsOperation
+import com.example.gymtracker.database.operations.executeSwapExerciseOrdinalsOperation
+import com.example.gymtracker.database.queryExecutors.executeGetApproachesQuery
 import com.example.gymtracker.database.queryExecutors.executeGetCurrentTrainingQuery
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
+import com.example.gymtracker.database.queryExecutors.executeGetExercisesQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
+import com.example.gymtracker.domain.Approach
+import com.example.gymtracker.domain.Exercise
+import com.example.gymtracker.domain.ExerciseShort
 import com.example.gymtracker.domain.TrainingProgram
 import com.example.gymtracker.utils.currentDayOfWeek
 import database.ApproachQueries
@@ -304,6 +311,34 @@ class CurrentTrainingDatabase(
             deleteCurrentTrainingCascade(
                 currentTrainingQueries = currentTrainingQueries,
                 trainingQueries = trainingQueries,
+            )
+        }
+
+    fun swapApproachOrdinals(
+        approachFrom: Approach,
+        approachTo: Approach,
+        exerciseId: Long,
+    ) = approachQueries
+        .execute { approachQueries ->
+            executeSwapApproachOrdinalsOperation(
+                approachFrom = approachFrom,
+                approachTo = approachTo,
+                exerciseId = exerciseId,
+                approachQueries = approachQueries,
+            )
+        }
+
+    fun swapExerciseOrdinals(
+        exerciseFrom: Exercise,
+        exerciseTo: Exercise,
+        trainingId: Long,
+    ) = exerciseQueries
+        .execute { exerciseQueries ->
+            executeSwapExerciseOrdinalsOperation(
+                exerciseFrom = exerciseFrom,
+                exerciseTo = exerciseTo,
+                trainingId = trainingId,
+                exerciseQueries = exerciseQueries,
             )
         }
 }

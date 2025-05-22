@@ -17,9 +17,18 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.example.gymtracker.domain.Approach
+import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.Training
 import com.example.gymtracker.ui.UiConstants
+import com.example.gymtracker.utils.safeIn
 import kotlinx.coroutines.delay
+import sh.calvin.reorderable.ReorderableColumn
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun TrainingFull(
@@ -32,6 +41,8 @@ fun TrainingFull(
     cancelApproachDeleting: (Long) -> Unit,
     onRepetitionsChange: (Long, Int) -> Unit,
     onWeightChange: (Long, Float) -> Unit,
+    onApproachesSwap: (Approach, Approach, Long) -> Unit,
+    onExercisesSwap: (Exercise, Exercise) -> Unit,
 ) {
     Column(
         modifier =
@@ -58,8 +69,32 @@ fun TrainingFull(
             }
         }
 
-        for (exercise in training.exercises) {
+        val previousExerciseIds = rememberPrevious(
+            training.exercises.map { it.id }.toSet()
+        )
+        val expandedStates = remember {
+            mutableStateMapOf<Long, Boolean>()
+        }
+
+        ReorderableColumn(
+            list = training.exercises,
+            onSettle = { fromIndex, toIndex ->
+                onExercisesSwap(
+                    training.exercises[fromIndex],
+                    training.exercises[toIndex],
+                )
+            },
+        ) { _, exercise, isDragging ->
             key(exercise.id) {
+                val expanded = expandedStates[exercise.id] ?: false
+
+                LaunchedEffect(isDragging) {
+                    if (isDragging) {
+                        for (id in expandedStates.keys)
+                            expandedStates[id] = false
+                    }
+                }
+
                 CurrentExercise(
                     snackbarHostState = snackbarHostState,
                     exercise = exercise,
@@ -72,6 +107,10 @@ fun TrainingFull(
                     cancelApproachDeleting = cancelApproachDeleting,
                     onRepetitionsChange = onRepetitionsChange,
                     onWeightChange = onWeightChange,
+                    onApproachesSwap = onApproachesSwap,
+                    initialVisibility = exercise.id safeIn previousExerciseIds,
+                    expanded = expanded,
+                    onExpandChange = { expandedStates[exercise.id] = it },
                 )
             }
         }

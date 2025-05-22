@@ -13,6 +13,9 @@ CREATE TABLE approach(
 
 CREATE INDEX approach_exercise_idx ON approach(exercise_id);
 
+get:
+    SELECT * FROM approach WHERE exercise_id = :exercise_id;
+
 insert:
     INSERT INTO approach (ordinal, weight, repetitions, exercise_id)
         SELECT :ordinal, :weight, :repetitions, :exercise_id;
@@ -31,3 +34,9 @@ updateWeight:
 
 delete:
     DELETE FROM approach WHERE id = :id;
+
+increaseOrdinal:
+    UPDATE approach SET ordinal = ordinal + 1 WHERE id = :id;
+
+updateOrdinal:
+    UPDATE approach SET ordinal = :ordinal WHERE id = :id;

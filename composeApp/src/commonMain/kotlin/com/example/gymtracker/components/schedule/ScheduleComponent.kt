@@ -5,6 +5,8 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.example.gymtracker.database.databases.ScheduleDatabase
+import com.example.gymtracker.domain.Approach
+import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.TrainingProgram
 import com.example.gymtracker.domain.TrainingProgramShort
 import com.example.gymtracker.utils.asValue
@@ -123,6 +125,32 @@ class ScheduleComponent(
                 approachId = approachId,
                 repetitions = repetitions,
             ),
+        )
+    }
+
+    fun onApproachesSwap(
+        approachFrom: Approach,
+        approachTo: Approach,
+        exerciseId: Long,
+    ) {
+        store.accept(
+            ScheduleStore.Intent.SwapApproachOrdinals(
+                approachFrom = approachFrom,
+                approachTo = approachTo,
+                exerciseId = exerciseId,
+            )
+        )
+    }
+
+    fun onExercisesSwap(
+        exerciseFrom: Exercise,
+        exerciseTo: Exercise,
+    ) {
+        store.accept(
+            ScheduleStore.Intent.SwapExerciseOrdinals(
+                exerciseFrom = exerciseFrom,
+                exerciseTo = exerciseTo,
+            )
         )
     }
 }

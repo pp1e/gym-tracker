@@ -7,7 +7,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.base.invoke
 import com.example.gymtracker.database.databases.CurrentTrainingDatabase
+import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.CurrentTraining
+import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.TrainingProgramShort
 import com.example.gymtracker.utils.asValue
 import kotlinx.datetime.LocalDateTime
@@ -147,6 +149,32 @@ class CurrentTrainingComponent(
     fun onStartedAtUpdate(startedAt: LocalDateTime) {
         store.accept(
             CurrentTrainingStore.Intent.UpdateStartedAt(startedAt)
+        )
+    }
+
+    fun onApproachesSwap(
+        approachFrom: Approach,
+        approachTo: Approach,
+        exerciseId: Long,
+    ) {
+        store.accept(
+            CurrentTrainingStore.Intent.SwapApproachOrdinals(
+                approachFrom = approachFrom,
+                approachTo = approachTo,
+                exerciseId = exerciseId,
+            )
+        )
+    }
+
+    fun onExercisesSwap(
+        exerciseFrom: Exercise,
+        exerciseTo: Exercise,
+    ) {
+        store.accept(
+            CurrentTrainingStore.Intent.SwapExerciseOrdinals(
+                exerciseFrom = exerciseFrom,
+                exerciseTo = exerciseTo,
+            )
         )
     }
 }

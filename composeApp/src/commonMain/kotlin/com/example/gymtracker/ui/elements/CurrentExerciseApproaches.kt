@@ -1,6 +1,7 @@
 package com.example.gymtracker.ui.elements
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.ui.UiConstants
+import com.example.gymtracker.utils.safeIn
 import kotlinx.coroutines.delay
+import sh.calvin.reorderable.ReorderableColumn
 
 private const val TEXT_FIELD_WEIGHT = 1f
 private const val APPROACH_NUMBER_WEIGHT = 0.3f
@@ -52,6 +55,7 @@ fun CurrentExerciseApproaches(
     cancelApproachDeleting: (Long) -> Unit,
     onRepetitionsChange: (Long, Int) -> Unit,
     onWeightChange: (Long, Float) -> Unit,
+    onApproachesSwap: (Approach, Approach) -> Unit,
 ) {
     Column {
         Row(
@@ -98,13 +102,25 @@ fun CurrentExerciseApproaches(
             }
         }
 
-        for ((index, approach) in approaches.withIndex()) {
+        val previousApproachIds = rememberPrevious(approaches.map { it.id }.toSet())
+
+        ReorderableColumn(
+            list = approaches,
+            onSettle = { fromIndex, toIndex ->
+                onApproachesSwap(
+                    approaches[fromIndex],
+                    approaches[toIndex],
+                )
+            },
+        ) { index, approach, _ ->
+//        for ((index, approach) in approaches.withIndex()) {
             key(approach.id) {
                 SwipeToDeleteBox(
                     onDelete = {
                         requestApproachDeleting(approach.id)
                         pendingDeletes.add(approach.id)
                     },
+                    initialVisibility = approach.id safeIn previousApproachIds
                 ) {
                     Box(
                         modifier =
@@ -120,6 +136,7 @@ fun CurrentExerciseApproaches(
                                     .align(Alignment.Center),
                         ) {
                             ApproachLabel(
+                                modifier = Modifier.draggableHandle(),
                                 weight = APPROACH_NUMBER_WEIGHT,
                                 text = (index + 1).toString(),
                             )
@@ -174,12 +191,14 @@ fun CurrentExerciseApproaches(
 
 @Composable
 private fun RowScope.ApproachLabel(
+    modifier: Modifier = Modifier,
     text: String,
     weight: Float,
 ) {
     Text(
         modifier =
             Modifier
+                .then(modifier)
                 .weight(weight)
                 .align(Alignment.CenterVertically),
         text = text,

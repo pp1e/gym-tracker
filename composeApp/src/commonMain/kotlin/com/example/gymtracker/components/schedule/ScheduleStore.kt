@@ -1,6 +1,9 @@
 package com.example.gymtracker.components.schedule
 
 import com.arkivanov.mvikotlin.core.store.Store
+import com.example.gymtracker.components.currentTraining.CurrentTrainingStore.Intent
+import com.example.gymtracker.domain.Approach
+import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.ExerciseTemplate
 import com.example.gymtracker.domain.TrainingProgram
 import com.example.gymtracker.domain.TrainingProgramShort
@@ -62,6 +65,17 @@ internal interface ScheduleStore : Store<ScheduleStore.Intent, ScheduleStore.Sta
         ) : Intent()
 
         data object CreateNewTrainingProgram : Intent()
+
+        data class SwapApproachOrdinals(
+            val approachFrom: Approach,
+            val approachTo: Approach,
+            val exerciseId: Long,
+        ) : Intent()
+
+        data class SwapExerciseOrdinals(
+            val exerciseFrom: Exercise,
+            val exerciseTo: Exercise,
+        ) : Intent()
     }
 
     data class State(
