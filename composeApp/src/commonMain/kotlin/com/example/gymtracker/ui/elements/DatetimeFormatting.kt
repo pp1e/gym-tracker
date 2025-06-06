@@ -35,6 +35,18 @@ fun DayOfWeek.russianName() =
         }
     }
 
+fun DayOfWeek.russianShortName() =
+    when (this) {
+        DayOfWeek.MONDAY -> "Пн"
+        DayOfWeek.TUESDAY -> "Вт"
+        DayOfWeek.WEDNESDAY -> "Ср"
+        DayOfWeek.THURSDAY -> "Чт"
+        DayOfWeek.FRIDAY -> "Пт"
+        DayOfWeek.SATURDAY -> "Сб"
+        DayOfWeek.SUNDAY -> "Вс"
+        else -> ""
+    }
+
 fun Month.russianNameGenitive() =
     when (this) {
         Month.JANUARY -> "января"

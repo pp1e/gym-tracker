@@ -10,6 +10,7 @@ import com.badoo.reaktive.single.asObservable
 import com.badoo.reaktive.single.map
 import com.badoo.reaktive.single.observeOn
 import com.badoo.reaktive.single.singleOf
+import com.example.gymtracker.database.databases.CalendarDatabase
 import com.example.gymtracker.database.databases.CurrentTrainingDatabase
 import com.example.gymtracker.database.databases.EditTrainingDatabase
 import com.example.gymtracker.database.databases.HistoryDatabase
@@ -85,6 +86,12 @@ class DatabasesBuilder(
                 it.completedTrainingQueries
             }
 
+    private val completedTrainingTitleQueries =
+        rootDatabase
+            .observeQueries {
+                it.completedTrainingTitleQueries
+            }
+
     fun createCurrentTrainingDatabase() =
         CurrentTrainingDatabase(
             currentTrainingQueries = currentTrainingQueries,
@@ -95,6 +102,7 @@ class DatabasesBuilder(
             exerciseTemplateQueries = exerciseTemplateQueries,
             completedTrainingQueries = completedTrainingQueries,
             trainingScheduleQueries = trainingScheduleQueries,
+            completedTrainingTitleQueries = completedTrainingTitleQueries,
         )
 
     fun createScheduleDatabase(dayOfWeek: DayOfWeek) =
@@ -119,5 +127,13 @@ class DatabasesBuilder(
             exerciseQueries = exerciseQueries,
             approachQueries = approachQueries,
             exerciseTemplateQueries = exerciseTemplateQueries,
+            completedTrainingTitleQueries = completedTrainingTitleQueries,
+            database = rootDatabase,
+        )
+
+    fun createCalendarDatabase() =
+        CalendarDatabase(
+            completedTrainingQueries = completedTrainingQueries,
+            completedTrainingTitleQueries = completedTrainingTitleQueries,
         )
 }

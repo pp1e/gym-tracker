@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,8 +44,9 @@ private fun generateScreenTitle(activeScreen: RootRouter.ScreenConfig) =
                 .replaceFirstChar { it.titlecase() }
         }, текущая тренировка"
         is RootRouter.ScreenConfig.EditTraining -> "Изменить тренировку"
-        RootRouter.ScreenConfig.History -> "История тренировок"
+        is RootRouter.ScreenConfig.History -> "История тренировок"
         is RootRouter.ScreenConfig.Schedule -> "Изменить расписание"
+        is RootRouter.ScreenConfig.Calendar -> "Календарь"
     }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +58,8 @@ fun TopBar(
     selectedWeekday: DayOfWeek,
     onWeekdaySwitch: (DayOfWeek) -> Unit,
     toggleTopAppBar: () -> Unit,
+    onCalenderButtonClick: () -> Unit,
+    isCalendarButtonToggled: Boolean,
 ) {
     val isScheduleScreenActive = activeScreen is RootRouter.ScreenConfig.Schedule
 
@@ -126,9 +130,10 @@ fun TopBar(
             }
         },
         actions = {
-            if (activeScreen is RootRouter.ScreenConfig.History) {
-                IconButton(
-                    onClick = {},
+            if (activeScreen is RootRouter.ScreenConfig.History || activeScreen is RootRouter.ScreenConfig.Calendar) {
+                IconToggleButton(
+                    checked = isCalendarButtonToggled,
+                    onCheckedChange = { onCalenderButtonClick() },
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.CalendarMonth,

@@ -1,0 +1,53 @@
+CREATE TABLE completed_training_title (
+    id INTEGER PRIMARY KEY,
+    name TEXT UNIQUE,
+    color INTEGER UNIQUE
+);
+
+INSERT INTO completed_training_title (color) VALUES
+    (4294901760),   -- Red          (0xFFFF0000)
+    (4278255360),   -- Green        (0xFF00FF00)
+    (4278190335),   -- Blue         (0xFF0000FF)
+    (4294967040),   -- Yellow       (0xFFFFFF00)
+    (4278255615),   -- Cyan         (0xFF00FFFF)
+    (4294902015),   -- Magenta      (0xFFFF00FF)
+    (4294944000),   -- Orange       (0xFFFFA500)
+    (4286578816),   -- Purple       (0xFF800080)
+    (4278222976),   -- Teal         (0xFF008080)
+    (4294951115),   -- Pink         (0xFFFFC0CB)
+--     (4281348142),   -- Brown        (0xFFA52A2A)
+    (4290829824),   -- Lime         (0xFFBFFF00)
+    (4283194002),   -- Indigo       (0xFF4B0082)
+    (4294956800),   -- Gold         (0xFFFFD700)
+    (4286611584),   -- Olive        (0xFF808000)
+    (4294927184),   -- Coral        (0xFFFF7F50)
+    (4278190208),   -- Navy         (0xFF000080)
+    (4282616344);   -- Turquoise    (0xFF40E0D0)
+
+getFreeColorId:
+    SELECT id FROM completed_training_title WHERE name IS NULL LIMIT 1;
+
+occupyColor:
+    UPDATE completed_training_title
+        SET name = :name WHERE name IS NULL AND id = :id;
+
+insert:
+    INSERT INTO completed_training_title (name) VALUES (:name);
+
+getId:
+    SELECT id FROM completed_training_title WHERE name = :name;
+
+freeUpColor:
+    UPDATE completed_training_title SET name = NULL
+        WHERE id = :id AND NOT EXISTS (
+            SELECT 1 FROM completed_training WHERE completed_training.title_id = completed_training_title.id
+        );
+
+deleteIfPossible:
+    DELETE FROM completed_training_title
+        WHERE id = :id AND color IS NULL AND NOT EXISTS (
+            SELECT 1 FROM completed_training WHERE completed_training.title_id = completed_training_title.id
+        );
+
+getList:
+    SELECT * FROM completed_training_title WHERE name IS NOT NULL;

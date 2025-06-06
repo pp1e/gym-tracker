@@ -36,7 +36,7 @@ fun BottomMenu(
         NavigationBarItem(
             icon = { Icon(Icons.Rounded.Storage, contentDescription = "История") },
             label = { Text("История") },
-            selected = activeScreen is RootRouter.ScreenConfig.History,
+            selected = activeScreen is RootRouter.ScreenConfig.History || activeScreen is RootRouter.ScreenConfig.Calendar,
             onClick = onHistoryClicked,
         )
     }

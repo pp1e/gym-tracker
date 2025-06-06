@@ -1,7 +1,7 @@
 package com.example.gymtracker.database.operations
 
 import com.example.gymtracker.components.entities.TrainingInsert
-import com.example.gymtracker.database.awaitMaxId
+import com.example.gymtracker.database.utils.awaitMaxId
 import database.ApproachQueries
 import database.ExerciseQueries
 import database.TrainingQueries

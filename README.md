@@ -20,6 +20,7 @@ Gym Tracker is simple and free multiplatform (*iOS*, *Andriod*) application for 
 4. **View training history:**
 
    ![history_screen](screenshots/history_screen.jpg)
+   ![calendar_screen](screenshots/calendar_screen.jpg)
 
 5. **Edit trainings in history:**
 

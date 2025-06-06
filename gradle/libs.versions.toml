@@ -4,12 +4,12 @@
 
 android-compileSdk = "35"
 android-minSdk = "30"
+kotlin="2.1.10"
 
 # Plugins
 
-kotlin="2.1.10"
 androidApplication = "8.8.0"
-composeMultiplatform = "1.7.3"
+composeMultiplatform = "1.8.0"
 ktlint = "12.1.2"
 
 # Libs
@@ -20,9 +20,11 @@ junit = "4.13.2"
 androidJunit = "1.2.1"
 espressoCore = "3.6.1"
 composeReorderable = "2.4.3"
-decompose = "2.2.2"
+composeCalendar = "2.7.0"
+composeWheelPicker = "1.1.0-alpha03-compose1.8"
+decompose = "3.3.0"
 mvikotlin = "3.3.0"
-essenty = "1.3.0"
+essenty = "2.5.0"
 reaktive = "1.3.0"
 sqldelight = "2.0.2"
 storage = "1.5.0"
@@ -53,6 +55,8 @@ kotlinDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.re
 # Compose Add-ons
 
 composeReorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "composeReorderable" }
+composeCalendar = { module = "com.kizitonwose.calendar:compose-multiplatform", version.ref = "composeCalendar" }
+composeWheelPicker = { module = "io.github.darkokoa:datetime-wheel-picker", version.ref = "composeWheelPicker" }
 
 # Decompose
 
@@ -128,4 +132,6 @@ reactive = [
 
 composeAddOns = [
     "composeReorderable",
+    "composeCalendar",
+    "composeWheelPicker",
 ]

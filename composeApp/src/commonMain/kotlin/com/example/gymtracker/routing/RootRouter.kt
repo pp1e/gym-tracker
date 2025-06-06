@@ -4,17 +4,20 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.StackNavigator
+import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.example.gymtracker.components.calendar.CalendarComponent
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
-import com.example.gymtracker.components.editTraining.EditTrainingStore
 import com.example.gymtracker.components.history.HistoryComponent
 import com.example.gymtracker.components.schedule.ScheduleComponent
 import com.example.gymtracker.database.DatabasesBuilder
@@ -32,6 +35,7 @@ class RootRouter(
         val selectedWeekday: DayOfWeek = currentDayOfWeek(),
         val activeScreenConfig: ScreenConfig = ScreenConfig.CurrentTraining,
         val isTopBarExpanded: Boolean = false,
+        val isCalendarButtonToggled: Boolean = false,
     )
 
     val model: MutableValue<Model> = MutableValue(Model())
@@ -49,6 +53,9 @@ class RootRouter(
 
         @Serializable
         data class EditTraining(val completedTrainingId: Long) : ScreenConfig()
+
+        @Serializable
+        data object Calendar : ScreenConfig()
     }
 
     private val router = StackNavigation<ScreenConfig>()
@@ -66,31 +73,10 @@ class RootRouter(
 
     init {
         stack.subscribe { stack ->
-            when (stack.active.configuration) {
-                ScreenConfig.CurrentTraining ->
-                    model.update {
-                        it.copy(
-                            activeScreenConfig = stack.active.configuration,
-                        )
-                    }
-                is ScreenConfig.EditTraining ->
-                    model.update {
-                        it.copy(
-                            activeScreenConfig = stack.active.configuration,
-                        )
-                    }
-                ScreenConfig.History ->
-                    model.update {
-                        it.copy(
-                            activeScreenConfig = stack.active.configuration,
-                        )
-                    }
-                is ScreenConfig.Schedule ->
-                    model.update {
-                        it.copy(
-                            activeScreenConfig = stack.active.configuration,
-                        )
-                    }
+            model.update {
+                it.copy(
+                    activeScreenConfig = stack.active.configuration,
+                )
             }
         }
     }
@@ -142,6 +128,16 @@ class RootRouter(
                         output = Consumer(::onEditTrainingOutput),
                     ),
                 )
+
+            is ScreenConfig.Calendar ->
+                Child.Calendar(
+                    CalendarComponent(
+                        componentContext = componentContext,
+                        storeFactory = storeFactory,
+                        database = databasesBuilder.createCalendarDatabase(),
+                        output = Consumer(::onCalendarOutput),
+                    )
+                )
         }
 
     fun onBackClicked() {
@@ -166,16 +162,27 @@ class RootRouter(
             }
         }
 
+    fun onCalendarOutput(output: CalendarComponent.Output) =
+        when (output) {
+            is CalendarComponent.Output.EditTrainingTransit -> {
+                router.bringToFront(
+                    ScreenConfig.EditTraining(
+                        completedTrainingId = output.completedTrainingId,
+                    ),
+                )
+            }
+        }
+
     fun onEditTrainingOutput(output: EditTrainingComponent.Output) =
         when (output) {
             EditTrainingComponent.Output.HistoryTransit -> router.pop()
         }
 
-    fun onCurrentTrainingScreenMenuButtonClicked() {
+    fun onCurrentTrainingScreenMenuButtonClick() {
         router.moveToFront(ScreenConfig.CurrentTraining)
     }
 
-    fun onScheduleScreenMenuButtonClicked() {
+    fun onScheduleScreenMenuButtonClick() {
         router.moveToFront(
             ScreenConfig.Schedule(model.value.selectedWeekday),
         )
@@ -192,8 +199,17 @@ class RootRouter(
         )
     }
 
-    fun onHistoryScreenMenuButtonClicked() {
-        router.moveToFront(ScreenConfig.History)
+    fun onHistoryScreenMenuButtonClick() {
+        travelToHistory()
+    }
+
+    fun onCalenderButtonClick() {
+        model.update {
+            it.copy(
+                isCalendarButtonToggled = !it.isCalendarButtonToggled,
+            )
+        }
+        travelToHistory()
     }
 
     fun toggleTopBar() {
@@ -204,12 +220,20 @@ class RootRouter(
         }
     }
 
+    private fun travelToHistory() {
+        if (model.value.isCalendarButtonToggled) {
+            router.moveToFront(ScreenConfig.Calendar)
+        }
+        else {
+            router.moveToFront(ScreenConfig.History)
+        }
+    }
+
     private fun <C : Any> StackNavigator<C>.moveToFront(newConfiguration: C) {
         this.navigate { stack ->
             stack
                 .find { it::class == newConfiguration::class }
                 ?.let { existentConfiguration ->
-                    println(existentConfiguration)
                     stack
                         .filterNot { it::class == newConfiguration::class }
                         .plus(existentConfiguration)

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.example.gymtracker.ui.screens.CalendarScreen
 import com.example.gymtracker.ui.screens.CurrentTrainingScreen
 import com.example.gymtracker.ui.screens.EditTrainingScreen
 import com.example.gymtracker.ui.screens.HistoryScreen
@@ -51,6 +52,11 @@ fun RootContent(
                     snackbarHostState = snackbarHostState,
                     isTopBarExpanded = isTopBarExpanded,
                 )
+
+            is Child.Calendar -> CalendarScreen(
+                paddingValues = paddingValues,
+                component = child.component,
+            )
         }
     }
 }

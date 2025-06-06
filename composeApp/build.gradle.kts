@@ -84,7 +84,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.compileSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -129,31 +129,3 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidJunit)
 }
-
-// dependencies {
-//    implementation(libs.android.core.ktx)
-//    implementation(libs.android.runtime.ktx)
-//    implementation(libs.android.activity.compose)
-//    implementation(libs.bundles.compose)
-//    implementation(libs.bundles.decompose)
-//    implementation(libs.bundles.mvikotlin)
-//    implementation(libs.bundles.reactive)
-//    implementation(libs.bundles.room)
-//
-//    implementation(platform(libs.composeBom))
-//    implementation(libs.storage)
-//
-//    annotationProcessor(libs.roomCompiler)
-//
-//    ksp(libs.roomCompiler)
-//
-//    testImplementation(libs.junit)
-//
-//    androidTestImplementation(libs.androidJunit)
-//    androidTestImplementation(libs.espressoCore)
-//    androidTestImplementation(platform(libs.composeBom))
-//    androidTestImplementation(libs.composeJunitUiTest)
-//
-//    debugImplementation(libs.composeUiTooling)
-//    debugImplementation(libs.composeUiTestManifest)
-// }

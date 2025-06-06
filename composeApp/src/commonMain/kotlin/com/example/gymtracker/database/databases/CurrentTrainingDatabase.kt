@@ -1,34 +1,35 @@
 package com.example.gymtracker.database.databases
 
 import app.cash.sqldelight.async.coroutines.awaitAsList
+import app.cash.sqldelight.async.coroutines.awaitAsOne
+import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.map
-import com.badoo.reaktive.single.zip
 import com.example.gymtracker.components.entities.ApproachInsert
 import com.example.gymtracker.components.entities.ExerciseInsert
 import com.example.gymtracker.components.entities.TrainingInsert
-import com.example.gymtracker.database.QueryTuple5
-import com.example.gymtracker.database.awaitMaxId
-import com.example.gymtracker.database.execute
-import com.example.gymtracker.database.observe
+import com.example.gymtracker.database.utils.QueryTuple5
+import com.example.gymtracker.database.utils.awaitMaxId
+import com.example.gymtracker.database.utils.execute
+import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.operations.executeAddTrainingOperation
+import com.example.gymtracker.database.operations.executeGetOrInsertCompletedTrainingTitleOperation
 import com.example.gymtracker.database.operations.executeSwapApproachOrdinalsOperation
 import com.example.gymtracker.database.operations.executeSwapExerciseOrdinalsOperation
-import com.example.gymtracker.database.queryExecutors.executeGetApproachesQuery
 import com.example.gymtracker.database.queryExecutors.executeGetCurrentTrainingQuery
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
-import com.example.gymtracker.database.queryExecutors.executeGetExercisesQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
+import com.example.gymtracker.database.utils.zipAndExecute
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
-import com.example.gymtracker.domain.ExerciseShort
 import com.example.gymtracker.domain.TrainingProgram
 import com.example.gymtracker.utils.currentDayOfWeek
 import database.ApproachQueries
 import database.CompletedTrainingQueries
+import database.CompletedTrainingTitleQueries
 import database.CurrentTrainingQueries
 import database.ExerciseQueries
 import database.ExerciseTemplateQueries
@@ -51,6 +52,7 @@ class CurrentTrainingDatabase(
     private val exerciseTemplateQueries: Single<ExerciseTemplateQueries>,
     private val completedTrainingQueries: Single<CompletedTrainingQueries>,
     private val trainingScheduleQueries: Single<TrainingScheduleQueries>,
+    private val completedTrainingTitleQueries: Single<CompletedTrainingTitleQueries>
 ) {
     private suspend fun insertCurrentTrainingFromProgram(
         trainingProgram: TrainingProgram,
@@ -116,16 +118,13 @@ class CurrentTrainingDatabase(
             .observe(::executeGetExerciseTemplateListQuery)
 
     fun startTraining() =
-        zip(
+        zipAndExecute(
             trainingScheduleQueries,
             currentTrainingQueries,
             trainingQueries,
             exerciseQueries,
             approachQueries,
         ) { trainingScheduleQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries ->
-            QueryTuple5(trainingScheduleQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries)
-        }
-            .execute { (trainingScheduleQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries) ->
                 deleteCurrentTrainingCascade(
                     currentTrainingQueries = currentTrainingQueries,
                     trainingQueries = trainingQueries,
@@ -162,16 +161,13 @@ class CurrentTrainingDatabase(
             }
 
     fun setTrainingByProgram(trainingProgramId: Long) =
-        zip(
+        zipAndExecute(
             trainingProgramQueries,
             currentTrainingQueries,
             trainingQueries,
             exerciseQueries,
             approachQueries,
         ) { trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries ->
-            QueryTuple5(trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries)
-        }
-            .execute { (trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries) ->
                 executeGetTrainingProgramQuery(
                     getTrainingProgramQuery = trainingProgramQueries.get(trainingProgramId),
                 )?.let { trainingProgram ->
@@ -197,13 +193,11 @@ class CurrentTrainingDatabase(
         approachesCount: Int,
         repetitionsCount: Int,
         weight: Float,
-    ) = zip(
+    ) = zipAndExecute(
         exerciseQueries,
         approachQueries,
         exerciseTemplateQueries,
     ) { exerciseQueries, approachQueries, exerciseTemplateQueries ->
-        Triple(exerciseQueries, approachQueries, exerciseTemplateQueries)
-    }.execute { (exerciseQueries, approachQueries, exerciseTemplateQueries) ->
         executeAddExerciseOperation(
             trainingId = trainingId,
             exerciseTemplate = exerciseTemplate,
@@ -277,15 +271,19 @@ class CurrentTrainingDatabase(
         name: String,
         trainingId: Long,
         startedAt: LocalDateTime,
-    ) = zip(
+    ) = zipAndExecute(
         completedTrainingQueries,
         currentTrainingQueries,
-    ) { completedTrainingQueries, currentTrainingQueries ->
-        Pair(completedTrainingQueries, currentTrainingQueries)
-    }.execute { (completedTrainingQueries, currentTrainingQueries) ->
+        completedTrainingTitleQueries,
+    ) { completedTrainingQueries, currentTrainingQueries, completedTrainingTitleQueries ->
+        val titleId = executeGetOrInsertCompletedTrainingTitleOperation(
+            trainingName = name,
+            completedTrainingTitleQueries = completedTrainingTitleQueries,
+        )
+
         completedTrainingQueries
             .insert(
-                name = name,
+                title_id = titleId,
                 training_id = trainingId,
                 started_at = startedAt.toString(),
                 duration =
@@ -302,12 +300,10 @@ class CurrentTrainingDatabase(
     }
 
     fun deleteTraining() =
-        zip(
+        zipAndExecute(
             currentTrainingQueries,
             trainingQueries,
         ) { currentTrainingQueries, trainingQueries ->
-            Pair(currentTrainingQueries, trainingQueries)
-        }.execute { (currentTrainingQueries, trainingQueries) ->
             deleteCurrentTrainingCascade(
                 currentTrainingQueries = currentTrainingQueries,
                 trainingQueries = trainingQueries,

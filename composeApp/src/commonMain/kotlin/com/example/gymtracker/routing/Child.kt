@@ -1,5 +1,6 @@
 package com.example.gymtracker.routing
 
+import com.example.gymtracker.components.calendar.CalendarComponent
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
 import com.example.gymtracker.components.history.HistoryComponent
@@ -13,4 +14,6 @@ sealed class Child {
     data class History(val component: HistoryComponent) : Child()
 
     data class EditTraining(val component: EditTrainingComponent) : Child()
+
+    data class Calendar(val component: CalendarComponent) : Child()
 }

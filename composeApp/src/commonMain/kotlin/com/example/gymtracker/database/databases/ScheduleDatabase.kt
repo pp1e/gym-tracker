@@ -2,16 +2,16 @@ package com.example.gymtracker.database.databases
 
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.map
-import com.badoo.reaktive.single.zip
-import com.example.gymtracker.database.awaitMaxId
-import com.example.gymtracker.database.execute
-import com.example.gymtracker.database.observe
+import com.example.gymtracker.database.utils.awaitMaxId
+import com.example.gymtracker.database.utils.execute
+import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.operations.executeSwapApproachOrdinalsOperation
 import com.example.gymtracker.database.operations.executeSwapExerciseOrdinalsOperation
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
+import com.example.gymtracker.database.utils.zipAndExecute
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
 import database.ApproachQueries
@@ -58,14 +58,11 @@ class ScheduleDatabase(
             .observe(::executeGetExerciseTemplateListQuery)
 
     fun createAndSetEmptyProgram() =
-        zip(
+        zipAndExecute(
             trainingScheduleQueries,
             trainingProgramQueries,
             trainingQueries,
         ) { trainingScheduleQueries, trainingProgramQueries, trainingQueries ->
-            Triple(trainingScheduleQueries, trainingProgramQueries, trainingQueries)
-        }
-            .execute { (trainingScheduleQueries, trainingProgramQueries, trainingQueries) ->
                 val trainingId =
                     trainingQueries
                         .maxId()
@@ -104,13 +101,11 @@ class ScheduleDatabase(
         approachesCount: Int,
         repetitionsCount: Int,
         weight: Float,
-    ) = zip(
+    ) = zipAndExecute(
         exerciseQueries,
         approachQueries,
         exerciseTemplateQueries,
     ) { exerciseQueries, approachQueries, exerciseTemplateQueries ->
-        Triple(exerciseQueries, approachQueries, exerciseTemplateQueries)
-    }.execute { (exerciseQueries, approachQueries, exerciseTemplateQueries) ->
         executeAddExerciseOperation(
             trainingId = trainingId,
             exerciseTemplate = exerciseTemplate,

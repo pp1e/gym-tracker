@@ -1,6 +1,6 @@
 CREATE TABLE completed_training (
     id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
+    title_id INTEGER NOT NULL,
     started_at TEXT NOT NULL,
     duration TEXT NOT NULL,
     training_id INTEGER NOT NULL,
@@ -8,18 +8,28 @@ CREATE TABLE completed_training (
     FOREIGN KEY (training_id) REFERENCES training(id)
 );
 
+CREATE INDEX completed_training_title_fki ON completed_training(title_id);
+
 CREATE INDEX completed_training_training_fki ON completed_training(training_id);
 
 insert:
-    INSERT INTO completed_training (name, started_at, duration, training_id)
-        VALUES (:name, :started_at, :duration, :training_id);
+    INSERT INTO completed_training (title_id, started_at, duration, training_id)
+        VALUES (:title_id, :started_at, :duration, :training_id);
 
 getList:
     SELECT * FROM completed_training
+    LEFT JOIN completed_training_title ON completed_training_title.id = completed_training.title_id
+    ORDER BY started_at DESC;
+
+getByDate:
+    SELECT * FROM completed_training
+    LEFT JOIN completed_training_title ON completed_training_title.id = completed_training.title_id
+    WHERE date(started_at) = :date
     ORDER BY started_at DESC;
 
 getById:
     SELECT * FROM completed_training
+    LEFT JOIN completed_training_title ON completed_training.title_id = completed_training_title.id
     LEFT JOIN exercise ON exercise.training_id = completed_training.training_id
     LEFT JOIN exercise_template ON exercise_template.id = exercise.exercise_template_id
     LEFT JOIN muscle_group ON muscle_group.id = exercise_template.muscle_group_id
@@ -27,8 +37,11 @@ getById:
     WHERE completed_training.id = :id
     ORDER BY exercise.ordinal, approach.ordinal;
 
-updateName:
-    UPDATE completed_training SET name = :name WHERE id = :id;
+updateTitleId:
+    UPDATE completed_training SET title_id = :title_id WHERE id = :id;
+
+getTitleId:
+    SELECT title_id FROM completed_training WHERE id = :id;
 
 updateTime:
     UPDATE completed_training SET started_at = :started_at, duration = :duration WHERE id = :id;

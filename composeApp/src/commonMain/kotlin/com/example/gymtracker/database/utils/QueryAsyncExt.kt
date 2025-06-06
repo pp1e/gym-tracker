@@ -1,4 +1,4 @@
-package com.example.gymtracker.database
+package com.example.gymtracker.database.utils
 
 import app.cash.sqldelight.Query
 import app.cash.sqldelight.async.coroutines.awaitAsOne

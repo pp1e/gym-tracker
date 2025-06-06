@@ -48,13 +48,15 @@ fun GymTrackerApplication(
                     selectedWeekday = model.selectedWeekday,
                     isTopAppBarExpanded = model.isTopBarExpanded,
                     toggleTopAppBar = router::toggleTopBar,
+                    onCalenderButtonClick = router::onCalenderButtonClick,
+                    isCalendarButtonToggled = model.isCalendarButtonToggled,
                 )
             },
             bottomBar = {
                 BottomMenu(
-                    onTrainingClicked = router::onCurrentTrainingScreenMenuButtonClicked,
-                    onScheduleClicked = router::onScheduleScreenMenuButtonClicked,
-                    onHistoryClicked = router::onHistoryScreenMenuButtonClicked,
+                    onTrainingClicked = router::onCurrentTrainingScreenMenuButtonClick,
+                    onScheduleClicked = router::onScheduleScreenMenuButtonClick,
+                    onHistoryClicked = router::onHistoryScreenMenuButtonClick,
                     activeScreen = model.activeScreenConfig,
                 )
             },

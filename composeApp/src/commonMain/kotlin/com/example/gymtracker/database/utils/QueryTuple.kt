@@ -1,4 +1,4 @@
-package com.example.gymtracker.database
+package com.example.gymtracker.database.utils
 
 data class QueryTuple4<FIRST : Any, SECOND : Any, THIRD : Any, FOURTH : Any>(
     val first: FIRST,
