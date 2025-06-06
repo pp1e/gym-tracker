@@ -9,9 +9,7 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme =
     darkColorScheme(
-//    primary = Color(0xFF64B5F6), // Нежный голубой для акцентных элементов
         primary = LightBlue,
-//    onPrimary = Color.Black, // Черный текст или иконки на голубом фоне
         onPrimary = LightGray,
         secondary = GreyBlue,
         onSecondary = Color.Black,
