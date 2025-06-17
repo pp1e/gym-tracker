@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.domain.Approach
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.safeIn
 import kotlinx.coroutines.delay
@@ -74,12 +75,12 @@ fun CurrentExerciseApproaches(
 
             ApproachLabel(
                 weight = TEXT_FIELD_WEIGHT,
-                text = "Повторения",
+                text = I18nManager.strings.repetitions,
             )
 
             ApproachLabel(
                 weight = TEXT_FIELD_WEIGHT,
-                text = "Вес",
+                text = I18nManager.strings.weight,
             )
         }
 
@@ -91,8 +92,8 @@ fun CurrentExerciseApproaches(
                 snackbarHostState.currentSnackbarData?.dismiss()
                 val result =
                     snackbarHostState.showSnackbar(
-                        message = "Подход удалён",
-                        actionLabel = "Отменить",
+                        message = I18nManager.strings.approachDeleted,
+                        actionLabel = I18nManager.strings.cancel,
                         duration = SnackbarDuration.Short,
                     )
                 if (result == SnackbarResult.ActionPerformed) {
@@ -179,7 +180,7 @@ fun CurrentExerciseApproaches(
                             .size(UiConstants.calculateNumberInputHeight())
                             .align(Alignment.CenterStart),
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Добавить подход",
+                    contentDescription = I18nManager.strings.addApproach,
                     tint = UiConstants.getApproachFontColor(),
                 )
             }

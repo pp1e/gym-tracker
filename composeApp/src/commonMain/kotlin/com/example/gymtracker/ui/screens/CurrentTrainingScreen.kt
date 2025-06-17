@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.elements.AddExerciseSheet
 import com.example.gymtracker.ui.elements.AdditionalTopBar
 import com.example.gymtracker.ui.elements.ConfirmationDialog
@@ -36,7 +37,8 @@ import com.example.gymtracker.ui.elements.SingleFloatingButtonModule
 import com.example.gymtracker.ui.elements.TimePickerDialog
 import com.example.gymtracker.ui.elements.TrainingFull
 import com.example.gymtracker.ui.elements.formatDatetime
-import com.example.gymtracker.ui.elements.russianInPreposition
+import com.example.gymtracker.ui.elements.inPreposition
+import com.example.gymtracker.utils.capitalize
 import com.example.gymtracker.utils.now
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -113,23 +115,23 @@ fun CurrentTrainingScreen(
             DualFloatingButtonModule(
                 bigButtonImageVector = Icons.Rounded.Add,
                 onBigButtonClicked = { showBottomSheet = true },
-                bigButtonText = "Добавить",
+                bigButtonText = I18nManager.strings.add.capitalize(),
                 smallButtonIconVector = Icons.Rounded.SportsScore,
                 onSmallButtonClicked = { showCompleteTrainingDialog = true },
-                smallButtonText = "Завершить",
+                smallButtonText = I18nManager.strings.finish,
             )
         } else {
             SingleFloatingButtonModule(
                 iconVector = Icons.Rounded.RocketLaunch,
                 onClick = component::onStartTrainingClick,
-                text = "Начать тренировку",
+                text = I18nManager.strings.startTraining,
             )
         }
     }
 
     if (showCompleteTrainingDialog) {
         ConfirmationDialog(
-            title = "Завершить тренировку?",
+            title = I18nManager.strings.finishTraining,
             onConfirm = { component.onCompleteTrainingClick() },
             onDismiss = { showCompleteTrainingDialog = false }
         )
@@ -137,7 +139,7 @@ fun CurrentTrainingScreen(
 
     if (showResetTimerDialog) {
         ConfirmationDialog(
-            title = "Сбросить время начала тренировки?",
+            title = I18nManager.strings.resetTrainingStartTime,
             onConfirm = { component.onStartedAtUpdate(LocalDateTime.now()) },
             onDismiss = { showResetTimerDialog = false }
         )
@@ -145,7 +147,7 @@ fun CurrentTrainingScreen(
 
     if (showDeleteTrainingDialog) {
         ConfirmationDialog(
-            title = "Удалить текущую тренировку?",
+            title =  I18nManager.strings.deleteCurrentTraining,
             onConfirm = { component.onDeleteTrainingClick() },
             onDismiss = { showDeleteTrainingDialog = false }
         )
@@ -153,7 +155,7 @@ fun CurrentTrainingScreen(
 
     if (showChangeStartedAtDialog && model.currentTraining != null) {
         TimePickerDialog(
-            title = "Выберите время начала тренировки",
+            title =  I18nManager.strings.selectTrainingStartTime,
             onDismiss = { showChangeStartedAtDialog = false },
             onTimeSelect = { selectedTime ->
                 component.onStartedAtUpdate(
@@ -175,11 +177,11 @@ fun CurrentTrainingScreen(
             title = {
                 Text(
                     text =
-                        "Вы не сохранили тренировку, начатую" +
-                            " ${model.currentTraining!!.startedAt.dayOfWeek.russianInPreposition()}" +
-                            " ${formatDatetime(model.currentTraining!!.startedAt)}." +
-                            " Желаете сохранить эту тренировку?" +
-                            "\n* Сохранённые тренировки можно редактировать в истории.",
+                        I18nManager.strings.trainingNotSavedMessage.replace(
+                            oldValue = "(%S)",
+                            newValue = model.currentTraining!!.startedAt.dayOfWeek.inPreposition() +
+                            " ${formatDatetime(model.currentTraining!!.startedAt)}"
+                        ),
                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 )
             },
@@ -189,7 +191,7 @@ fun CurrentTrainingScreen(
                         component.onCompleteTrainingClick()
                     },
                 ) {
-                    Text("Сохранить")
+                    Text(I18nManager.strings.save)
                 }
             },
             dismissButton = {
@@ -198,7 +200,7 @@ fun CurrentTrainingScreen(
                         component.onDeleteTrainingClick()
                     },
                 ) {
-                    Text("Удалить")
+                    Text(I18nManager.strings.delete)
                 }
             },
         )

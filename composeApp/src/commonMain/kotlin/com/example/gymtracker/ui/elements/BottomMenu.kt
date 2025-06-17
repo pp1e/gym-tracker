@@ -11,7 +11,9 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.routing.RootRouter
+import com.example.gymtracker.utils.capitalize
 
 @Composable
 fun BottomMenu(
@@ -22,20 +24,20 @@ fun BottomMenu(
 ) {
     NavigationBar {
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.FitnessCenter, contentDescription = "Тренировка") },
-            label = { Text("Тренировка") },
+            icon = { Icon(Icons.Rounded.FitnessCenter, contentDescription = I18nManager.strings.training) },
+            label = { Text(I18nManager.strings.training) },
             selected = activeScreen is RootRouter.ScreenConfig.CurrentTraining,
             onClick = onTrainingClicked,
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.EditCalendar, contentDescription = "Расписание") },
-            label = { Text("Расписание") },
+            icon = { Icon(Icons.Rounded.EditCalendar, contentDescription = I18nManager.strings.schedule) },
+            label = { Text(I18nManager.strings.schedule) },
             selected = activeScreen is RootRouter.ScreenConfig.Schedule,
             onClick = onScheduleClicked,
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.Storage, contentDescription = "История") },
-            label = { Text("История") },
+            icon = { Icon(Icons.Rounded.Storage, contentDescription = I18nManager.strings.history) },
+            label = { Text(I18nManager.strings.history) },
             selected = activeScreen is RootRouter.ScreenConfig.History || activeScreen is RootRouter.ScreenConfig.Calendar,
             onClick = onHistoryClicked,
         )

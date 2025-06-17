@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.now
 import kotlinx.datetime.LocalDateTime
@@ -58,12 +59,12 @@ fun TimePickerDialog(
                     exceedsCurrentTimeError = true
                 }
             }) {
-                Text("Подтвердить")
+                Text(I18nManager.strings.confirm)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена")
+                Text(I18nManager.strings.cancel)
             }
         },
         title = { Text(title) },
@@ -76,7 +77,7 @@ fun TimePickerDialog(
             ) {
                 if (exceedsCurrentTimeError) {
                     DialogErrorMessage(
-                        text = "Выбранное время не может превышать текущее",
+                        text = I18nManager.strings.selectedTimeCannotExceedCurrentTime,
                     )
                 }
 

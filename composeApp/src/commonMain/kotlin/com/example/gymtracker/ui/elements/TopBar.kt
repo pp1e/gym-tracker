@@ -29,10 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.routing.RootRouter
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.UiConstants.WeekdaySwitcherDaySize
 import com.example.gymtracker.ui.UiConstants.WeekdaySwitcherPaddingValues
+import com.example.gymtracker.utils.capitalize
 import com.example.gymtracker.utils.currentDayOfWeek
 import kotlinx.datetime.DayOfWeek
 
@@ -40,13 +42,13 @@ private fun generateScreenTitle(activeScreen: RootRouter.ScreenConfig) =
     when (activeScreen) {
         is RootRouter.ScreenConfig.CurrentTraining -> "${
             currentDayOfWeek()
-                .russianName()
-                .replaceFirstChar { it.titlecase() }
-        }, текущая тренировка"
-        is RootRouter.ScreenConfig.EditTraining -> "Изменить тренировку"
-        is RootRouter.ScreenConfig.History -> "История тренировок"
-        is RootRouter.ScreenConfig.Schedule -> "Изменить расписание"
-        is RootRouter.ScreenConfig.Calendar -> "Календарь"
+                .translation()
+                .capitalize()
+        }, ${I18nManager.strings.currentTraining}"
+        is RootRouter.ScreenConfig.EditTraining -> I18nManager.strings.editTraining
+        is RootRouter.ScreenConfig.History -> I18nManager.strings.trainingHistory
+        is RootRouter.ScreenConfig.Schedule -> I18nManager.strings.editSchedule
+        is RootRouter.ScreenConfig.Calendar -> I18nManager.strings.calendar
     }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,7 +126,7 @@ fun TopBar(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = I18nManager.strings.back,
                     )
                 }
             }

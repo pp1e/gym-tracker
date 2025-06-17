@@ -1,50 +1,81 @@
 package com.example.gymtracker.ui.elements
 
+import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.i18n.Language
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.DayOfWeekNames
+import kotlinx.datetime.format.char
+
+private fun dayWithSuffix(day: Int): String {
+    val mod100 = day % 100
+    return if (mod100 in 11..13) {
+        "${day}th"
+    } else {
+        when (day % 10) {
+            1 -> "${day}st"
+            2 -> "${day}nd"
+            3 -> "${day}rd"
+            else -> "${day}th"
+        }
+    }
+}
 
 fun formatDatetime(datetime: LocalDateTime): String {
-    val dayOfWeekName = datetime.dayOfWeek.russianName()
+    val dayOfWeekName = datetime.dayOfWeek.translation()
     val day = datetime.dayOfMonth
-    val monthName = datetime.month.russianNameGenitive()
     val hour = datetime.hour.toString().padStart(2, '0')
     val minute = datetime.minute.toString().padStart(2, '0')
 
-    return "$dayOfWeekName, $day $monthName, $hour:$minute"
+    return when (I18nManager.currentLanguage) {
+        Language.RU -> {
+            val monthName = datetime.month.russianNameGenitive()
+            "$dayOfWeekName, $day $monthName, $hour:$minute"
+        }
+        Language.EN -> {
+            val monthName = datetime.month.translation()
+            "$dayOfWeekName, ${dayWithSuffix(day)} $monthName, $hour:$minute"
+        }
+    }
 }
 
-fun DayOfWeek.russianInPreposition() =
+fun DayOfWeek.inPreposition() =
     when (this) {
-        DayOfWeek.TUESDAY -> "во"
-        else -> "в"
+        DayOfWeek.TUESDAY -> I18nManager.strings.at2
+        else -> I18nManager.strings.at1
     }
 
-fun DayOfWeek.russianName() =
+fun DayOfWeek.translation() =
     when (this) {
-        DayOfWeek.MONDAY -> "понедельник"
-        DayOfWeek.TUESDAY -> "вторник"
-        DayOfWeek.WEDNESDAY -> "среда"
-        DayOfWeek.THURSDAY -> "четверг"
-        DayOfWeek.FRIDAY -> "пятница"
-        DayOfWeek.SATURDAY -> "суббота"
-        DayOfWeek.SUNDAY -> "воскресенье"
+        DayOfWeek.MONDAY -> I18nManager.strings.monday
+        DayOfWeek.TUESDAY -> I18nManager.strings.tuesday
+        DayOfWeek.WEDNESDAY -> I18nManager.strings.wednesday
+        DayOfWeek.THURSDAY -> I18nManager.strings.thursday
+        DayOfWeek.FRIDAY -> I18nManager.strings.friday
+        DayOfWeek.SATURDAY -> I18nManager.strings.saturday
+        DayOfWeek.SUNDAY -> I18nManager.strings.sunday
         else -> {
             println("Can't find translation for day of week: $this")
             this.name
         }
     }
 
-fun DayOfWeek.russianShortName() =
+fun DayOfWeek.shortTranslation() =
     when (this) {
-        DayOfWeek.MONDAY -> "Пн"
-        DayOfWeek.TUESDAY -> "Вт"
-        DayOfWeek.WEDNESDAY -> "Ср"
-        DayOfWeek.THURSDAY -> "Чт"
-        DayOfWeek.FRIDAY -> "Пт"
-        DayOfWeek.SATURDAY -> "Сб"
-        DayOfWeek.SUNDAY -> "Вс"
-        else -> ""
+        DayOfWeek.MONDAY -> I18nManager.strings.mondayShort
+        DayOfWeek.TUESDAY -> I18nManager.strings.tuesdayShort
+        DayOfWeek.WEDNESDAY -> I18nManager.strings.wednesdayShort
+        DayOfWeek.THURSDAY -> I18nManager.strings.thursdayShort
+        DayOfWeek.FRIDAY -> I18nManager.strings.fridayShort
+        DayOfWeek.SATURDAY -> I18nManager.strings.saturdayShort
+        DayOfWeek.SUNDAY -> I18nManager.strings.sundayShort
+        else -> {
+            println("Can't find short translation for day of week: $this")
+            this.name
+        }
     }
 
 fun Month.russianNameGenitive() =
@@ -67,20 +98,20 @@ fun Month.russianNameGenitive() =
         }
     }
 
-fun Month.russianName() =
+fun Month.translation() =
     when (this) {
-        Month.JANUARY -> "январь"
-        Month.FEBRUARY -> "февраль"
-        Month.MARCH -> "март"
-        Month.APRIL -> "апрель"
-        Month.MAY -> "май"
-        Month.JUNE -> "июнь"
-        Month.JULY -> "июль"
-        Month.AUGUST -> "август"
-        Month.SEPTEMBER -> "сентябрь"
-        Month.OCTOBER -> "октябрь"
-        Month.NOVEMBER -> "ноябрь"
-        Month.DECEMBER -> "декабрь"
+        Month.JANUARY -> I18nManager.strings.january
+        Month.FEBRUARY -> I18nManager.strings.february
+        Month.MARCH -> I18nManager.strings.march
+        Month.APRIL -> I18nManager.strings.april
+        Month.MAY -> I18nManager.strings.may
+        Month.JUNE -> I18nManager.strings.june
+        Month.JULY -> I18nManager.strings.july
+        Month.AUGUST -> I18nManager.strings.august
+        Month.SEPTEMBER -> I18nManager.strings.september
+        Month.OCTOBER -> I18nManager.strings.october
+        Month.NOVEMBER -> I18nManager.strings.november
+        Month.DECEMBER -> I18nManager.strings.december
         else -> {
             println("Can't find translation for month: $this")
             this.name

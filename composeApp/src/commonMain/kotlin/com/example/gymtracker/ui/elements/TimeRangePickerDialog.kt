@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role.Companion.Checkbox
 import androidx.compose.ui.unit.dp
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.now
 import kotlinx.datetime.LocalDateTime
@@ -68,7 +69,7 @@ fun TimeRangePickerDialog(
 
                 when {
                     (startTime > endTime) && (!endTimeNextDay) -> {
-                        errorText = "Время начала не может превышать время окончания"
+                        errorText = I18nManager.strings.startTimeCannotExceedEndTime
                         showError = true
                     }
                     else -> {
@@ -78,12 +79,12 @@ fun TimeRangePickerDialog(
                     }
                 }
             }) {
-                Text("Подтвердить")
+                Text(I18nManager.strings.confirm)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена")
+                Text(I18nManager.strings.cancel)
             }
         },
         title = { Text(title) },
@@ -100,12 +101,12 @@ fun TimeRangePickerDialog(
                     )
                 }
 
-                DialogLabel("Начало")
+                DialogLabel(I18nManager.strings.begin)
                 TimeInput(state = startTimePickerState)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                DialogLabel("Окончание")
+                DialogLabel(I18nManager.strings.end)
                 TimeInput(state = endTimePickerState)
 
                 Row(modifier = Modifier.padding(horizontal = UiConstants.defaultPadding)) {
@@ -114,7 +115,7 @@ fun TimeRangePickerDialog(
                         onCheckedChange = { endTimeNextDay = it }
                     )
                     Text(
-                        text = "Тренировка началась и закончилась в разные дни"
+                        text = I18nManager.strings.trainingStartedAndEndedOnDifferentDays,
                     )
                 }
             }

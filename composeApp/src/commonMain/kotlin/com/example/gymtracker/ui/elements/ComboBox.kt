@@ -26,6 +26,7 @@ fun ComboBoxWithInput(
     items: List<String>,
     value: String,
     onValueChange: (String) -> Unit,
+    label: String,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
@@ -46,7 +47,7 @@ fun ComboBoxWithInput(
                 onValueChange(it.text)
                 expanded = true
             },
-            label = { Text("Название упражнения") },
+            label = { Text(label) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },

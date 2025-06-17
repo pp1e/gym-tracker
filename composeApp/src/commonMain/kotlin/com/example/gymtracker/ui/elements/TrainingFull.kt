@@ -24,11 +24,8 @@ import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.safeIn
 import kotlinx.coroutines.delay
 import sh.calvin.reorderable.ReorderableColumn
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import com.example.gymtracker.i18n.I18nManager
 
 @Composable
 fun TrainingFull(
@@ -58,8 +55,8 @@ fun TrainingFull(
                 snackbarHostState.currentSnackbarData?.dismiss()
                 val result =
                     snackbarHostState.showSnackbar(
-                        message = "Упражнение удалёно",
-                        actionLabel = "Отменить",
+                        message = I18nManager.strings.exerciseDeleted.uppercase(),
+                        actionLabel = I18nManager.strings.cancel.uppercase(),
                         duration = SnackbarDuration.Short,
                     )
                 if (result == SnackbarResult.ActionPerformed) {

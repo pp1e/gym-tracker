@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.domain.TrainingProgramShort
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.datetime.LocalDateTime
 
@@ -69,7 +70,7 @@ fun ColumnScope.TrainingProgramTitle(
                 value =
                     EditableTitleValue.Nullable(
                         value = value,
-                        placeholder = "Выберите программу",
+                        placeholder = I18nManager.strings.selectProgram,
                     ),
                 onValueChange = onValueChange,
                 onDone = {
@@ -82,7 +83,7 @@ fun ColumnScope.TrainingProgramTitle(
                 onDismissRequest = { expanded = false },
             ) {
                 ExpandedMenuItem(
-                    text = "Создать новую программу",
+                    text = I18nManager.strings.createNewProgram,
                     onChosen = {
                         onCreateNewClick()
                         expanded = false

@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
 import com.example.gymtracker.ui.elements.AdditionalTopBar
@@ -31,6 +32,7 @@ import com.example.gymtracker.ui.elements.ConfirmationDialog
 import com.example.gymtracker.ui.elements.TimeRangeBar
 import com.example.gymtracker.ui.elements.TimeRangePickerDialog
 import com.example.gymtracker.ui.elements.TrainingFull
+import com.example.gymtracker.utils.capitalize
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -116,15 +118,15 @@ fun EditTrainingScreen(
                         .padding(UiConstants.FABPanelPadding)
                         .align(Alignment.BottomCenter),
             ) {
-                Icon(Icons.Rounded.Add, contentDescription = "Добавить")
-                Text("Добавить")
+                Icon(Icons.Rounded.Add, contentDescription = I18nManager.strings.add.capitalize())
+                Text(I18nManager.strings.add.capitalize())
             }
         }
     }
 
     if (showDeleteTrainingDialog) {
         ConfirmationDialog(
-            title = "Удалить тренировку из истории?",
+            title = I18nManager.strings.deleteTrainingFromHistory,
             onConfirm = { component.onDeleteTrainingClick() },
             onDismiss = { showDeleteTrainingDialog = false }
         )
@@ -132,7 +134,7 @@ fun EditTrainingScreen(
 
     if (showChangeTrainingDurationDialog && model.completedTraining != null) {
         TimeRangePickerDialog(
-            title = "Укажите время начала и конца тренировки",
+            title = I18nManager.strings.specifyStartAndEndTrainingTime,
             initialStartTime = model.completedTraining!!.startedAt.time,
             initialEndTime = model.completedTraining!!.let {
                 val timeZone = TimeZone.currentSystemDefault()

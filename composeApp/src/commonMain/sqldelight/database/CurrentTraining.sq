@@ -25,7 +25,7 @@ clean:
 
 insertDefaults:
     INSERT INTO current_training (name, training_id)
-    SELECT "Тренировка без имени", :training_id;
+    SELECT :default_name, :training_id;
 
 insert:
     INSERT INTO current_training (name, training_id)

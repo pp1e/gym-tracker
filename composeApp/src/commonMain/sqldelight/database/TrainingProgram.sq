@@ -22,7 +22,7 @@ maxId:
 
 insert:
     INSERT INTO training_program (id, name, training_id)
-        VALUES (:id, "Программа без имени " || :id, :training_id);
+        VALUES (:id, :default_name || " " || :id, :training_id);
 
 updateName:
     UPDATE training_program SET name = :name WHERE id = :id;

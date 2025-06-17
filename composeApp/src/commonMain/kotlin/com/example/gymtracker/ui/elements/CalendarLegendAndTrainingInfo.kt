@@ -31,7 +31,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.domain.CompletedTrainingShort
 import com.example.gymtracker.domain.CompletedTrainingTitle
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
+import com.example.gymtracker.utils.capitalize
 
 private val BUTTON_HEIGHT = 50.dp
 private val SHAPE_SIZE = 16.dp
@@ -44,7 +46,10 @@ fun CalendarLegendAndTrainingInfo(
     onTrainingClick: (Long) -> Unit,
 ) {
     var selectedIndex by remember { mutableStateOf(1) }
-    val segments = listOf("Тренировки", "Легенда")
+    val segments = listOf(
+        I18nManager.strings.trainings,
+        I18nManager.strings.legend,
+    )
     val selectedColor = MaterialTheme.colorScheme.surface
 
     LaunchedEffect(selectedCompletedTrainings) {

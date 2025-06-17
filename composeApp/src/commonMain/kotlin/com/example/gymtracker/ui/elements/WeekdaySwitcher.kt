@@ -53,7 +53,7 @@ fun WeekdaySwitcher(
                         ),
             ) {
                 Text(
-                    text = day.russianShortName(),
+                    text = day.shortTranslation(),
                     style =
                         TextStyle(
                             fontSize = MaterialTheme.typography.titleMedium.fontSize,

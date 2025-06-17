@@ -15,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.utils.capitalize
 import com.kizitonwose.calendar.core.YearMonth
 import dev.darkokoa.datetimewheelpicker.core.WheelTextPicker
 import kotlinx.datetime.Month
@@ -39,7 +41,7 @@ fun MonthYearPickerDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Выберите месяц и год") },
+        title = { Text(I18nManager.strings.selectMonthAndYear) },
         text = {
             Row(
                 modifier = Modifier
@@ -47,7 +49,7 @@ fun MonthYearPickerDialog(
                 horizontalArrangement = Arrangement.Center
             ) {
                 WheelTextPicker(
-                    texts = months.map { it.russianName() },
+                    texts = months.map { it.translation().capitalize() },
                     rowCount = 3,
                     startIndex = months.indexOf(initialMonth),
                     onScrollFinished = {
@@ -79,12 +81,12 @@ fun MonthYearPickerDialog(
                 )
                 onDismiss()
             }) {
-                Text("ОК")
+                Text(I18nManager.strings.ok)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена")
+                Text(I18nManager.strings.cancel)
             }
         }
     )

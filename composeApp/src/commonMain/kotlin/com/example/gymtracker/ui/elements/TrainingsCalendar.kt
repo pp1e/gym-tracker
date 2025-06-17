@@ -33,7 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.domain.CompletedTrainingShort
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
+import com.example.gymtracker.utils.capitalize
 import com.kizitonwose.calendar.compose.CalendarLayoutInfo
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -225,7 +227,7 @@ private fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
-                text = dayOfWeek.russianShortName(),
+                text = dayOfWeek.shortTranslation(),
                 style = MaterialTheme.typography.titleMedium,
             )
         }
@@ -250,7 +252,7 @@ private fun CalendarTitle(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                contentDescription = "Previous",
+                contentDescription = I18nManager.strings.previous,
             )
         }
         Box(
@@ -266,8 +268,8 @@ private fun CalendarTitle(
                     .clickable(onClick = onTextClick),
                 text = "${
                     currentMonth.month
-                        .russianName()
-                        .replaceFirstChar { it.titlecase() }
+                        .translation()
+                        .capitalize()
                 }, ${currentMonth.year}",
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 textAlign = TextAlign.Center,
@@ -279,7 +281,7 @@ private fun CalendarTitle(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                contentDescription = "Next",
+                contentDescription = I18nManager.strings.next,
             )
         }
     }

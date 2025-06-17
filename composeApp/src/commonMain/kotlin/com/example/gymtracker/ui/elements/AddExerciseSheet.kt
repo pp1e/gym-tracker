@@ -18,7 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
+import com.example.gymtracker.utils.capitalize
 
 private val ELEMENTS_VERTICAL_PADDING = 10.dp
 
@@ -66,6 +68,7 @@ fun AddExerciseSheet(
                 items = exerciseTemplateNames,
                 value = exerciseName,
                 onValueChange = onExerciseNameChanged,
+                label = I18nManager.strings.exerciseName,
             )
 
             Row(
@@ -84,17 +87,17 @@ fun AddExerciseSheet(
                             .align(Alignment.Start)
 
                     Label(
-                        text = "Подходы",
+                        text = I18nManager.strings.approaches,
                         modifier = modifier,
                     )
 
                     Label(
-                        text = "Повторения",
+                        text = I18nManager.strings.repetitions,
                         modifier = modifier,
                     )
 
                     Label(
-                        text = "Вес",
+                        text = I18nManager.strings.weight,
                         modifier = modifier,
                     )
                 }
@@ -136,7 +139,7 @@ fun AddExerciseSheet(
                 },
             ) {
                 Text(
-                    text = "Готово",
+                    text = I18nManager.strings.done,
                     fontSize = UiConstants.defaultFontSize,
                 )
             }

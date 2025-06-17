@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.datetime.LocalTime
 import kotlin.time.Duration
@@ -35,7 +36,7 @@ fun TimeRangeBar(
                     start = UiConstants.defaultPadding,
                 ),
             imageVector = Icons.Rounded.Edit,
-            contentDescription = "Change Time",
+            contentDescription = I18nManager.strings.editTime,
             tint = MaterialTheme.colorScheme.onSurface,
         )
     }
@@ -45,7 +46,7 @@ fun TimeRangeBar(
     ) {
         Icon(
             imageVector = Icons.Rounded.Delete,
-            contentDescription = "Delete Training",
+            contentDescription = I18nManager.strings.deleteTraining,
             tint = MaterialTheme.colorScheme.onSurface,
         )
     }

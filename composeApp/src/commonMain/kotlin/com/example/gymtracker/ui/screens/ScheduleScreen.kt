@@ -20,10 +20,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.schedule.ScheduleComponent
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.elements.AddExerciseSheet
 import com.example.gymtracker.ui.elements.SingleFloatingButtonModule
 import com.example.gymtracker.ui.elements.TrainingFull
 import com.example.gymtracker.ui.elements.TrainingProgramTitle
+import com.example.gymtracker.utils.capitalize
 
 @Composable
 fun ScheduleScreen(
@@ -73,7 +75,7 @@ fun ScheduleScreen(
         if (model.trainingProgram != null) {
             SingleFloatingButtonModule(
                 iconVector = Icons.Rounded.Add,
-                text = "Добавить",
+                text = I18nManager.strings.add.capitalize(),
                 onClick = { showBottomSheet = true },
             )
         }
