@@ -8,9 +8,7 @@ import androidx.compose.ui.Modifier
 import com.example.gymtracker.ui.UiConstants
 
 @Composable
-fun DialogErrorMessage(
-    text: String,
-) {
+fun DialogErrorMessage(text: String) {
     Text(
         text = text,
         color = MaterialTheme.colorScheme.error,

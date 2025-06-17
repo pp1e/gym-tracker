@@ -1,7 +1,6 @@
 package com.example.gymtracker.ui.elements
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -121,7 +120,7 @@ fun CurrentExerciseApproaches(
                         requestApproachDeleting(approach.id)
                         pendingDeletes.add(approach.id)
                     },
-                    initialVisibility = approach.id safeIn previousApproachIds
+                    initialVisibility = approach.id safeIn previousApproachIds,
                 ) {
                     Box(
                         modifier =

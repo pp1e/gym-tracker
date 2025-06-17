@@ -138,7 +138,7 @@ class ScheduleComponent(
                 approachFrom = approachFrom,
                 approachTo = approachTo,
                 exerciseId = exerciseId,
-            )
+            ),
         )
     }
 
@@ -150,7 +150,7 @@ class ScheduleComponent(
             ScheduleStore.Intent.SwapExerciseOrdinals(
                 exerciseFrom = exerciseFrom,
                 exerciseTo = exerciseTo,
-            )
+            ),
         )
     }
 }

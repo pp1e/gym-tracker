@@ -8,16 +8,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.calendar.CalendarComponent
-import com.example.gymtracker.ui.elements.TrainingsCalendar
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import com.example.gymtracker.domain.CompletedTrainingShort
 import com.example.gymtracker.ui.elements.CalendarLegendAndTrainingInfo
+import com.example.gymtracker.ui.elements.TrainingsCalendar
 
 @Composable
 fun CalendarScreen(
@@ -29,18 +29,20 @@ fun CalendarScreen(
         mutableStateOf(emptyList())
     }
 
-    Column (
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+    Column(
+        modifier =
+            Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TrainingsCalendar(
             completedTrainings = model.completedTrainings,
             onDaySelected = { localDate ->
-                selectedCompletedTrainings = model.completedTrainings
-                    .filter { it.startedAt.date == localDate }
+                selectedCompletedTrainings =
+                    model.completedTrainings
+                        .filter { it.startedAt.date == localDate }
             },
         )
 

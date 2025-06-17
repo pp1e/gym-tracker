@@ -2,15 +2,15 @@ package com.example.gymtracker.database.databases
 
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.map
-import com.example.gymtracker.database.utils.awaitMaxId
-import com.example.gymtracker.database.utils.execute
-import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.operations.executeSwapApproachOrdinalsOperation
 import com.example.gymtracker.database.operations.executeSwapExerciseOrdinalsOperation
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
+import com.example.gymtracker.database.utils.awaitMaxId
+import com.example.gymtracker.database.utils.execute
+import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.utils.zipAndExecute
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
@@ -64,28 +64,28 @@ class ScheduleDatabase(
             trainingProgramQueries,
             trainingQueries,
         ) { trainingScheduleQueries, trainingProgramQueries, trainingQueries ->
-                val trainingId =
-                    trainingQueries
-                        .maxId()
-                        .awaitMaxId { it.MAX }
-                trainingQueries.insert(
-                    id = trainingId,
+            val trainingId =
+                trainingQueries
+                    .maxId()
+                    .awaitMaxId { it.MAX }
+            trainingQueries.insert(
+                id = trainingId,
+            )
+            val trainingProgramId =
+                trainingProgramQueries
+                    .maxId()
+                    .awaitMaxId { it.MAX }
+            trainingProgramQueries.insert(
+                id = trainingProgramId,
+                training_id = trainingId,
+                default_name = I18nManager.strings.unnamedProgram,
+            )
+            trainingScheduleQueries
+                .insert(
+                    dayOfWeek = dayOfWeek.isoDayNumber.toLong(),
+                    training_program_id = trainingProgramId,
                 )
-                val trainingProgramId =
-                    trainingProgramQueries
-                        .maxId()
-                        .awaitMaxId { it.MAX }
-                trainingProgramQueries.insert(
-                    id = trainingProgramId,
-                    training_id = trainingId,
-                    default_name = I18nManager.strings.unnamedProgram,
-                )
-                trainingScheduleQueries
-                    .insert(
-                        dayOfWeek = dayOfWeek.isoDayNumber.toLong(),
-                        training_program_id = trainingProgramId,
-                    )
-            }
+        }
 
     fun setProgram(trainingProgramId: Long) =
         trainingScheduleQueries
@@ -175,7 +175,6 @@ class ScheduleDatabase(
             .execute {
                 it.delete(exerciseId)
             }
-
 
     fun swapApproachOrdinals(
         approachFrom: Approach,

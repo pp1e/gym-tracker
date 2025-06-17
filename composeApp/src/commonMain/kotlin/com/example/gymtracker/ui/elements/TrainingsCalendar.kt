@@ -85,18 +85,20 @@ fun TrainingsCalendar(
     completedTrainings: List<CompletedTrainingShort>,
     onDaySelected: (LocalDate) -> Unit,
 ) {
-    val startMonth = completedTrainings.minOfOrNull { it.startedAt }?.let {
-        YearMonth(
-            year = it.year,
-            month = it.month,
-        )
-    } ?: YearMonth.now()
+    val startMonth =
+        completedTrainings.minOfOrNull { it.startedAt }?.let {
+            YearMonth(
+                year = it.year,
+                month = it.month,
+            )
+        } ?: YearMonth.now()
 
-    val calendarState = rememberCalendarState(
-        startMonth = startMonth,
-        endMonth = YearMonth.now(),
-        firstVisibleMonth = YearMonth.now(),
-    )
+    val calendarState =
+        rememberCalendarState(
+            startMonth = startMonth,
+            endMonth = YearMonth.now(),
+            firstVisibleMonth = YearMonth.now(),
+        )
     val visibleMonth = rememberFirstMostVisibleMonth(calendarState, viewportPercent = 90f)
     var selectedDay: CalendarDay? by remember { mutableStateOf(null) }
     var showMonthAndYearPickerDialog by remember { mutableStateOf(false) }
@@ -116,15 +118,16 @@ fun TrainingsCalendar(
         },
         onTextClick = {
             showMonthAndYearPickerDialog = true
-        }
+        },
     )
 
     HorizontalCalendar(
         state = calendarState,
         dayContent = { calendarDay ->
-            val completedTraining =  completedTrainings.find {
-                it.startedAt.date == calendarDay.date
-            }
+            val completedTraining =
+                completedTrainings.find {
+                    it.startedAt.date == calendarDay.date
+                }
             Day(
                 day = calendarDay,
                 isSelected = calendarDay == selectedDay,
@@ -134,25 +137,27 @@ fun TrainingsCalendar(
                         onDaySelected(calendarDay.date)
                     }
                 },
-                borderColor =completedTraining?.color,
+                borderColor = completedTraining?.color,
             )
         },
         monthHeader = { month ->
             DaysOfWeekTitle(
-                daysOfWeek = month.weekDays.first().map { it.date.dayOfWeek }
+                daysOfWeek = month.weekDays.first().map { it.date.dayOfWeek },
             )
             HorizontalDivider(
-                modifier = Modifier
-                    .padding(top = UiConstants.defaultPadding)
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .padding(top = UiConstants.defaultPadding)
+                        .fillMaxWidth(),
             )
-        }
+        },
     )
 
     HorizontalDivider(
-        modifier = Modifier
-            .padding(bottom = UiConstants.defaultPadding)
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .padding(bottom = UiConstants.defaultPadding)
+                .fillMaxWidth(),
     )
 
     if (showMonthAndYearPickerDialog) {
@@ -168,7 +173,7 @@ fun TrainingsCalendar(
                 coroutineScope.launch {
                     calendarState.animateScrollToMonth(yearMonth)
                 }
-            }
+            },
         )
     }
 }
@@ -184,35 +189,38 @@ private fun Day(
     onClick: (CalendarDay) -> Unit,
     borderColor: Color? = null,
 ) {
-    val borderColorDimmed = borderColor?.let {
-        when (day.position) {
-            DayPosition.MonthDate -> if (isSelected) null else borderColor.copy(alpha = BORDER_DIMMING_RATIO)
-            else -> borderColor.copy(alpha = OUT_DAY_BORDER_DIMMING_RATIO)
-        }
-    } ?: Color.Transparent
+    val borderColorDimmed =
+        borderColor?.let {
+            when (day.position) {
+                DayPosition.MonthDate -> if (isSelected) null else borderColor.copy(alpha = BORDER_DIMMING_RATIO)
+                else -> borderColor.copy(alpha = OUT_DAY_BORDER_DIMMING_RATIO)
+            }
+        } ?: Color.Transparent
     Box(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .padding(UiConstants.defaultPadding / 2)
-            .clip(CircleShape)
-            .background(color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-            .border(
-                width = 2.dp,
-                color = borderColorDimmed,
-                shape = CircleShape,
-            )
-            .clickable(
-                enabled = day.position == DayPosition.MonthDate,
-                onClick = { onClick(day) },
-                indication = null,
-                interactionSource = null,
-            ),
+        modifier =
+            Modifier
+                .aspectRatio(1f)
+                .padding(UiConstants.defaultPadding / 2)
+                .clip(CircleShape)
+                .background(color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                .border(
+                    width = 2.dp,
+                    color = borderColorDimmed,
+                    shape = CircleShape,
+                )
+                .clickable(
+                    enabled = day.position == DayPosition.MonthDate,
+                    onClick = { onClick(day) },
+                    indication = null,
+                    interactionSource = null,
+                ),
         contentAlignment = Alignment.Center,
     ) {
-        val textColor = when (day.position) {
-            DayPosition.MonthDate -> if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
-            else -> MaterialTheme.colorScheme.onBackground.copy(alpha = OUT_DAY_DIMMING_RATIO)
-        }
+        val textColor =
+            when (day.position) {
+                DayPosition.MonthDate -> if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
+                else -> MaterialTheme.colorScheme.onBackground.copy(alpha = OUT_DAY_DIMMING_RATIO)
+            }
         Text(
             text = day.date.dayOfMonth.toString(),
             color = textColor,
@@ -242,9 +250,10 @@ private fun CalendarTitle(
     onPreviousClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.padding(
-            vertical = UiConstants.defaultPadding,
-        ),
+        modifier =
+            Modifier.padding(
+                vertical = UiConstants.defaultPadding,
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
@@ -256,16 +265,18 @@ private fun CalendarTitle(
             )
         }
         Box(
-            modifier = Modifier
-                .weight(1f)
+            modifier =
+                Modifier
+                    .weight(1f),
         ) {
             Text(
-                modifier = Modifier
-                    .padding(
-                        horizontal = UiConstants.defaultPadding,
-                    )
-                    .align(Alignment.Center)
-                    .clickable(onClick = onTextClick),
+                modifier =
+                    Modifier
+                        .padding(
+                            horizontal = UiConstants.defaultPadding,
+                        )
+                        .align(Alignment.Center)
+                        .clickable(onClick = onTextClick),
                 text = "${
                     currentMonth.month
                         .translation()

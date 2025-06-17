@@ -1,8 +1,8 @@
 package com.example.gymtracker.database.operations
 
 import app.cash.sqldelight.async.coroutines.awaitAsOne
-import com.example.gymtracker.database.utils.awaitMaxId
 import com.example.gymtracker.database.databases.NewOrExistingExerciseTemplate
+import com.example.gymtracker.database.utils.awaitMaxId
 import database.ApproachQueries
 import database.ExerciseQueries
 import database.ExerciseTemplateQueries

@@ -54,8 +54,7 @@ fun ReorderableScope.CurrentExercise(
             visible = expanded,
             enter = expandVertically(),
             exit = shrinkVertically(),
-        )
-        {
+        ) {
             CurrentExerciseApproaches(
                 snackbarHostState = snackbarHostState,
                 approaches = exercise.approaches,

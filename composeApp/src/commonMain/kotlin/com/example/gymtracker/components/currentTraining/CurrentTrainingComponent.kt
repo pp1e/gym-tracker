@@ -148,7 +148,7 @@ class CurrentTrainingComponent(
 
     fun onStartedAtUpdate(startedAt: LocalDateTime) {
         store.accept(
-            CurrentTrainingStore.Intent.UpdateStartedAt(startedAt)
+            CurrentTrainingStore.Intent.UpdateStartedAt(startedAt),
         )
     }
 
@@ -162,7 +162,7 @@ class CurrentTrainingComponent(
                 approachFrom = approachFrom,
                 approachTo = approachTo,
                 exerciseId = exerciseId,
-            )
+            ),
         )
     }
 
@@ -174,7 +174,7 @@ class CurrentTrainingComponent(
             CurrentTrainingStore.Intent.SwapExerciseOrdinals(
                 exerciseFrom = exerciseFrom,
                 exerciseTo = exerciseTo,
-            )
+            ),
         )
     }
 }

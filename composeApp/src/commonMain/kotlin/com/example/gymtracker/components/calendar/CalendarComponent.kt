@@ -6,16 +6,13 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.base.invoke
-import com.example.gymtracker.components.history.CompletedTrainingMonth
-import com.example.gymtracker.components.history.HistoryStoreProvider
 import com.example.gymtracker.components.history.stateToModel
 import com.example.gymtracker.database.databases.CalendarDatabase
-import com.example.gymtracker.database.databases.HistoryDatabase
 import com.example.gymtracker.domain.CompletedTrainingShort
 import com.example.gymtracker.domain.CompletedTrainingTitle
 import com.example.gymtracker.utils.asValue
 
-class CalendarComponent (
+class CalendarComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
     database: CalendarDatabase,

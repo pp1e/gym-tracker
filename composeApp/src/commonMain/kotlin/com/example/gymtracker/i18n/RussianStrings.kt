@@ -1,6 +1,6 @@
 package com.example.gymtracker.i18n
 
-object RussianStrings: Strings {
+object RussianStrings : Strings {
     override val monday = "понедельник"
     override val tuesday = "вторник"
     override val wednesday = "среда"

@@ -138,10 +138,12 @@ class EditTrainingComponent(
         startedAt: LocalDateTime,
         duration: Duration,
     ) {
-        store.accept(EditTrainingStore.Intent.UpdateTime(
-            startedAt = startedAt,
-            duration = duration,
-        ))
+        store.accept(
+            EditTrainingStore.Intent.UpdateTime(
+                startedAt = startedAt,
+                duration = duration,
+            ),
+        )
     }
 
     fun onApproachesSwap(
@@ -154,7 +156,7 @@ class EditTrainingComponent(
                 approachFrom = approachFrom,
                 approachTo = approachTo,
                 exerciseId = exerciseId,
-            )
+            ),
         )
     }
 
@@ -166,7 +168,7 @@ class EditTrainingComponent(
             EditTrainingStore.Intent.SwapExerciseOrdinals(
                 exerciseFrom = exerciseFrom,
                 exerciseTo = exerciseTo,
-            )
+            ),
         )
     }
 }

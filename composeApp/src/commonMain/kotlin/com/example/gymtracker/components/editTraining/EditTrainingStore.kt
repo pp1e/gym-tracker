@@ -61,12 +61,12 @@ internal interface EditTrainingStore : Store<EditTrainingStore.Intent, EditTrain
             val weight: Float,
         ) : Intent()
 
-        data object DeleteTraining: Intent()
+        data object DeleteTraining : Intent()
 
         data class UpdateTime(
             val startedAt: LocalDateTime,
             val duration: Duration,
-        ): Intent()
+        ) : Intent()
 
         data class SwapApproachOrdinals(
             val approachFrom: Approach,

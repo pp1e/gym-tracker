@@ -219,16 +219,18 @@ internal class ScheduleStoreProvider(
                 dispatch(
                     Msg.WeightChanged(intent.weight),
                 )
-            is ScheduleStore.Intent.SwapApproachOrdinals -> swapApproachOrdinals(
-                approachFrom = intent.approachFrom,
-                approachTo = intent.approachTo,
-                exerciseId = intent.exerciseId,
-            )
-            is ScheduleStore.Intent.SwapExerciseOrdinals -> swapExerciseOrdinals(
-                exerciseFrom = intent.exerciseFrom,
-                exerciseTo = intent.exerciseTo,
-                getState = getState,
-            )
+            is ScheduleStore.Intent.SwapApproachOrdinals ->
+                swapApproachOrdinals(
+                    approachFrom = intent.approachFrom,
+                    approachTo = intent.approachTo,
+                    exerciseId = intent.exerciseId,
+                )
+            is ScheduleStore.Intent.SwapExerciseOrdinals ->
+                swapExerciseOrdinals(
+                    exerciseFrom = intent.exerciseFrom,
+                    exerciseTo = intent.exerciseTo,
+                    getState = getState,
+                )
         }
 
         private fun addExercise(getState: () -> ScheduleStore.State) {

@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.utils.capitalize
 
 private val ELEMENTS_VERTICAL_PADDING = 10.dp
 
@@ -39,9 +38,10 @@ fun AddExerciseSheet(
     onWeightChanged: (Float) -> Unit,
     onAddExerciseClicked: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val sheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     ModalBottomSheet(
         sheetState = sheetState,
@@ -72,9 +72,10 @@ fun AddExerciseSheet(
             )
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically,
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                //                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Column {
@@ -103,10 +104,11 @@ fun AddExerciseSheet(
                 }
 
                 Column {
-                    val modifier = Modifier
-                        .padding(
-                            bottom = ELEMENTS_VERTICAL_PADDING,
-                        )
+                    val modifier =
+                        Modifier
+                            .padding(
+                                bottom = ELEMENTS_VERTICAL_PADDING,
+                            )
 
                     NumberInput(
                         modifier = modifier,

@@ -7,20 +7,19 @@ import com.example.gymtracker.domain.CompletedTrainingShort
 import database.completedTraining.GetList
 import kotlinx.datetime.LocalDateTime
 
-suspend fun executeGetCompletedTrainingsShortQuery(
-    getCompletedTrainingsShortQuery: Query<GetList>
-) = getCompletedTrainingsShortQuery
-    .awaitAsList()
-    .mapNotNull { completedTraining ->
-        completedTraining.name?.let { name ->
-            CompletedTrainingShort(
-                id = completedTraining.id,
-                name = name,
-                color = completedTraining.color?.let(::Color),
-                startedAt =
-                    LocalDateTime.parse(
-                        completedTraining.started_at,
-                    ),
-            )
+suspend fun executeGetCompletedTrainingsShortQuery(getCompletedTrainingsShortQuery: Query<GetList>) =
+    getCompletedTrainingsShortQuery
+        .awaitAsList()
+        .mapNotNull { completedTraining ->
+            completedTraining.name?.let { name ->
+                CompletedTrainingShort(
+                    id = completedTraining.id,
+                    name = name,
+                    color = completedTraining.color?.let(::Color),
+                    startedAt =
+                        LocalDateTime.parse(
+                            completedTraining.started_at,
+                        ),
+                )
+            }
         }
-    }

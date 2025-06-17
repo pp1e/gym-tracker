@@ -4,7 +4,7 @@ import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.zip
 import kotlinx.coroutines.CoroutineScope
 
-fun <QUERY1: Any, QUERY2: Any> zipAndExecute(
+fun <QUERY1 : Any, QUERY2 : Any> zipAndExecute(
     query1: Single<QUERY1>,
     query2: Single<QUERY2>,
     block: suspend CoroutineScope.(QUERY1, QUERY2) -> Unit,
@@ -14,7 +14,7 @@ fun <QUERY1: Any, QUERY2: Any> zipAndExecute(
     block(query1, query2)
 }
 
-fun <QUERY1: Any, QUERY2: Any, QUERY3: Any> zipAndExecute(
+fun <QUERY1 : Any, QUERY2 : Any, QUERY3 : Any> zipAndExecute(
     query1: Single<QUERY1>,
     query2: Single<QUERY2>,
     query3: Single<QUERY3>,
@@ -25,7 +25,7 @@ fun <QUERY1: Any, QUERY2: Any, QUERY3: Any> zipAndExecute(
     block(query1, query2, query3)
 }
 
-fun <QUERY1: Any, QUERY2: Any, QUERY3: Any, QUERY4: Any> zipAndExecute(
+fun <QUERY1 : Any, QUERY2 : Any, QUERY3 : Any, QUERY4 : Any> zipAndExecute(
     query1: Single<QUERY1>,
     query2: Single<QUERY2>,
     query3: Single<QUERY3>,
@@ -37,7 +37,7 @@ fun <QUERY1: Any, QUERY2: Any, QUERY3: Any, QUERY4: Any> zipAndExecute(
     block(query1, query2, query3, query4)
 }
 
-fun <QUERY1: Any, QUERY2: Any, QUERY3: Any, QUERY4: Any, QUERY5: Any> zipAndExecute(
+fun <QUERY1 : Any, QUERY2 : Any, QUERY3 : Any, QUERY4 : Any, QUERY5 : Any> zipAndExecute(
     query1: Single<QUERY1>,
     query2: Single<QUERY2>,
     query3: Single<QUERY3>,

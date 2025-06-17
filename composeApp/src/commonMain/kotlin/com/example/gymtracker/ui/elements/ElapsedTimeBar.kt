@@ -11,9 +11,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.gymtracker.i18n.I18nManager
@@ -37,10 +37,11 @@ fun ElapsedTimeBar(
         onClick = onEditClick,
     ) {
         Icon(
-            modifier = Modifier
-                .padding(
-                    start = UiConstants.defaultPadding,
-                ),
+            modifier =
+                Modifier
+                    .padding(
+                        start = UiConstants.defaultPadding,
+                    ),
             imageVector = Icons.Rounded.Edit,
             contentDescription = I18nManager.strings.selectStartedAt,
             tint = MaterialTheme.colorScheme.onSurface,
@@ -69,9 +70,7 @@ fun ElapsedTimeBar(
 }
 
 @Composable
-private fun ElapsedTime(
-    startTime: Instant,
-) {
+private fun ElapsedTime(startTime: Instant) {
     var currentTime by remember { mutableStateOf(Clock.System.now()) }
 
     LaunchedEffect(Unit) {
@@ -88,7 +87,8 @@ private fun ElapsedTime(
     val seconds = totalSeconds % 60
 
     Text(
-        text = hours.toString().padStart(2, '0') +
+        text =
+            hours.toString().padStart(2, '0') +
                 ":${minutes.toString().padStart(2, '0')}" +
                 ":${seconds.toString().padStart(2, '0')}",
         style = MaterialTheme.typography.headlineMedium,

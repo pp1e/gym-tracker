@@ -29,12 +29,12 @@ fun MonthYearPickerDialog(
     minMonth: Month,
     onDismiss: () -> Unit,
     onYearMonthSelected: (YearMonth) -> Unit,
-)
-{
+) {
     val years = (minYear..YearMonth.now().year).toList()
-    val months = Month.entries.filter {
-        it.ordinal >= minMonth.ordinal && it.ordinal <= YearMonth.now().month.ordinal
-    }
+    val months =
+        Month.entries.filter {
+            it.ordinal >= minMonth.ordinal && it.ordinal <= YearMonth.now().month.ordinal
+        }
 
     var selectedYearIndex by remember { mutableStateOf(years.indexOf(initialYear)) }
     var selectedMonthIndex by remember { mutableStateOf(months.indexOf(initialMonth)) }
@@ -44,9 +44,10 @@ fun MonthYearPickerDialog(
         title = { Text(I18nManager.strings.selectMonthAndYear) },
         text = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
             ) {
                 WheelTextPicker(
                     texts = months.map { it.translation().capitalize() },
@@ -55,7 +56,7 @@ fun MonthYearPickerDialog(
                     onScrollFinished = {
                         selectedMonthIndex = it
                         it
-                    }
+                    },
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -67,7 +68,7 @@ fun MonthYearPickerDialog(
                     onScrollFinished = {
                         selectedYearIndex = it
                         it
-                    }
+                    },
                 )
             }
         },
@@ -77,7 +78,7 @@ fun MonthYearPickerDialog(
                     YearMonth(
                         year = years[selectedYearIndex],
                         month = months[selectedMonthIndex],
-                    )
+                    ),
                 )
                 onDismiss()
             }) {
@@ -88,6 +89,6 @@ fun MonthYearPickerDialog(
             TextButton(onClick = onDismiss) {
                 Text(I18nManager.strings.cancel)
             }
-        }
+        },
     )
 }

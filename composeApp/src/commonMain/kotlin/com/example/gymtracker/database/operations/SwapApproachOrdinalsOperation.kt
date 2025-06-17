@@ -10,27 +10,29 @@ suspend fun executeSwapApproachOrdinalsOperation(
     exerciseId: Long,
     approachQueries: ApproachQueries,
 ) = approachQueries.transaction {
-    val approaches = executeGetApproachesQuery(
-        approachQueries.get(
-            exercise_id = exerciseId
+    val approaches =
+        executeGetApproachesQuery(
+            approachQueries.get(
+                exercise_id = exerciseId,
+            ),
         )
-    )
     val approachesToUpdate: List<Approach>
     val newApproachFromOrdinal: Int
 
     if (approachFrom.ordinal < approachTo.ordinal) {
         newApproachFromOrdinal = approachTo.ordinal + 1
-        approachesToUpdate = approaches.filter {
-            it.ordinal > approachTo.ordinal
-        }
-            .sortedByDescending { it.ordinal }
-    }
-    else {
+        approachesToUpdate =
+            approaches.filter {
+                it.ordinal > approachTo.ordinal
+            }
+                .sortedByDescending { it.ordinal }
+    } else {
         newApproachFromOrdinal = approachTo.ordinal
-        approachesToUpdate = approaches.filter {
-            it.ordinal >= approachTo.ordinal
-        }
-            .sortedByDescending { it.ordinal }
+        approachesToUpdate =
+            approaches.filter {
+                it.ordinal >= approachTo.ordinal
+            }
+                .sortedByDescending { it.ordinal }
     }
 
     for (approach in approachesToUpdate) {

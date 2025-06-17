@@ -1,6 +1,5 @@
 package com.example.gymtracker.database.operations
 
-import database.CompletedTrainingQueries
 import database.CompletedTrainingTitleQueries
 
 suspend fun executeDeleteCompletedTrainingTitleOperation(

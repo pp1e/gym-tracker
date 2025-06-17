@@ -11,6 +11,7 @@ data class CompletedTrainingTitle(
         color: Color?,
     ) : this(
         name = name,
-        color = color ?: Color(4281348142) // Brown
+        // Brown
+        color = color ?: Color(4281348142),
     )
 }

@@ -182,21 +182,24 @@ internal class EditTrainingStoreProvider(
                     Msg.WeightChanged(intent.weight),
                 )
             is EditTrainingStore.Intent.DeleteTraining -> deleteTraining(getState)
-            is EditTrainingStore.Intent.UpdateTime -> updateTime(
-                startedAt = intent.startedAt,
-                duration = intent.duration,
-                getState = getState,
-            )
-            is EditTrainingStore.Intent.SwapApproachOrdinals -> swapApproachOrdinals(
-                approachFrom = intent.approachFrom,
-                approachTo = intent.approachTo,
-                exerciseId = intent.exerciseId,
-            )
-            is EditTrainingStore.Intent.SwapExerciseOrdinals -> swapExerciseOrdinals(
-                exerciseFrom = intent.exerciseFrom,
-                exerciseTo = intent.exerciseTo,
-                getState = getState,
-            )
+            is EditTrainingStore.Intent.UpdateTime ->
+                updateTime(
+                    startedAt = intent.startedAt,
+                    duration = intent.duration,
+                    getState = getState,
+                )
+            is EditTrainingStore.Intent.SwapApproachOrdinals ->
+                swapApproachOrdinals(
+                    approachFrom = intent.approachFrom,
+                    approachTo = intent.approachTo,
+                    exerciseId = intent.exerciseId,
+                )
+            is EditTrainingStore.Intent.SwapExerciseOrdinals ->
+                swapExerciseOrdinals(
+                    exerciseFrom = intent.exerciseFrom,
+                    exerciseTo = intent.exerciseTo,
+                    getState = getState,
+                )
         }
 
         private fun addExercise(getState: () -> EditTrainingStore.State) {
@@ -329,9 +332,7 @@ internal class EditTrainingStoreProvider(
             )
         }
 
-        private fun deleteTraining(
-            getState: () -> EditTrainingStore.State,
-        ) {
+        private fun deleteTraining(getState: () -> EditTrainingStore.State) {
             getState().completedTraining?.let { completedTraining ->
                 database
                     .deleteTraining(

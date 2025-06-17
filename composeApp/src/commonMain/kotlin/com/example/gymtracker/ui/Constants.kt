@@ -26,8 +26,8 @@ object UiConstants {
     val WeekdaySwitcherDaySize = 48.dp
     val WeekdaySwitcherFullHeight =
         WeekdaySwitcherPaddingValues.calculateTopPadding() +
-                WeekdaySwitcherPaddingValues.calculateBottomPadding() +
-                WeekdaySwitcherDaySize
+            WeekdaySwitcherPaddingValues.calculateBottomPadding() +
+            WeekdaySwitcherDaySize
 
     // Floating Action Buttons
     val FABHeight = 56.dp

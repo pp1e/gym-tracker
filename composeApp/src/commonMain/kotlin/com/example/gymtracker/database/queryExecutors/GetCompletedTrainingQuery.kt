@@ -30,9 +30,10 @@ private fun groupCompletedTrainingEntities(currentTraining: List<GetById>) =
                             LocalDateTime.parse(
                                 trainingRow.started_at,
                             ),
-                        duration = Duration.parseIsoString(
-                            trainingRow.duration,
-                        ),
+                        duration =
+                            Duration.parseIsoString(
+                                trainingRow.duration,
+                            ),
                         training =
                             Training(
                                 id = trainingRow.training_id,

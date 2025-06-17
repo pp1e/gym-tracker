@@ -1,6 +1,6 @@
 package com.example.gymtracker.i18n
 
-object EnglishStrings: Strings {
+object EnglishStrings : Strings {
     override val monday = "Monday"
     override val tuesday = "Tuesday"
     override val wednesday = "Wednesday"
@@ -43,9 +43,10 @@ object EnglishStrings: Strings {
     override val resetTrainingStartTime = "Reset the training start time?"
     override val deleteCurrentTraining = "Delete the current training?"
     override val selectTrainingStartTime = "Select a training start time"
-    override val trainingNotSavedMessage = "You didn't save the training you started"+
-            " (%S)."+
-            " Would you like to save this training?"+
+    override val trainingNotSavedMessage =
+        "You didn't save the training you started" +
+            " (%S)." +
+            " Would you like to save this training?" +
             "\n* Saved trainings can be edited in the history."
     override val save = "Save"
     override val delete = "Delete"

@@ -4,8 +4,6 @@ import app.cash.sqldelight.async.coroutines.awaitAsOne
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.map
 import com.example.gymtracker.database.Database
-import com.example.gymtracker.database.utils.execute
-import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.operations.executeDeleteCompletedTrainingTitleOperation
 import com.example.gymtracker.database.operations.executeGetOrInsertCompletedTrainingTitleOperation
@@ -13,6 +11,8 @@ import com.example.gymtracker.database.operations.executeSwapApproachOrdinalsOpe
 import com.example.gymtracker.database.operations.executeSwapExerciseOrdinalsOperation
 import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplateListQuery
 import com.example.gymtracker.database.queryExecutors.getCompletedTrainingQuery
+import com.example.gymtracker.database.utils.execute
+import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.utils.zipAndExecute
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
@@ -100,21 +100,23 @@ class EditTrainingDatabase(
 
     fun updateCompletedTrainingName(
         completedTrainingId: Long,
-        name: String
+        name: String,
     ) = zipAndExecute(
         completedTrainingQueries,
         completedTrainingTitleQueries,
         database,
     ) { completedTrainingQueries, completedTrainingTitleQueries, database ->
         database.transaction {
-            val oldTitleId = completedTrainingQueries
-                .getTitleId(completedTrainingId)
-                .awaitAsOne()
+            val oldTitleId =
+                completedTrainingQueries
+                    .getTitleId(completedTrainingId)
+                    .awaitAsOne()
 
-            val newTitleId = executeGetOrInsertCompletedTrainingTitleOperation(
-                trainingName = name,
-                completedTrainingTitleQueries = completedTrainingTitleQueries,
-            )
+            val newTitleId =
+                executeGetOrInsertCompletedTrainingTitleOperation(
+                    trainingName = name,
+                    completedTrainingTitleQueries = completedTrainingTitleQueries,
+                )
 
             completedTrainingQueries.updateTitleId(
                 title_id = newTitleId,
@@ -140,24 +142,24 @@ class EditTrainingDatabase(
                 it.delete(exerciseId)
             }
 
-    fun deleteTraining(
-        completedTrainingId: Long,
-    ) = zipAndExecute(
-        completedTrainingQueries,
-        completedTrainingTitleQueries,
-        database,
-    ) { completedTrainingQueries, completedTrainingTitleQueries, database ->
-        database.transaction {
-            val titleId = completedTrainingQueries
-                .getTitleId(completedTrainingId)
-                .awaitAsOne()
-            completedTrainingQueries.delete(completedTrainingId)
-            executeDeleteCompletedTrainingTitleOperation(
-                completedTrainingTitleQueries = completedTrainingTitleQueries,
-                completedTrainingTitleId = titleId,
-            )
+    fun deleteTraining(completedTrainingId: Long) =
+        zipAndExecute(
+            completedTrainingQueries,
+            completedTrainingTitleQueries,
+            database,
+        ) { completedTrainingQueries, completedTrainingTitleQueries, database ->
+            database.transaction {
+                val titleId =
+                    completedTrainingQueries
+                        .getTitleId(completedTrainingId)
+                        .awaitAsOne()
+                completedTrainingQueries.delete(completedTrainingId)
+                executeDeleteCompletedTrainingTitleOperation(
+                    completedTrainingTitleQueries = completedTrainingTitleQueries,
+                    completedTrainingTitleId = titleId,
+                )
+            }
         }
-    }
 
     fun updateTime(
         completedTrainingId: Long,
@@ -171,7 +173,6 @@ class EditTrainingDatabase(
                 duration = duration.toIsoString(),
             )
         }
-
 
     fun swapApproachOrdinals(
         approachFrom: Approach,

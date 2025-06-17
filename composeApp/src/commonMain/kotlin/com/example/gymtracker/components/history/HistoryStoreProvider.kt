@@ -14,7 +14,6 @@ import com.example.gymtracker.utils.now
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.minus
@@ -50,9 +49,10 @@ internal class HistoryStoreProvider(
                 .observeOn(mainScheduler)
                 .map {
                     Msg.CompletedTrainingMonthsLoaded(
-                        completedTrainingMonths = groupCompletedTrainingsByMonthAndWeek(
-                            trainings = it,
-                        )
+                        completedTrainingMonths =
+                            groupCompletedTrainingsByMonthAndWeek(
+                                trainings = it,
+                            ),
                     )
                 }
                 .subscribeScoped(
@@ -62,12 +62,11 @@ internal class HistoryStoreProvider(
                 )
         }
 
-        private fun groupCompletedTrainingsByMonthAndWeek(
-            trainings: List<CompletedTrainingShort>,
-        ): List<CompletedTrainingMonth> {
-            val currentWeekStart = LocalDateTime
-                .now().date
-                .startOfWeek()
+        private fun groupCompletedTrainingsByMonthAndWeek(trainings: List<CompletedTrainingShort>): List<CompletedTrainingMonth> {
+            val currentWeekStart =
+                LocalDateTime
+                    .now().date
+                    .startOfWeek()
 
             return trainings
                 .groupBy {
@@ -77,19 +76,22 @@ internal class HistoryStoreProvider(
                     CompletedTrainingMonth(
                         year = yearAndMonth.first,
                         month = yearAndMonth.second,
-                        completedTrainingWeeks = completedTrainings.groupBy { training ->
-                            val trainingsWeekStart = training.startedAt.date
-                                .startOfWeek()
-                            val weeksBetween = currentWeekStart
-                                .daysUntil(trainingsWeekStart) / 7
-                            -weeksBetween
-                        }.map { (weekOrdinal, completedTrainings) ->
-                            CompletedTrainingWeek(
-                                weekOrdinal = weekOrdinal,
-                                completedTrainings = completedTrainings,
-                            )
-                        }
-                            .sortedBy { it.weekOrdinal }
+                        completedTrainingWeeks =
+                            completedTrainings.groupBy { training ->
+                                val trainingsWeekStart =
+                                    training.startedAt.date
+                                        .startOfWeek()
+                                val weeksBetween =
+                                    currentWeekStart
+                                        .daysUntil(trainingsWeekStart) / 7
+                                -weeksBetween
+                            }.map { (weekOrdinal, completedTrainings) ->
+                                CompletedTrainingWeek(
+                                    weekOrdinal = weekOrdinal,
+                                    completedTrainings = completedTrainings,
+                                )
+                            }
+                                .sortedBy { it.weekOrdinal },
                     )
                 }
         }

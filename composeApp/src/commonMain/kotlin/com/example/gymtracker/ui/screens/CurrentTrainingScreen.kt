@@ -12,12 +12,10 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.RocketLaunch
 import androidx.compose.material.icons.rounded.SportsScore
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,17 +63,19 @@ fun CurrentTrainingScreen(
                 .fillMaxSize(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
         ) {
             if (model.currentTraining != null) {
                 AdditionalTopBar(
-                    isTopBarExpanded = isTopBarExpanded
+                    isTopBarExpanded = isTopBarExpanded,
                 ) {
                     ElapsedTimeBar(
-                        startTime = model.currentTraining!!.startedAt
-                            .toInstant(TimeZone.currentSystemDefault()),
+                        startTime =
+                            model.currentTraining!!.startedAt
+                                .toInstant(TimeZone.currentSystemDefault()),
                         onEditClick = {
                             showChangeStartedAtDialog = true
                         },
@@ -84,7 +84,7 @@ fun CurrentTrainingScreen(
                         },
                         onDeleteClick = {
                             showDeleteTrainingDialog = true
-                        }
+                        },
                     )
                 }
 
@@ -133,7 +133,7 @@ fun CurrentTrainingScreen(
         ConfirmationDialog(
             title = I18nManager.strings.finishTraining,
             onConfirm = { component.onCompleteTrainingClick() },
-            onDismiss = { showCompleteTrainingDialog = false }
+            onDismiss = { showCompleteTrainingDialog = false },
         )
     }
 
@@ -141,28 +141,29 @@ fun CurrentTrainingScreen(
         ConfirmationDialog(
             title = I18nManager.strings.resetTrainingStartTime,
             onConfirm = { component.onStartedAtUpdate(LocalDateTime.now()) },
-            onDismiss = { showResetTimerDialog = false }
+            onDismiss = { showResetTimerDialog = false },
         )
     }
 
     if (showDeleteTrainingDialog) {
         ConfirmationDialog(
-            title =  I18nManager.strings.deleteCurrentTraining,
+            title = I18nManager.strings.deleteCurrentTraining,
             onConfirm = { component.onDeleteTrainingClick() },
-            onDismiss = { showDeleteTrainingDialog = false }
+            onDismiss = { showDeleteTrainingDialog = false },
         )
     }
 
     if (showChangeStartedAtDialog && model.currentTraining != null) {
         TimePickerDialog(
-            title =  I18nManager.strings.selectTrainingStartTime,
+            title = I18nManager.strings.selectTrainingStartTime,
             onDismiss = { showChangeStartedAtDialog = false },
             onTimeSelect = { selectedTime ->
                 component.onStartedAtUpdate(
-                    startedAt = LocalDateTime(
-                        date = model.currentTraining!!.startedAt.date,
-                        time = selectedTime,
-                    )
+                    startedAt =
+                        LocalDateTime(
+                            date = model.currentTraining!!.startedAt.date,
+                            time = selectedTime,
+                        ),
                 )
             },
             initialTime = model.currentTraining!!.startedAt.time,
@@ -179,8 +180,9 @@ fun CurrentTrainingScreen(
                     text =
                         I18nManager.strings.trainingNotSavedMessage.replace(
                             oldValue = "(%S)",
-                            newValue = model.currentTraining!!.startedAt.dayOfWeek.inPreposition() +
-                            " ${formatDatetime(model.currentTraining!!.startedAt)}"
+                            newValue =
+                                model.currentTraining!!.startedAt.dayOfWeek.inPreposition() +
+                                    " ${formatDatetime(model.currentTraining!!.startedAt)}",
                         ),
                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 )

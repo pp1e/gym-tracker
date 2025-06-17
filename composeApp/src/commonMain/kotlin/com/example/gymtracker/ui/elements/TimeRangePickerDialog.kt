@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,8 +27,6 @@ import androidx.compose.ui.semantics.Role.Companion.Checkbox
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.utils.now
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,16 +36,18 @@ fun TimeRangePickerDialog(
     initialStartTime: LocalTime,
     initialEndTime: LocalTime,
     onTimeRangeSelected: (LocalTime, LocalTime) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
-    val startTimePickerState = rememberTimePickerState(
-        initialHour = initialStartTime.hour,
-        initialMinute = initialStartTime.minute
-    )
-    val endTimePickerState = rememberTimePickerState(
-        initialHour = initialEndTime.hour,
-        initialMinute = initialEndTime.minute
-    )
+    val startTimePickerState =
+        rememberTimePickerState(
+            initialHour = initialStartTime.hour,
+            initialMinute = initialStartTime.minute,
+        )
+    val endTimePickerState =
+        rememberTimePickerState(
+            initialHour = initialEndTime.hour,
+            initialMinute = initialEndTime.minute,
+        )
     var endTimeNextDay by remember { mutableStateOf(false) }
 
     var showError by remember { mutableStateOf(false) }
@@ -58,14 +57,16 @@ fun TimeRangePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                val startTime = LocalTime(
-                    hour = startTimePickerState.hour,
-                    minute = startTimePickerState.minute
-                )
-                val endTime = LocalTime(
-                    hour = endTimePickerState.hour,
-                    minute = endTimePickerState.minute
-                )
+                val startTime =
+                    LocalTime(
+                        hour = startTimePickerState.hour,
+                        minute = startTimePickerState.minute,
+                    )
+                val endTime =
+                    LocalTime(
+                        hour = endTimePickerState.hour,
+                        minute = endTimePickerState.minute,
+                    )
 
                 when {
                     (startTime > endTime) && (!endTimeNextDay) -> {
@@ -90,9 +91,10 @@ fun TimeRangePickerDialog(
         title = { Text(title) },
         text = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if (showError) {
@@ -112,21 +114,19 @@ fun TimeRangePickerDialog(
                 Row(modifier = Modifier.padding(horizontal = UiConstants.defaultPadding)) {
                     Checkbox(
                         checked = endTimeNextDay,
-                        onCheckedChange = { endTimeNextDay = it }
+                        onCheckedChange = { endTimeNextDay = it },
                     )
                     Text(
                         text = I18nManager.strings.trainingStartedAndEndedOnDifferentDays,
                     )
                 }
             }
-        }
+        },
     )
 }
 
 @Composable
-fun DialogLabel(
-    text: String,
-) {
+fun DialogLabel(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleLarge,

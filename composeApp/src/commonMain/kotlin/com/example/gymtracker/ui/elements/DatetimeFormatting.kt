@@ -3,12 +3,8 @@ package com.example.gymtracker.ui.elements
 import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.i18n.Language
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
-import kotlinx.datetime.format.DateTimeFormat
-import kotlinx.datetime.format.DayOfWeekNames
-import kotlinx.datetime.format.char
 
 private fun dayWithSuffix(day: Int): String {
     val mod100 = day % 100

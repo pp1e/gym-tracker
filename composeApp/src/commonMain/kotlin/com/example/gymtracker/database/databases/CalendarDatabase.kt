@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.Color
 import app.cash.sqldelight.async.coroutines.awaitAsList
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.map
-import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.queryExecutors.executeGetCompletedTrainingsShortQuery
+import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.domain.CompletedTrainingTitle
 import database.CompletedTrainingQueries
 import database.CompletedTrainingTitleQueries

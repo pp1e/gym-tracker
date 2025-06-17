@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
-import kotlinx.datetime.LocalTime
 import kotlin.time.Duration
 
 @Composable
@@ -31,10 +30,11 @@ fun TimeRangeBar(
         onClick = onEditClick,
     ) {
         Icon(
-            modifier = Modifier
-                .padding(
-                    start = UiConstants.defaultPadding,
-                ),
+            modifier =
+                Modifier
+                    .padding(
+                        start = UiConstants.defaultPadding,
+                    ),
             imageVector = Icons.Rounded.Edit,
             contentDescription = I18nManager.strings.editTime,
             tint = MaterialTheme.colorScheme.onSurface,
@@ -51,7 +51,6 @@ fun TimeRangeBar(
         )
     }
 }
-
 
 private fun formatDuration(duration: Duration): String {
     val hours = duration.inWholeHours

@@ -33,7 +33,6 @@ import com.example.gymtracker.domain.CompletedTrainingShort
 import com.example.gymtracker.domain.CompletedTrainingTitle
 import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.utils.capitalize
 
 private val BUTTON_HEIGHT = 50.dp
 private val SHAPE_SIZE = 16.dp
@@ -46,10 +45,11 @@ fun CalendarLegendAndTrainingInfo(
     onTrainingClick: (Long) -> Unit,
 ) {
     var selectedIndex by remember { mutableStateOf(1) }
-    val segments = listOf(
-        I18nManager.strings.trainings,
-        I18nManager.strings.legend,
-    )
+    val segments =
+        listOf(
+            I18nManager.strings.trainings,
+            I18nManager.strings.legend,
+        )
     val selectedColor = MaterialTheme.colorScheme.surface
 
     LaunchedEffect(selectedCompletedTrainings) {
@@ -58,17 +58,19 @@ fun CalendarLegendAndTrainingInfo(
         }
     }
 
-    Column (
-        modifier = Modifier
-            .padding(
-                vertical = UiConstants.defaultPadding,
-            )
-            .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
+    Column(
+        modifier =
+            Modifier
+                .padding(
+                    vertical = UiConstants.defaultPadding,
+                )
+                .fillMaxWidth(UiConstants.COMMON_WIDTH_FRACTION),
     ) {
         SingleChoiceSegmentedButtonRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp),
             space = 0.dp,
         ) {
             segments.forEachIndexed { index, label ->
@@ -76,20 +78,22 @@ fun CalendarLegendAndTrainingInfo(
                     modifier = Modifier.height(BUTTON_HEIGHT),
                     selected = selectedIndex == index,
                     onClick = { selectedIndex = index },
-                    shape = RoundedCornerShape(
-                        topStart = SHAPE_SIZE,
-                        topEnd = SHAPE_SIZE,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
-                    ),
+                    shape =
+                        RoundedCornerShape(
+                            topStart = SHAPE_SIZE,
+                            topEnd = SHAPE_SIZE,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp,
+                        ),
                     enabled = index == 1 || selectedCompletedTrainings.isNotEmpty(),
                     border = BorderStroke(width = 0.dp, color = Color.Transparent),
-                    colors = SegmentedButtonDefaults.colors().copy(
-                        activeContainerColor = selectedColor,
-                        inactiveContainerColor = MaterialTheme.colorScheme.background,
-                        disabledInactiveContainerColor = MaterialTheme.colorScheme.background,
-                        disabledInactiveContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                    )
+                    colors =
+                        SegmentedButtonDefaults.colors().copy(
+                            activeContainerColor = selectedColor,
+                            inactiveContainerColor = MaterialTheme.colorScheme.background,
+                            disabledInactiveContainerColor = MaterialTheme.colorScheme.background,
+                            disabledInactiveContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        ),
                 ) {
                     Text(label)
                 }
@@ -97,42 +101,45 @@ fun CalendarLegendAndTrainingInfo(
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = selectedColor,
-                    shape = if (selectedIndex == 0) {
-                        RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = SHAPE_SIZE,
-                            bottomStart = SHAPE_SIZE,
-                            bottomEnd = SHAPE_SIZE,
-                        )
-                    } else {
-                        RoundedCornerShape(
-                            topStart = SHAPE_SIZE,
-                            topEnd = 0.dp,
-                            bottomStart = SHAPE_SIZE,
-                            bottomEnd = SHAPE_SIZE
-                        )
-                    }
-                )
-                .animateContentSize(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = selectedColor,
+                        shape =
+                            if (selectedIndex == 0) {
+                                RoundedCornerShape(
+                                    topStart = 0.dp,
+                                    topEnd = SHAPE_SIZE,
+                                    bottomStart = SHAPE_SIZE,
+                                    bottomEnd = SHAPE_SIZE,
+                                )
+                            } else {
+                                RoundedCornerShape(
+                                    topStart = SHAPE_SIZE,
+                                    topEnd = 0.dp,
+                                    bottomStart = SHAPE_SIZE,
+                                    bottomEnd = SHAPE_SIZE,
+                                )
+                            },
+                    )
+                    .animateContentSize(),
         ) {
             if (selectedIndex == 1) {
                 Column(modifier = Modifier.padding(LEGEND_ITEM_SIZE / 2)) {
                     completedTrainingTitles.forEach { completedTrainingTitle ->
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = LEGEND_ITEM_SIZE / 4)
+                            modifier = Modifier.padding(vertical = LEGEND_ITEM_SIZE / 4),
                         ) {
                             Box(
-                                modifier = Modifier
-                                    .size(LEGEND_ITEM_SIZE)
-                                    .background(
-                                        color = completedTrainingTitle.color.copy(alpha = 0.75f),
-                                        shape = CircleShape
-                                    )
+                                modifier =
+                                    Modifier
+                                        .size(LEGEND_ITEM_SIZE)
+                                        .background(
+                                            color = completedTrainingTitle.color.copy(alpha = 0.75f),
+                                            shape = CircleShape,
+                                        ),
                             )
                             Spacer(modifier = Modifier.width(LEGEND_ITEM_SIZE / 2))
                             Text(text = completedTrainingTitle.name)

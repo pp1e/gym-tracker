@@ -9,8 +9,6 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
-import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -136,7 +134,7 @@ class RootRouter(
                         storeFactory = storeFactory,
                         database = databasesBuilder.createCalendarDatabase(),
                         output = Consumer(::onCalendarOutput),
-                    )
+                    ),
                 )
         }
 
@@ -223,8 +221,7 @@ class RootRouter(
     private fun travelToHistory() {
         if (model.value.isCalendarButtonToggled) {
             router.moveToFront(ScreenConfig.Calendar)
-        }
-        else {
+        } else {
             router.moveToFront(ScreenConfig.History)
         }
     }

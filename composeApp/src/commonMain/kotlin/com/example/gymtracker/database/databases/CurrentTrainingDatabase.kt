@@ -1,17 +1,11 @@
 package com.example.gymtracker.database.databases
 
 import app.cash.sqldelight.async.coroutines.awaitAsList
-import app.cash.sqldelight.async.coroutines.awaitAsOne
-import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.map
 import com.example.gymtracker.components.entities.ApproachInsert
 import com.example.gymtracker.components.entities.ExerciseInsert
 import com.example.gymtracker.components.entities.TrainingInsert
-import com.example.gymtracker.database.utils.QueryTuple5
-import com.example.gymtracker.database.utils.awaitMaxId
-import com.example.gymtracker.database.utils.execute
-import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.operations.executeAddExerciseOperation
 import com.example.gymtracker.database.operations.executeAddTrainingOperation
 import com.example.gymtracker.database.operations.executeGetOrInsertCompletedTrainingTitleOperation
@@ -22,6 +16,9 @@ import com.example.gymtracker.database.queryExecutors.executeGetExerciseTemplate
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramListQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingProgramQuery
 import com.example.gymtracker.database.queryExecutors.executeGetTrainingScheduleQuery
+import com.example.gymtracker.database.utils.awaitMaxId
+import com.example.gymtracker.database.utils.execute
+import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.utils.zipAndExecute
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
@@ -53,7 +50,7 @@ class CurrentTrainingDatabase(
     private val exerciseTemplateQueries: Single<ExerciseTemplateQueries>,
     private val completedTrainingQueries: Single<CompletedTrainingQueries>,
     private val trainingScheduleQueries: Single<TrainingScheduleQueries>,
-    private val completedTrainingTitleQueries: Single<CompletedTrainingTitleQueries>
+    private val completedTrainingTitleQueries: Single<CompletedTrainingTitleQueries>,
 ) {
     private suspend fun insertCurrentTrainingFromProgram(
         trainingProgram: TrainingProgram,
@@ -126,41 +123,41 @@ class CurrentTrainingDatabase(
             exerciseQueries,
             approachQueries,
         ) { trainingScheduleQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries ->
-                deleteCurrentTrainingCascade(
+            deleteCurrentTrainingCascade(
+                currentTrainingQueries = currentTrainingQueries,
+                trainingQueries = trainingQueries,
+            )
+
+            val trainingProgram =
+                executeGetTrainingScheduleQuery(
+                    getTrainingScheduleQuery =
+                        trainingScheduleQueries.get(
+                            dayOfWeek = currentDayOfWeek().isoDayNumber.toLong(),
+                        ),
+                )
+            if (trainingProgram != null) {
+                insertCurrentTrainingFromProgram(
+                    trainingProgram = trainingProgram,
                     currentTrainingQueries = currentTrainingQueries,
                     trainingQueries = trainingQueries,
+                    approachQueries = approachQueries,
+                    exerciseQueries = exerciseQueries,
+                    coroutineScope = this,
                 )
-
-                val trainingProgram =
-                    executeGetTrainingScheduleQuery(
-                        getTrainingScheduleQuery =
-                            trainingScheduleQueries.get(
-                                dayOfWeek = currentDayOfWeek().isoDayNumber.toLong(),
-                            ),
-                    )
-                if (trainingProgram != null) {
-                    insertCurrentTrainingFromProgram(
-                        trainingProgram = trainingProgram,
-                        currentTrainingQueries = currentTrainingQueries,
-                        trainingQueries = trainingQueries,
-                        approachQueries = approachQueries,
-                        exerciseQueries = exerciseQueries,
-                        coroutineScope = this,
-                    )
-                } else {
-                    val trainingId =
-                        trainingQueries
-                            .maxId()
-                            .awaitMaxId { it.MAX }
-                    trainingQueries.insert(
-                        id = trainingId,
-                    )
-                    currentTrainingQueries.insertDefaults(
-                        training_id = trainingId,
-                        default_name = I18nManager.strings.unnamedTraining,
-                    )
-                }
+            } else {
+                val trainingId =
+                    trainingQueries
+                        .maxId()
+                        .awaitMaxId { it.MAX }
+                trainingQueries.insert(
+                    id = trainingId,
+                )
+                currentTrainingQueries.insertDefaults(
+                    training_id = trainingId,
+                    default_name = I18nManager.strings.unnamedTraining,
+                )
             }
+        }
 
     fun setTrainingByProgram(trainingProgramId: Long) =
         zipAndExecute(
@@ -170,24 +167,24 @@ class CurrentTrainingDatabase(
             exerciseQueries,
             approachQueries,
         ) { trainingProgramQueries, currentTrainingQueries, trainingQueries, exerciseQueries, approachQueries ->
-                executeGetTrainingProgramQuery(
-                    getTrainingProgramQuery = trainingProgramQueries.get(trainingProgramId),
-                )?.let { trainingProgram ->
-                    deleteCurrentTrainingCascade(
-                        currentTrainingQueries = currentTrainingQueries,
-                        trainingQueries = trainingQueries,
-                    )
+            executeGetTrainingProgramQuery(
+                getTrainingProgramQuery = trainingProgramQueries.get(trainingProgramId),
+            )?.let { trainingProgram ->
+                deleteCurrentTrainingCascade(
+                    currentTrainingQueries = currentTrainingQueries,
+                    trainingQueries = trainingQueries,
+                )
 
-                    insertCurrentTrainingFromProgram(
-                        trainingProgram = trainingProgram,
-                        currentTrainingQueries = currentTrainingQueries,
-                        trainingQueries = trainingQueries,
-                        approachQueries = approachQueries,
-                        exerciseQueries = exerciseQueries,
-                        coroutineScope = this,
-                    )
-                }
+                insertCurrentTrainingFromProgram(
+                    trainingProgram = trainingProgram,
+                    currentTrainingQueries = currentTrainingQueries,
+                    trainingQueries = trainingQueries,
+                    approachQueries = approachQueries,
+                    exerciseQueries = exerciseQueries,
+                    coroutineScope = this,
+                )
             }
+        }
 
     fun addExercise(
         trainingId: Long,
@@ -278,10 +275,11 @@ class CurrentTrainingDatabase(
         currentTrainingQueries,
         completedTrainingTitleQueries,
     ) { completedTrainingQueries, currentTrainingQueries, completedTrainingTitleQueries ->
-        val titleId = executeGetOrInsertCompletedTrainingTitleOperation(
-            trainingName = name,
-            completedTrainingTitleQueries = completedTrainingTitleQueries,
-        )
+        val titleId =
+            executeGetOrInsertCompletedTrainingTitleOperation(
+                trainingName = name,
+                completedTrainingTitleQueries = completedTrainingTitleQueries,
+            )
 
         completedTrainingQueries
             .insert(

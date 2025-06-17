@@ -59,7 +59,7 @@ internal class CalendarStoreProvider(
                 .subscribeScoped(
                     onNext = { completedTrainingTitlesLoadedMessage ->
                         dispatch(completedTrainingTitlesLoadedMessage)
-                    }
+                    },
                 )
         }
     }

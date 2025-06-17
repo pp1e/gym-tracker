@@ -15,17 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.Training
+import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.safeIn
 import kotlinx.coroutines.delay
 import sh.calvin.reorderable.ReorderableColumn
-import androidx.compose.runtime.mutableStateMapOf
-import com.example.gymtracker.i18n.I18nManager
 
 @Composable
 fun TrainingFull(
@@ -66,12 +66,14 @@ fun TrainingFull(
             }
         }
 
-        val previousExerciseIds = rememberPrevious(
-            training.exercises.map { it.id }.toSet()
-        )
-        val expandedStates = remember {
-            mutableStateMapOf<Long, Boolean>()
-        }
+        val previousExerciseIds =
+            rememberPrevious(
+                training.exercises.map { it.id }.toSet(),
+            )
+        val expandedStates =
+            remember {
+                mutableStateMapOf<Long, Boolean>()
+            }
 
         ReorderableColumn(
             list = training.exercises,

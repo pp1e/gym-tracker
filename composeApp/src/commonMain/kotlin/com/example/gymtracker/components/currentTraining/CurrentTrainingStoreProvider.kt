@@ -202,16 +202,18 @@ internal class CurrentTrainingStoreProvider(
                 )
             is CurrentTrainingStore.Intent.SaveTrainingToHistory -> saveTrainingToHistory(getState)
             is CurrentTrainingStore.Intent.UpdateStartedAt -> updateStartedAt(intent.startedAt)
-            is CurrentTrainingStore.Intent.SwapApproachOrdinals -> swapApproachOrdinals(
-                approachFrom = intent.approachFrom,
-                approachTo = intent.approachTo,
-                exerciseId = intent.exerciseId,
-            )
-            is CurrentTrainingStore.Intent.SwapExerciseOrdinals -> swapExerciseOrdinals(
-                exerciseFrom = intent.exerciseFrom,
-                exerciseTo = intent.exerciseTo,
-                getState = getState,
-            )
+            is CurrentTrainingStore.Intent.SwapApproachOrdinals ->
+                swapApproachOrdinals(
+                    approachFrom = intent.approachFrom,
+                    approachTo = intent.approachTo,
+                    exerciseId = intent.exerciseId,
+                )
+            is CurrentTrainingStore.Intent.SwapExerciseOrdinals ->
+                swapExerciseOrdinals(
+                    exerciseFrom = intent.exerciseFrom,
+                    exerciseTo = intent.exerciseTo,
+                    getState = getState,
+                )
         }
 
         private fun addExercise(getState: () -> CurrentTrainingStore.State) {

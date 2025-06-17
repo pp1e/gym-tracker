@@ -1,6 +1,5 @@
 package com.example.gymtracker.ui.elements
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -121,8 +120,7 @@ fun NumberInputEditable(
         if (newValue != null) {
             textFieldValue = newValue.toString()
             onValueChange(newValue)
-        }
-        else {
+        } else {
             textFieldValue = value.toString()
         }
     }
@@ -161,15 +159,15 @@ fun NumberInputEditable(
             )
 
             BasicTextField(
-                modifier = Modifier
-                    .weight(1f)
-                    .onFocusChanged {
-                        isInput = it.isFocused
-                        if (!it.isFocused) {
-                            emitValue()
-                        }
-                    }
-                ,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .onFocusChanged {
+                            isInput = it.isFocused
+                            if (!it.isFocused) {
+                                emitValue()
+                            }
+                        },
                 value = textFieldValue,
                 onValueChange = {
                     if (checkTextFieldValue(
@@ -200,9 +198,10 @@ fun NumberInputEditable(
                             emitValue()
                         },
                     ),
-                cursorBrush = SolidColor(
-                    MaterialTheme.colorScheme.primary
-                ),
+                cursorBrush =
+                    SolidColor(
+                        MaterialTheme.colorScheme.primary,
+                    ),
             )
 
             NumberInputButton(
@@ -242,8 +241,8 @@ private fun checkTextFieldValue(
     if (
         value.contains(Regex("\\.{2,}")) ||
         value.contains(Regex("\\s")) ||
-        (value.split(".").getOrNull(1)?.length ?: Int.MIN_VALUE) > 1
-        || ( (valueAsFloat != null) && (!checkFloatValue(valueAsFloat, maxValue, minValue)) )
+        (value.split(".").getOrNull(1)?.length ?: Int.MIN_VALUE) > 1 ||
+        ((valueAsFloat != null) && (!checkFloatValue(valueAsFloat, maxValue, minValue)))
     ) {
         return false
     }
@@ -307,9 +306,12 @@ private fun NumberInputButton(
         Icon(
             imageVector = iconVector,
             contentDescription = iconDescription,
-            tint = if (enabled) {
-                LocalContentColor.current
-            } else LocalContentColor.current.copy(alpha = 0.4f)
+            tint =
+                if (enabled) {
+                    LocalContentColor.current
+                } else {
+                    LocalContentColor.current.copy(alpha = 0.4f)
+                },
         )
     }
 }

@@ -1,7 +1,9 @@
 package com.example.gymtracker.i18n
 
 enum class Language {
-    EN, RU;
+    EN,
+    RU,
+    ;
 
     companion object {
         fun fromLocale(locale: String): Language =
@@ -25,9 +27,10 @@ object I18nManager {
 
     fun setLanguage(lang: Language) {
         _currentLanguage = lang
-        _strings = when (lang) {
-            Language.EN -> EnglishStrings
-            Language.RU -> RussianStrings
-        }
+        _strings =
+            when (lang) {
+                Language.EN -> EnglishStrings
+                Language.RU -> RussianStrings
+            }
     }
 }

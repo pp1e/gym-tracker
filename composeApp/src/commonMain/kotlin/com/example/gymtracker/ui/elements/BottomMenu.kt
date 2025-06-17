@@ -1,7 +1,6 @@
 package com.example.gymtracker.ui.elements
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material.icons.rounded.EditCalendar
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material.icons.rounded.History
@@ -13,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.routing.RootRouter
-import com.example.gymtracker.utils.capitalize
 
 @Composable
 fun BottomMenu(

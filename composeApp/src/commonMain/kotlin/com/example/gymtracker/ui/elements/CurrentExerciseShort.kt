@@ -47,7 +47,7 @@ internal fun ReorderableScope.CurrentExerciseShort(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background),
     ) {
-        Row (
+        Row(
             Modifier
                 .align(Alignment.Center)
                 .fillMaxHeight()
@@ -56,9 +56,10 @@ internal fun ReorderableScope.CurrentExerciseShort(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(end = UiConstants.defaultPadding)
-                    .draggableHandle(),
+                modifier =
+                    Modifier
+                        .padding(end = UiConstants.defaultPadding)
+                        .draggableHandle(),
                 imageVector = Icons.Rounded.Reorder,
                 contentDescription = I18nManager.strings.reorder,
             )

@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.history.HistoryComponent
@@ -52,39 +51,48 @@ fun HistoryScreen(
                 val currentYear = LocalDateTime.now().year
 
                 Text(
-                    modifier = Modifier
-                        .padding(UiConstants.defaultPadding)
-                        .fillParentMaxWidth(),
-                    text = completedTrainingMonth.month
-                        .translation()
-                        .capitalize()
-                        .plus(
-                            if (completedTrainingMonth.year != currentYear) {
-                                ", ${completedTrainingMonth.year}"
-                            } else ""
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(UiConstants.defaultPadding)
+                            .fillParentMaxWidth(),
+                    text =
+                        completedTrainingMonth.month
+                            .translation()
+                            .capitalize()
+                            .plus(
+                                if (completedTrainingMonth.year != currentYear) {
+                                    ", ${completedTrainingMonth.year}"
+                                } else {
+                                    ""
+                                },
+                            ),
                     style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Center,
                 )
                 HorizontalDivider(
-                    modifier = Modifier
-                        .padding(
-                            bottom = UiConstants.defaultPadding,
-                        )
+                    modifier =
+                        Modifier
+                            .padding(
+                                bottom = UiConstants.defaultPadding,
+                            ),
                 )
 
                 for (completedTrainingWeek in completedTrainingMonth.completedTrainingWeeks) {
                     Text(
-                        modifier = Modifier
-                            .fillParentMaxWidth(),
-                        text = when (completedTrainingWeek.weekOrdinal) {
-                            0 -> I18nManager.strings.currentWeek.capitalize()
-                            1 -> I18nManager.strings.lastWeek.capitalize()
-                            2, 3, 4 -> "${completedTrainingWeek.weekOrdinal}" +
-                                    " ${I18nManager.strings.weeksAgo}"
-                            else -> "${completedTrainingWeek.weekOrdinal}" +
-                                    " ${I18nManager.strings.manyWeeksAgo}"
-                        },
+                        modifier =
+                            Modifier
+                                .fillParentMaxWidth(),
+                        text =
+                            when (completedTrainingWeek.weekOrdinal) {
+                                0 -> I18nManager.strings.currentWeek.capitalize()
+                                1 -> I18nManager.strings.lastWeek.capitalize()
+                                2, 3, 4 ->
+                                    "${completedTrainingWeek.weekOrdinal}" +
+                                        " ${I18nManager.strings.weeksAgo}"
+                                else ->
+                                    "${completedTrainingWeek.weekOrdinal}" +
+                                        " ${I18nManager.strings.manyWeeksAgo}"
+                            },
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     )

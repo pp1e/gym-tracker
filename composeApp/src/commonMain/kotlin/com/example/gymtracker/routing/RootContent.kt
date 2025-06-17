@@ -53,10 +53,11 @@ fun RootContent(
                     isTopBarExpanded = isTopBarExpanded,
                 )
 
-            is Child.Calendar -> CalendarScreen(
-                paddingValues = paddingValues,
-                component = child.component,
-            )
+            is Child.Calendar ->
+                CalendarScreen(
+                    paddingValues = paddingValues,
+                    component = child.component,
+                )
         }
     }
 }

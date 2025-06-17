@@ -1,7 +1,5 @@
 package com.example.gymtracker.ui.elements
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
@@ -28,23 +26,21 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.example.gymtracker.i18n.I18nManager
 import com.example.gymtracker.routing.RootRouter
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.ui.UiConstants.WeekdaySwitcherDaySize
-import com.example.gymtracker.ui.UiConstants.WeekdaySwitcherPaddingValues
 import com.example.gymtracker.utils.capitalize
 import com.example.gymtracker.utils.currentDayOfWeek
 import kotlinx.datetime.DayOfWeek
 
 private fun generateScreenTitle(activeScreen: RootRouter.ScreenConfig) =
     when (activeScreen) {
-        is RootRouter.ScreenConfig.CurrentTraining -> "${
-            currentDayOfWeek()
-                .translation()
-                .capitalize()
-        }, ${I18nManager.strings.currentTraining}"
+        is RootRouter.ScreenConfig.CurrentTraining ->
+            "${
+                currentDayOfWeek()
+                    .translation()
+                    .capitalize()
+            }, ${I18nManager.strings.currentTraining}"
         is RootRouter.ScreenConfig.EditTraining -> I18nManager.strings.editTraining
         is RootRouter.ScreenConfig.History -> I18nManager.strings.trainingHistory
         is RootRouter.ScreenConfig.Schedule -> I18nManager.strings.editSchedule
@@ -65,11 +61,12 @@ fun TopBar(
 ) {
     val isScheduleScreenActive = activeScreen is RootRouter.ScreenConfig.Schedule
 
-    val targetHeight = if (isScheduleScreenActive) {
-        TopAppBarDefaults.TopAppBarExpandedHeight + UiConstants.WeekdaySwitcherFullHeight
-    } else {
-        TopAppBarDefaults.TopAppBarExpandedHeight
-    }
+    val targetHeight =
+        if (isScheduleScreenActive) {
+            TopAppBarDefaults.TopAppBarExpandedHeight + UiConstants.WeekdaySwitcherFullHeight
+        } else {
+            TopAppBarDefaults.TopAppBarExpandedHeight
+        }
 
     val animatedHeight by animateDpAsState(
         targetValue = targetHeight,
@@ -102,10 +99,11 @@ fun TopBar(
                 }
 
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(UiConstants.WeekdaySwitcherFullHeight)
-                        .alpha(if (isScheduleScreenActive) 1f else 0f),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(UiConstants.WeekdaySwitcherFullHeight)
+                            .alpha(if (isScheduleScreenActive) 1f else 0f),
                     contentAlignment = Alignment.Center,
                 ) {
                     WeekdaySwitcher(

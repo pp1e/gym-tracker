@@ -33,7 +33,6 @@ import com.example.gymtracker.ui.elements.TimeRangeBar
 import com.example.gymtracker.ui.elements.TimeRangePickerDialog
 import com.example.gymtracker.ui.elements.TrainingFull
 import com.example.gymtracker.utils.capitalize
-import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -42,7 +41,6 @@ import kotlinx.datetime.atDate
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Duration
 
 @Composable
 fun EditTrainingScreen(
@@ -70,7 +68,7 @@ fun EditTrainingScreen(
         ) {
             if (model.completedTraining != null) {
                 AdditionalTopBar(
-                    isTopBarExpanded = isTopBarExpanded
+                    isTopBarExpanded = isTopBarExpanded,
                 ) {
                     TimeRangeBar(
                         duration = model.completedTraining!!.duration,
@@ -128,7 +126,7 @@ fun EditTrainingScreen(
         ConfirmationDialog(
             title = I18nManager.strings.deleteTrainingFromHistory,
             onConfirm = { component.onDeleteTrainingClick() },
-            onDismiss = { showDeleteTrainingDialog = false }
+            onDismiss = { showDeleteTrainingDialog = false },
         )
     }
 
@@ -136,30 +134,36 @@ fun EditTrainingScreen(
         TimeRangePickerDialog(
             title = I18nManager.strings.specifyStartAndEndTrainingTime,
             initialStartTime = model.completedTraining!!.startedAt.time,
-            initialEndTime = model.completedTraining!!.let {
-                val timeZone = TimeZone.currentSystemDefault()
-                it.startedAt
-                    .toInstant(timeZone)
-                    .plus(it.duration)
-                    .toLocalDateTime(timeZone)
-                    .time
-            },
+            initialEndTime =
+                model.completedTraining!!.let {
+                    val timeZone = TimeZone.currentSystemDefault()
+                    it.startedAt
+                        .toInstant(timeZone)
+                        .plus(it.duration)
+                        .toLocalDateTime(timeZone)
+                        .time
+                },
             onTimeRangeSelected = { startTime, endTime ->
                 val dummyDateStart = LocalDate(2000, 1, 1)
-                val dummyDateEnd = if (startTime > endTime) {
-                    dummyDateStart.plus(1, DateTimeUnit.DAY)
-                } else dummyDateStart
+                val dummyDateEnd =
+                    if (startTime > endTime) {
+                        dummyDateStart.plus(1, DateTimeUnit.DAY)
+                    } else {
+                        dummyDateStart
+                    }
                 val timeZone = TimeZone.currentSystemDefault()
                 component.onTimeUpdate(
-                    startedAt = LocalDateTime(
-                        date = model.completedTraining!!.startedAt.date,
-                        time = startTime,
-                    ),
-                    duration = endTime.atDate(dummyDateEnd).toInstant(timeZone)
-                            - startTime.atDate(dummyDateStart).toInstant(timeZone),
+                    startedAt =
+                        LocalDateTime(
+                            date = model.completedTraining!!.startedAt.date,
+                            time = startTime,
+                        ),
+                    duration =
+                        endTime.atDate(dummyDateEnd).toInstant(timeZone) -
+                            startTime.atDate(dummyDateStart).toInstant(timeZone),
                 )
             },
-            onDismiss = { showChangeTrainingDurationDialog = false }
+            onDismiss = { showChangeTrainingDurationDialog = false },
         )
     }
 
