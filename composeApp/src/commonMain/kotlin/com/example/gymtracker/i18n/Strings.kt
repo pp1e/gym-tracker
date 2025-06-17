@@ -66,6 +66,11 @@ interface Strings {
     val trainings: String
     val legend: String
 
+    val profile: String
+    val language: String
+    val dataImport: String
+    val soon: String
+
     val yes: String
     val no: String
     val confirm: String

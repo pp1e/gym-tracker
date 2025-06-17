@@ -16,4 +16,6 @@ sealed class Child {
     data class EditTraining(val component: EditTrainingComponent) : Child()
 
     data class Calendar(val component: CalendarComponent) : Child()
+
+    data object Profile: Child()
 }

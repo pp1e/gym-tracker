@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.EditCalendar
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -18,6 +19,7 @@ fun BottomMenu(
     onScheduleClicked: () -> Unit = {},
     onTrainingClicked: () -> Unit = {},
     onHistoryClicked: () -> Unit = {},
+    onProfileClick: () -> Unit,
     activeScreen: RootRouter.ScreenConfig,
 ) {
     NavigationBar {
@@ -38,6 +40,12 @@ fun BottomMenu(
             label = { Text(I18nManager.strings.history) },
             selected = activeScreen is RootRouter.ScreenConfig.History || activeScreen is RootRouter.ScreenConfig.Calendar,
             onClick = onHistoryClicked,
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Rounded.Person, contentDescription = I18nManager.strings.profile) },
+            label = { Text(I18nManager.strings.profile) },
+            selected = activeScreen is RootRouter.ScreenConfig.Profile,
+            onClick = onProfileClick,
         )
     }
 }

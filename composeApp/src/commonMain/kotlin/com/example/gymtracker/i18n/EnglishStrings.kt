@@ -73,6 +73,11 @@ object EnglishStrings : Strings {
     override val confirm = "Confirm"
     override val cancel = "Cancel"
 
+    override val profile = "Profile"
+    override val language = "Language"
+    override val dataImport = "Data import"
+    override val soon = "Soon"
+
     override val add = "Add"
     override val addApproach = "Add approach"
     override val reorder = "Reorder"

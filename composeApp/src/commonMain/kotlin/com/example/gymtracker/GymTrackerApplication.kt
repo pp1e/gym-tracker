@@ -55,6 +55,7 @@ fun GymTrackerApplication(
                     onTrainingClicked = router::onCurrentTrainingScreenMenuButtonClick,
                     onScheduleClicked = router::onScheduleScreenMenuButtonClick,
                     onHistoryClicked = router::onHistoryScreenMenuButtonClick,
+                    onProfileClick = router::onProfileButtonClick,
                     activeScreen = model.activeScreenConfig,
                 )
             },

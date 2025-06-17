@@ -10,6 +10,7 @@ import com.example.gymtracker.ui.screens.CalendarScreen
 import com.example.gymtracker.ui.screens.CurrentTrainingScreen
 import com.example.gymtracker.ui.screens.EditTrainingScreen
 import com.example.gymtracker.ui.screens.HistoryScreen
+import com.example.gymtracker.ui.screens.ProfileScreen
 import com.example.gymtracker.ui.screens.ScheduleScreen
 
 @Composable
@@ -57,6 +58,11 @@ fun RootContent(
                 CalendarScreen(
                     paddingValues = paddingValues,
                     component = child.component,
+                )
+
+            is Child.Profile ->
+                ProfileScreen(
+                    paddingValues = paddingValues,
                 )
         }
     }

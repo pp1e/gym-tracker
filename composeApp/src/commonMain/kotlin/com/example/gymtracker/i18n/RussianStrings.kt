@@ -72,6 +72,11 @@ object RussianStrings : Strings {
 
     override val editTraining = "Изменить тренировку"
 
+    override val profile = "Профиль"
+    override val language = "Язык"
+    override val dataImport = "Импорт данных"
+    override val soon = "Скоро"
+
     override val add = "Добавить"
     override val addApproach = "Добавить подход"
     override val reorder = "Изменить порядок"

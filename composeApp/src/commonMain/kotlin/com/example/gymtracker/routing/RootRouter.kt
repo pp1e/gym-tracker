@@ -54,6 +54,9 @@ class RootRouter(
 
         @Serializable
         data object Calendar : ScreenConfig()
+
+        @Serializable
+        data object Profile : ScreenConfig()
     }
 
     private val router = StackNavigation<ScreenConfig>()
@@ -136,6 +139,8 @@ class RootRouter(
                         output = Consumer(::onCalendarOutput),
                     ),
                 )
+
+            is ScreenConfig.Profile -> Child.Profile
         }
 
     fun onBackClicked() {
@@ -208,6 +213,10 @@ class RootRouter(
             )
         }
         travelToHistory()
+    }
+
+    fun onProfileButtonClick() {
+        router.moveToFront(ScreenConfig.Profile)
     }
 
     fun toggleTopBar() {

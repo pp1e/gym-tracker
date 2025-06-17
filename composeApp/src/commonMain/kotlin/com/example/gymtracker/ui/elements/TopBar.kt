@@ -45,6 +45,7 @@ private fun generateScreenTitle(activeScreen: RootRouter.ScreenConfig) =
         is RootRouter.ScreenConfig.History -> I18nManager.strings.trainingHistory
         is RootRouter.ScreenConfig.Schedule -> I18nManager.strings.editSchedule
         is RootRouter.ScreenConfig.Calendar -> I18nManager.strings.calendar
+        is RootRouter.ScreenConfig.Profile -> I18nManager.strings.profile
     }
 
 @OptIn(ExperimentalMaterial3Api::class)
