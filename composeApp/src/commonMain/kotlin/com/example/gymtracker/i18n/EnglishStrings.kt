@@ -1,6 +1,9 @@
 package com.example.gymtracker.i18n
 
 object EnglishStrings : Strings {
+    override val english = "English"
+    override val russian = "Russian"
+
     override val monday = "Monday"
     override val tuesday = "Tuesday"
     override val wednesday = "Wednesday"
@@ -72,6 +75,11 @@ object EnglishStrings : Strings {
     override val no = "No"
     override val confirm = "Confirm"
     override val cancel = "Cancel"
+    override val open = "Open"
+    override val statistics = "Statistics"
+    override val charts = "Charts"
+    override val selected = "Selected"
+    override val selectLanguage = "Select language"
 
     override val profile = "Profile"
     override val language = "Language"

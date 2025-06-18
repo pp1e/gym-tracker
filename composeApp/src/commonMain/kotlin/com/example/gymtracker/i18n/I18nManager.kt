@@ -4,20 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-enum class Language {
-    EN,
-    RU,
-    ;
-
-    companion object {
-        fun fromLocale(locale: String): Language =
-            when (locale.lowercase()) {
-                "ru", "ru-ru" -> RU
-                else -> EN
-            }
-    }
-}
-
 object I18nManager {
     private var _currentLanguage by mutableStateOf(getSystemLanguage())
     private var _strings by mutableStateOf(

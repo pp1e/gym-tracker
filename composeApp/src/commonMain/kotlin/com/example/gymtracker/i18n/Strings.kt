@@ -1,6 +1,9 @@
 package com.example.gymtracker.i18n
 
 interface Strings {
+    val russian: String
+    val english: String
+
     val monday: String
     val tuesday: String
     val wednesday: String
@@ -70,6 +73,10 @@ interface Strings {
     val language: String
     val dataImport: String
     val soon: String
+    val statistics: String
+    val charts: String
+    val selected: String
+    val selectLanguage: String
 
     val yes: String
     val no: String
@@ -77,6 +84,7 @@ interface Strings {
     val cancel: String
     val done: String
     val ok: String
+    val open: String
 
     val add: String
     val addApproach: String

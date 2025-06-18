@@ -1,6 +1,9 @@
 package com.example.gymtracker.i18n
 
 object RussianStrings : Strings {
+    override val english = "Английский"
+    override val russian = "Русский"
+
     override val monday = "понедельник"
     override val tuesday = "вторник"
     override val wednesday = "среда"
@@ -76,6 +79,10 @@ object RussianStrings : Strings {
     override val language = "Язык"
     override val dataImport = "Импорт данных"
     override val soon = "Скоро"
+    override val statistics = "Статистика"
+    override val charts = "Графики"
+    override val selected = "Выбрано"
+    override val selectLanguage = "Выберите язык"
 
     override val add = "Добавить"
     override val addApproach = "Добавить подход"
@@ -86,6 +93,7 @@ object RussianStrings : Strings {
     override val increment = "Увеличить"
     override val decrement = "Уменьшить"
     override val cancel = "Отменить"
+    override val open = "Открыть"
 
     override val exerciseName = "Название упражнения"
     override val newExercise = "Новое упражнение"

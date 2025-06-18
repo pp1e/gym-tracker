@@ -252,7 +252,7 @@ private fun EditableTitle(
             onValueChange = onValueChange,
             textStyle =
                 TextStyle(
-                    fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                 ),
