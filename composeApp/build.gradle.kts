@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -83,8 +84,8 @@ android {
         applicationId = "com.example.gymtracker"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.compileSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0.1"
+        versionCode = 2
+        versionName = "0.1.0-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -98,6 +99,19 @@ android {
         }
     }
 
+    val localProps = Properties().apply {
+        file("../local.properties").inputStream().use { load(it) }
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("../release.keystore")
+            storePassword = localProps["RELEASE_STORE_PASSWORD"] as String
+            keyAlias = "gymtracker_key"
+            keyPassword = localProps["RELEASE_KEY_PASSWORD"] as String
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -105,6 +119,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

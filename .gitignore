@@ -12,3 +12,6 @@
 # Configs
 
 local.properties
+
+# Secrets
+*.keystore
