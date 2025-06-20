@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.routing.RootRouter
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.capitalize
@@ -40,12 +40,12 @@ private fun generateScreenTitle(activeScreen: RootRouter.ScreenConfig) =
                 currentDayOfWeek()
                     .translation()
                     .capitalize()
-            }, ${I18nManager.strings.currentTraining}"
-        is RootRouter.ScreenConfig.EditTraining -> I18nManager.strings.editTraining
-        is RootRouter.ScreenConfig.History -> I18nManager.strings.trainingHistory
-        is RootRouter.ScreenConfig.Schedule -> I18nManager.strings.editSchedule
-        is RootRouter.ScreenConfig.Calendar -> I18nManager.strings.calendar
-        is RootRouter.ScreenConfig.Profile -> I18nManager.strings.profile
+            }, ${Settings.language.strings.currentTraining}"
+        is RootRouter.ScreenConfig.EditTraining -> Settings.language.strings.editTraining
+        is RootRouter.ScreenConfig.History -> Settings.language.strings.trainingHistory
+        is RootRouter.ScreenConfig.Schedule -> Settings.language.strings.editSchedule
+        is RootRouter.ScreenConfig.Calendar -> Settings.language.strings.calendar
+        is RootRouter.ScreenConfig.Profile -> Settings.language.strings.profile
     }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +125,7 @@ fun TopBar(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = I18nManager.strings.back,
+                        contentDescription = Settings.language.strings.back,
                     )
                 }
             }

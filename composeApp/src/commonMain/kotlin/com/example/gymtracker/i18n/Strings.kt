@@ -77,6 +77,11 @@ interface Strings {
     val charts: String
     val selected: String
     val selectLanguage: String
+    val theme: String
+    val selectTheme: String
+    val dark: String
+    val light: String
+    val system: String
 
     val yes: String
     val no: String

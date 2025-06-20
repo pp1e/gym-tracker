@@ -44,7 +44,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.coroutines.delay
 
@@ -79,7 +79,7 @@ fun NumberInput(
                 },
                 step = -1,
                 iconVector = Icons.Rounded.KeyboardArrowDown,
-                iconDescription = I18nManager.strings.decrement,
+                iconDescription = Settings.language.strings.decrement,
             )
 
             Text(
@@ -97,7 +97,7 @@ fun NumberInput(
                 },
                 step = 1,
                 iconVector = Icons.Rounded.KeyboardArrowUp,
-                iconDescription = I18nManager.strings.increment,
+                iconDescription = Settings.language.strings.increment,
             )
         }
     }
@@ -154,7 +154,7 @@ fun NumberInputEditable(
                 },
                 step = -1,
                 iconVector = Icons.Rounded.KeyboardArrowDown,
-                iconDescription = I18nManager.strings.decrement,
+                iconDescription = Settings.language.strings.decrement,
                 enabled = !isInput,
             )
 
@@ -219,7 +219,7 @@ fun NumberInputEditable(
                 },
                 step = 1,
                 iconVector = Icons.Rounded.KeyboardArrowUp,
-                iconDescription = I18nManager.strings.increment,
+                iconDescription = Settings.language.strings.increment,
                 enabled = !isInput,
             )
         }

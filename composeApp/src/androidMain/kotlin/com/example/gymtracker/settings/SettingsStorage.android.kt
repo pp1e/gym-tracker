@@ -3,9 +3,12 @@ package com.example.gymtracker.settings
 import android.content.Context
 import android.content.SharedPreferences
 
-actual class SettingsStorage(context: Context) {
-    private val prefs: SharedPreferences =
-        context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+actual object SettingsStorage {
+    private lateinit var prefs: SharedPreferences
+
+    fun init(context: Context) {
+        prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    }
 
     actual fun putString(
         key: String,

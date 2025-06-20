@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
@@ -43,7 +43,7 @@ fun ElapsedTimeBar(
                         start = UiConstants.defaultPadding,
                     ),
             imageVector = Icons.Rounded.Edit,
-            contentDescription = I18nManager.strings.selectStartedAt,
+            contentDescription = Settings.language.strings.selectStartedAt,
             tint = MaterialTheme.colorScheme.onSurface,
         )
     }
@@ -53,7 +53,7 @@ fun ElapsedTimeBar(
     ) {
         Icon(
             imageVector = Icons.Rounded.Update,
-            contentDescription = I18nManager.strings.resetTrainingTime,
+            contentDescription = Settings.language.strings.resetTrainingTime,
             tint = MaterialTheme.colorScheme.onSurface,
         )
     }
@@ -63,7 +63,7 @@ fun ElapsedTimeBar(
     ) {
         Icon(
             imageVector = Icons.Rounded.Delete,
-            contentDescription = I18nManager.strings.deleteTraining,
+            contentDescription = Settings.language.strings.deleteTraining,
             tint = MaterialTheme.colorScheme.onSurface,
         )
     }

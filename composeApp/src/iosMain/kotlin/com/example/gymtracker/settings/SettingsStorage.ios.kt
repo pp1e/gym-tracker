@@ -2,7 +2,7 @@ package com.example.gymtracker.settings
 
 import platform.Foundation.NSUserDefaults
 
-actual class SettingsStorage {
+actual object SettingsStorage {
     private val defaults = NSUserDefaults.standardUserDefaults
 
     actual fun putString(

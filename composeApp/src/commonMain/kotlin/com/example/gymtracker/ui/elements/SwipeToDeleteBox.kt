@@ -26,7 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.coroutines.delay
 
@@ -86,7 +86,7 @@ fun SwipeToDeleteBox(
                                     .align(Alignment.Center)
                                     .fillMaxSize(ICON_SIZE_COEF),
                             imageVector = Icons.Default.Delete,
-                            contentDescription = I18nManager.strings.delete,
+                            contentDescription = Settings.language.strings.delete,
                             tint = Color.White,
                         )
                     }

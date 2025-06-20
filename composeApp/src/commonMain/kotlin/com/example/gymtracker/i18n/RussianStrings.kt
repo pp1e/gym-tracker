@@ -83,6 +83,11 @@ object RussianStrings : Strings {
     override val charts = "Графики"
     override val selected = "Выбрано"
     override val selectLanguage = "Выберите язык"
+    override val selectTheme = "Выберите тему"
+    override val theme = "Тема"
+    override val dark = "Темная"
+    override val light = "Светлая"
+    override val system = "Системная"
 
     override val add = "Добавить"
     override val addApproach = "Добавить подход"

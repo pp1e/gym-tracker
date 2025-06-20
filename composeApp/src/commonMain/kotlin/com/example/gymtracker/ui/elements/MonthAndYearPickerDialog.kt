@@ -15,7 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.utils.capitalize
 import com.kizitonwose.calendar.core.YearMonth
 import dev.darkokoa.datetimewheelpicker.core.WheelTextPicker
@@ -41,7 +41,7 @@ fun MonthYearPickerDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(I18nManager.strings.selectMonthAndYear) },
+        title = { Text(Settings.language.strings.selectMonthAndYear) },
         text = {
             Row(
                 modifier =
@@ -82,12 +82,12 @@ fun MonthYearPickerDialog(
                 )
                 onDismiss()
             }) {
-                Text(I18nManager.strings.ok)
+                Text(Settings.language.strings.ok)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(I18nManager.strings.cancel)
+                Text(Settings.language.strings.cancel)
             }
         },
     )

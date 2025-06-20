@@ -11,7 +11,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.routing.RootRouter
 
 @Composable
@@ -24,26 +24,26 @@ fun BottomMenu(
 ) {
     NavigationBar {
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.FitnessCenter, contentDescription = I18nManager.strings.training) },
-            label = { Text(I18nManager.strings.training) },
+            icon = { Icon(Icons.Rounded.FitnessCenter, contentDescription = Settings.language.strings.training) },
+            label = { Text(Settings.language.strings.training) },
             selected = activeScreen is RootRouter.ScreenConfig.CurrentTraining,
             onClick = onTrainingClicked,
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.EditCalendar, contentDescription = I18nManager.strings.schedule) },
-            label = { Text(I18nManager.strings.schedule) },
+            icon = { Icon(Icons.Rounded.EditCalendar, contentDescription = Settings.language.strings.schedule) },
+            label = { Text(Settings.language.strings.schedule) },
             selected = activeScreen is RootRouter.ScreenConfig.Schedule,
             onClick = onScheduleClicked,
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.Storage, contentDescription = I18nManager.strings.history) },
-            label = { Text(I18nManager.strings.history) },
+            icon = { Icon(Icons.Rounded.Storage, contentDescription = Settings.language.strings.history) },
+            label = { Text(Settings.language.strings.history) },
             selected = activeScreen is RootRouter.ScreenConfig.History || activeScreen is RootRouter.ScreenConfig.Calendar,
             onClick = onHistoryClicked,
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.Person, contentDescription = I18nManager.strings.profile) },
-            label = { Text(I18nManager.strings.profile) },
+            icon = { Icon(Icons.Rounded.Person, contentDescription = Settings.language.strings.profile) },
+            label = { Text(Settings.language.strings.profile) },
             selected = activeScreen is RootRouter.ScreenConfig.Profile,
             onClick = onProfileClick,
         )

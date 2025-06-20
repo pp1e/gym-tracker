@@ -1,6 +1,6 @@
 package com.example.gymtracker.ui.elements
 
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.i18n.Language
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDateTime
@@ -26,7 +26,7 @@ fun formatDatetime(datetime: LocalDateTime): String {
     val hour = datetime.hour.toString().padStart(2, '0')
     val minute = datetime.minute.toString().padStart(2, '0')
 
-    return when (I18nManager.currentLanguage) {
+    return when (Settings.language) {
         Language.RU -> {
             val monthName = datetime.month.russianNameGenitive()
             "$dayOfWeekName, $day $monthName, $hour:$minute"
@@ -40,19 +40,19 @@ fun formatDatetime(datetime: LocalDateTime): String {
 
 fun DayOfWeek.inPreposition() =
     when (this) {
-        DayOfWeek.TUESDAY -> I18nManager.strings.at2
-        else -> I18nManager.strings.at1
+        DayOfWeek.TUESDAY -> Settings.language.strings.at2
+        else -> Settings.language.strings.at1
     }
 
 fun DayOfWeek.translation() =
     when (this) {
-        DayOfWeek.MONDAY -> I18nManager.strings.monday
-        DayOfWeek.TUESDAY -> I18nManager.strings.tuesday
-        DayOfWeek.WEDNESDAY -> I18nManager.strings.wednesday
-        DayOfWeek.THURSDAY -> I18nManager.strings.thursday
-        DayOfWeek.FRIDAY -> I18nManager.strings.friday
-        DayOfWeek.SATURDAY -> I18nManager.strings.saturday
-        DayOfWeek.SUNDAY -> I18nManager.strings.sunday
+        DayOfWeek.MONDAY -> Settings.language.strings.monday
+        DayOfWeek.TUESDAY -> Settings.language.strings.tuesday
+        DayOfWeek.WEDNESDAY -> Settings.language.strings.wednesday
+        DayOfWeek.THURSDAY -> Settings.language.strings.thursday
+        DayOfWeek.FRIDAY -> Settings.language.strings.friday
+        DayOfWeek.SATURDAY -> Settings.language.strings.saturday
+        DayOfWeek.SUNDAY -> Settings.language.strings.sunday
         else -> {
             println("Can't find translation for day of week: $this")
             this.name
@@ -61,13 +61,13 @@ fun DayOfWeek.translation() =
 
 fun DayOfWeek.shortTranslation() =
     when (this) {
-        DayOfWeek.MONDAY -> I18nManager.strings.mondayShort
-        DayOfWeek.TUESDAY -> I18nManager.strings.tuesdayShort
-        DayOfWeek.WEDNESDAY -> I18nManager.strings.wednesdayShort
-        DayOfWeek.THURSDAY -> I18nManager.strings.thursdayShort
-        DayOfWeek.FRIDAY -> I18nManager.strings.fridayShort
-        DayOfWeek.SATURDAY -> I18nManager.strings.saturdayShort
-        DayOfWeek.SUNDAY -> I18nManager.strings.sundayShort
+        DayOfWeek.MONDAY -> Settings.language.strings.mondayShort
+        DayOfWeek.TUESDAY -> Settings.language.strings.tuesdayShort
+        DayOfWeek.WEDNESDAY -> Settings.language.strings.wednesdayShort
+        DayOfWeek.THURSDAY -> Settings.language.strings.thursdayShort
+        DayOfWeek.FRIDAY -> Settings.language.strings.fridayShort
+        DayOfWeek.SATURDAY -> Settings.language.strings.saturdayShort
+        DayOfWeek.SUNDAY -> Settings.language.strings.sundayShort
         else -> {
             println("Can't find short translation for day of week: $this")
             this.name
@@ -96,18 +96,18 @@ fun Month.russianNameGenitive() =
 
 fun Month.translation() =
     when (this) {
-        Month.JANUARY -> I18nManager.strings.january
-        Month.FEBRUARY -> I18nManager.strings.february
-        Month.MARCH -> I18nManager.strings.march
-        Month.APRIL -> I18nManager.strings.april
-        Month.MAY -> I18nManager.strings.may
-        Month.JUNE -> I18nManager.strings.june
-        Month.JULY -> I18nManager.strings.july
-        Month.AUGUST -> I18nManager.strings.august
-        Month.SEPTEMBER -> I18nManager.strings.september
-        Month.OCTOBER -> I18nManager.strings.october
-        Month.NOVEMBER -> I18nManager.strings.november
-        Month.DECEMBER -> I18nManager.strings.december
+        Month.JANUARY -> Settings.language.strings.january
+        Month.FEBRUARY -> Settings.language.strings.february
+        Month.MARCH -> Settings.language.strings.march
+        Month.APRIL -> Settings.language.strings.april
+        Month.MAY -> Settings.language.strings.may
+        Month.JUNE -> Settings.language.strings.june
+        Month.JULY -> Settings.language.strings.july
+        Month.AUGUST -> Settings.language.strings.august
+        Month.SEPTEMBER -> Settings.language.strings.september
+        Month.OCTOBER -> Settings.language.strings.october
+        Month.NOVEMBER -> Settings.language.strings.november
+        Month.DECEMBER -> Settings.language.strings.december
         else -> {
             println("Can't find translation for month: $this")
             this.name

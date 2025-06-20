@@ -14,7 +14,7 @@ import com.example.gymtracker.database.utils.observe
 import com.example.gymtracker.database.utils.zipAndExecute
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import database.ApproachQueries
 import database.ExerciseQueries
 import database.ExerciseTemplateQueries
@@ -78,7 +78,7 @@ class ScheduleDatabase(
             trainingProgramQueries.insert(
                 id = trainingProgramId,
                 training_id = trainingId,
-                default_name = I18nManager.strings.unnamedProgram,
+                default_name = Settings.language.strings.unnamedProgram,
             )
             trainingScheduleQueries
                 .insert(

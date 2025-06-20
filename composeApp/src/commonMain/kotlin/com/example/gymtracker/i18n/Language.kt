@@ -1,9 +1,21 @@
 package com.example.gymtracker.i18n
 
-enum class Language {
-    EN,
-    RU,
-    ;
+import com.example.gymtracker.settings.Settings
+
+enum class Language(
+    val strings: Strings,
+): Translatable {
+    EN(
+        strings = EnglishStrings,
+    ) {
+        override fun translate() = Settings.language.strings.english
+    },
+    RU(
+        strings = RussianStrings
+    )
+    {
+        override fun translate() = Settings.language.strings.russian
+    };
 
     companion object {
         fun fromLocale(locale: String): Language =
@@ -11,10 +23,5 @@ enum class Language {
                 "ru", "ru-ru" -> RU
                 else -> EN
             }
-    }
-
-    fun translation() = when(this) {
-        EN -> I18nManager.strings.english
-        RU -> I18nManager.strings.russian
     }
 }

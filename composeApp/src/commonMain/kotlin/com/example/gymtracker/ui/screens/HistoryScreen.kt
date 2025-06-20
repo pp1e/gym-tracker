@@ -19,7 +19,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.style.TextAlign
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.history.HistoryComponent
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.CompletedTrainingEntry
 import com.example.gymtracker.ui.elements.translation
@@ -84,14 +84,14 @@ fun HistoryScreen(
                                 .fillParentMaxWidth(),
                         text =
                             when (completedTrainingWeek.weekOrdinal) {
-                                0 -> I18nManager.strings.currentWeek.capitalize()
-                                1 -> I18nManager.strings.lastWeek.capitalize()
+                                0 -> Settings.language.strings.currentWeek.capitalize()
+                                1 -> Settings.language.strings.lastWeek.capitalize()
                                 2, 3, 4 ->
                                     "${completedTrainingWeek.weekOrdinal}" +
-                                        " ${I18nManager.strings.weeksAgo}"
+                                        " ${Settings.language.strings.weeksAgo}"
                                 else ->
                                     "${completedTrainingWeek.weekOrdinal}" +
-                                        " ${I18nManager.strings.manyWeeksAgo}"
+                                        " ${Settings.language.strings.manyWeeksAgo}"
                             },
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),

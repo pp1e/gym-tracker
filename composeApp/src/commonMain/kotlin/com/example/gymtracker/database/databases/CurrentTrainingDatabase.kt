@@ -23,7 +23,7 @@ import com.example.gymtracker.database.utils.zipAndExecute
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.TrainingProgram
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.utils.currentDayOfWeek
 import database.ApproachQueries
 import database.CompletedTrainingQueries
@@ -154,7 +154,7 @@ class CurrentTrainingDatabase(
                 )
                 currentTrainingQueries.insertDefaults(
                     training_id = trainingId,
-                    default_name = I18nManager.strings.unnamedTraining,
+                    default_name = Settings.language.strings.unnamedTraining,
                 )
             }
         }

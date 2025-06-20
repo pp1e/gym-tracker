@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.currentTraining.CurrentTrainingComponent
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.elements.AddExerciseSheet
 import com.example.gymtracker.ui.elements.AdditionalTopBar
 import com.example.gymtracker.ui.elements.ConfirmationDialog
@@ -115,23 +115,23 @@ fun CurrentTrainingScreen(
             DualFloatingButtonModule(
                 bigButtonImageVector = Icons.Rounded.Add,
                 onBigButtonClicked = { showBottomSheet = true },
-                bigButtonText = I18nManager.strings.add.capitalize(),
+                bigButtonText = Settings.language.strings.add.capitalize(),
                 smallButtonIconVector = Icons.Rounded.SportsScore,
                 onSmallButtonClicked = { showCompleteTrainingDialog = true },
-                smallButtonText = I18nManager.strings.finish,
+                smallButtonText = Settings.language.strings.finish,
             )
         } else {
             SingleFloatingButtonModule(
                 iconVector = Icons.Rounded.RocketLaunch,
                 onClick = component::onStartTrainingClick,
-                text = I18nManager.strings.startTraining,
+                text = Settings.language.strings.startTraining,
             )
         }
     }
 
     if (showCompleteTrainingDialog) {
         ConfirmationDialog(
-            title = I18nManager.strings.finishTraining,
+            title = Settings.language.strings.finishTraining,
             onConfirm = { component.onCompleteTrainingClick() },
             onDismiss = { showCompleteTrainingDialog = false },
         )
@@ -139,7 +139,7 @@ fun CurrentTrainingScreen(
 
     if (showResetTimerDialog) {
         ConfirmationDialog(
-            title = I18nManager.strings.resetTrainingStartTime,
+            title = Settings.language.strings.resetTrainingStartTime,
             onConfirm = { component.onStartedAtUpdate(LocalDateTime.now()) },
             onDismiss = { showResetTimerDialog = false },
         )
@@ -147,7 +147,7 @@ fun CurrentTrainingScreen(
 
     if (showDeleteTrainingDialog) {
         ConfirmationDialog(
-            title = I18nManager.strings.deleteCurrentTraining,
+            title = Settings.language.strings.deleteCurrentTraining,
             onConfirm = { component.onDeleteTrainingClick() },
             onDismiss = { showDeleteTrainingDialog = false },
         )
@@ -155,7 +155,7 @@ fun CurrentTrainingScreen(
 
     if (showChangeStartedAtDialog && model.currentTraining != null) {
         TimePickerDialog(
-            title = I18nManager.strings.selectTrainingStartTime,
+            title = Settings.language.strings.selectTrainingStartTime,
             onDismiss = { showChangeStartedAtDialog = false },
             onTimeSelect = { selectedTime ->
                 component.onStartedAtUpdate(
@@ -178,7 +178,7 @@ fun CurrentTrainingScreen(
             title = {
                 Text(
                     text =
-                        I18nManager.strings.trainingNotSavedMessage.replace(
+                        Settings.language.strings.trainingNotSavedMessage.replace(
                             oldValue = "(%S)",
                             newValue =
                                 model.currentTraining!!.startedAt.dayOfWeek.inPreposition() +
@@ -193,7 +193,7 @@ fun CurrentTrainingScreen(
                         component.onCompleteTrainingClick()
                     },
                 ) {
-                    Text(I18nManager.strings.save)
+                    Text(Settings.language.strings.save)
                 }
             },
             dismissButton = {
@@ -202,7 +202,7 @@ fun CurrentTrainingScreen(
                         component.onDeleteTrainingClick()
                     },
                 ) {
-                    Text(I18nManager.strings.delete)
+                    Text(Settings.language.strings.delete)
                 }
             },
         )

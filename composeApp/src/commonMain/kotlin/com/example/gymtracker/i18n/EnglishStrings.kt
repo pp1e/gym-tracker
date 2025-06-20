@@ -80,6 +80,11 @@ object EnglishStrings : Strings {
     override val charts = "Charts"
     override val selected = "Selected"
     override val selectLanguage = "Select language"
+    override val selectTheme = "Select theme"
+    override val theme = "Theme"
+    override val dark = "Dark"
+    override val light = "Light"
+    override val system = "System"
 
     override val profile = "Profile"
     override val language = "Language"

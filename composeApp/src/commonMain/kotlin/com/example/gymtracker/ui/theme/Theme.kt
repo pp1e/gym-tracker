@@ -6,6 +6,32 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.example.gymtracker.i18n.Language.EN
+import com.example.gymtracker.i18n.Language.RU
+import com.example.gymtracker.i18n.Translatable
+import com.example.gymtracker.settings.Settings
+
+enum class AppTheme: Translatable {
+    LIGHT {
+        override fun translate() = Settings.language.strings.light
+    }, DARK {
+        override fun translate() = Settings.language.strings.dark
+    }, SYSTEM {
+        override fun translate() = Settings.language.strings.system
+    };
+
+    companion object {
+        fun parseFromString(
+            string: String?,
+        ): AppTheme = string?.let {
+            try {
+                AppTheme.valueOf(string)
+            } catch (e: IllegalArgumentException) {
+                SYSTEM
+            }
+        } ?: SYSTEM
+    }
+}
 
 private val DarkColorScheme =
     darkColorScheme(
@@ -35,29 +61,19 @@ private val LightColorScheme =
         onSurface = Color(0xFF37474F), // Темно-серый текст на белом фоне
     )
 
-// private val LightColorScheme =
-//    lightColorScheme(
-//        primary = Purple40,
-//        secondary = PurpleGrey40,
-//        tertiary = Pink40,
-//    /* Other default colors to override
-//    background = Color(0xFFFFFBFE),
-//    surface = Color(0xFFFFFBFE),
-//    onPrimary = Color.White,
-//    onSecondary = Color.White,
-//    onTertiary = Color.White,
-//    onBackground = Color(0xFF1C1B1F),
-//    onSurface = Color(0xFF1C1B1F),
-//     */
-//    )
-
 @Composable
 fun GymTrackerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    theme: AppTheme,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
+    val darkTheme = when(theme) {
+        AppTheme.DARK -> true
+        AppTheme.LIGHT -> false
+        AppTheme.SYSTEM ->  isSystemInDarkTheme()
+    }
+
     val colorScheme =
         when {
             dynamicColor -> provideDynamicColorScheme(darkTheme) ?: defaultColorScheme(darkTheme)

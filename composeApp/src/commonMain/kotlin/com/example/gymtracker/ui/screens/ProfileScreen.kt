@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Analytics
+import androidx.compose.material.icons.rounded.Contrast
 import androidx.compose.material.icons.rounded.ImportExport
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material3.HorizontalDivider
@@ -29,15 +30,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.i18n.Language
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
-import com.example.gymtracker.ui.elements.SelectLanguageSheet
+import com.example.gymtracker.ui.elements.SelectItemSheet
+import com.example.gymtracker.ui.theme.AppTheme
 
 @Composable
 fun ProfileScreen(
     paddingValues: PaddingValues,
 ) {
     var showSelectLanguageSheet by remember { mutableStateOf(false) }
+    var showSelectThemeSheet by remember { mutableStateOf(false) }
 
     Box(
         Modifier
@@ -53,42 +57,74 @@ fun ProfileScreen(
         ) {
 
             SettingModule(
-                name = I18nManager.strings.language,
+                name = Settings.language.strings.language,
                 icon = Icons.Rounded.Language,
-                value = I18nManager.currentLanguage.translation(),
+                value = Settings.language.translate(),
                 onClick = {
                     showSelectLanguageSheet = true
                 },
             )
 
             SettingModule(
-                name = I18nManager.strings.dataImport,
+                name = Settings.language.strings.theme,
+                icon = Icons.Rounded.Contrast,
+                value = Settings.theme.translate(),
+                onClick = {
+                    showSelectThemeSheet = true
+                },
+            )
+
+            SettingModule(
+                name = Settings.language.strings.dataImport,
                 icon = Icons.Rounded.ImportExport,
-                value = I18nManager.strings.soon,
+                value = Settings.language.strings.soon,
                 onClick = {},
+                enabled = false,
             )
 
             SettingModule(
-                name = I18nManager.strings.charts,
+                name = Settings.language.strings.charts,
                 icon = Icons.AutoMirrored.Rounded.TrendingUp,
-                value = I18nManager.strings.soon,
+                value = Settings.language.strings.soon,
                 onClick = {},
+                enabled = false,
             )
 
             SettingModule(
-                name = I18nManager.strings.statistics,
+                name = Settings.language.strings.statistics,
                 icon = Icons.Rounded.Analytics,
-                value = I18nManager.strings.soon,
+                value = Settings.language.strings.soon,
                 onClick = {},
+                enabled = false,
             )
         }
     }
 
     if (showSelectLanguageSheet) {
-        SelectLanguageSheet(
+        SelectItemSheet(
+            title = Settings.language.strings.selectLanguage,
+            items = Language.entries,
+            onSelect = {
+                Settings.setLanguage(it)
+            },
+            selectedItem = Settings.language,
             onDismissRequest = {
                 showSelectLanguageSheet = false
             },
+        )
+    }
+
+    if (showSelectThemeSheet) {
+        SelectItemSheet(
+            title = Settings.language.strings.selectTheme,
+            items = AppTheme.entries,
+            onSelect = {
+                Settings.setTheme(it)
+            },
+            selectedItem = Settings.theme,
+            onDismissRequest = {
+                showSelectThemeSheet = false
+            }
         )
     }
 }
@@ -99,12 +135,14 @@ private fun SettingModule(
     icon: ImageVector,
     value: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 onClick = onClick,
+                enabled = enabled,
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -140,10 +178,12 @@ private fun SettingModule(
                     text = value,
                     style = MaterialTheme.typography.titleMedium,
                 )
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
-                    contentDescription = I18nManager.strings.open,
-                )
+                if (enabled) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
+                        contentDescription = Settings.language.strings.open,
+                    )
+                }
             }
         }
 

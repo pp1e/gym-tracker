@@ -23,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.gymtracker.components.editTraining.EditTrainingComponent
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.ui.elements.AddExerciseSheet
 import com.example.gymtracker.ui.elements.AdditionalTopBar
@@ -116,15 +116,15 @@ fun EditTrainingScreen(
                         .padding(UiConstants.FABPanelPadding)
                         .align(Alignment.BottomCenter),
             ) {
-                Icon(Icons.Rounded.Add, contentDescription = I18nManager.strings.add.capitalize())
-                Text(I18nManager.strings.add.capitalize())
+                Icon(Icons.Rounded.Add, contentDescription = Settings.language.strings.add.capitalize())
+                Text(Settings.language.strings.add.capitalize())
             }
         }
     }
 
     if (showDeleteTrainingDialog) {
         ConfirmationDialog(
-            title = I18nManager.strings.deleteTrainingFromHistory,
+            title = Settings.language.strings.deleteTrainingFromHistory,
             onConfirm = { component.onDeleteTrainingClick() },
             onDismiss = { showDeleteTrainingDialog = false },
         )
@@ -132,7 +132,7 @@ fun EditTrainingScreen(
 
     if (showChangeTrainingDurationDialog && model.completedTraining != null) {
         TimeRangePickerDialog(
-            title = I18nManager.strings.specifyStartAndEndTrainingTime,
+            title = Settings.language.strings.specifyStartAndEndTrainingTime,
             initialStartTime = model.completedTraining!!.startedAt.time,
             initialEndTime =
                 model.completedTraining!!.let {

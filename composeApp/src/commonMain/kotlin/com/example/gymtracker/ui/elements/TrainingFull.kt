@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import com.example.gymtracker.domain.Approach
 import com.example.gymtracker.domain.Exercise
 import com.example.gymtracker.domain.Training
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.safeIn
 import kotlinx.coroutines.delay
@@ -55,8 +55,8 @@ fun TrainingFull(
                 snackbarHostState.currentSnackbarData?.dismiss()
                 val result =
                     snackbarHostState.showSnackbar(
-                        message = I18nManager.strings.exerciseDeleted.uppercase(),
-                        actionLabel = I18nManager.strings.cancel.uppercase(),
+                        message = Settings.language.strings.exerciseDeleted.uppercase(),
+                        actionLabel = Settings.language.strings.cancel.uppercase(),
                         duration = SnackbarDuration.Short,
                     )
                 if (result == SnackbarResult.ActionPerformed) {

@@ -1,6 +1,6 @@
 package com.example.gymtracker.settings
 
-expect class SettingsStorage {
+expect object SettingsStorage {
     fun putString(
         key: String,
         value: String,

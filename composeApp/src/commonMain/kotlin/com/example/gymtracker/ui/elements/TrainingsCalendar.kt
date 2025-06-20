@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.gymtracker.domain.CompletedTrainingShort
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import com.example.gymtracker.utils.capitalize
 import com.kizitonwose.calendar.compose.CalendarLayoutInfo
@@ -261,7 +261,7 @@ private fun CalendarTitle(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                contentDescription = I18nManager.strings.previous,
+                contentDescription = Settings.language.strings.previous,
             )
         }
         Box(
@@ -292,7 +292,7 @@ private fun CalendarTitle(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                contentDescription = I18nManager.strings.next,
+                contentDescription = Settings.language.strings.next,
             )
         }
     }

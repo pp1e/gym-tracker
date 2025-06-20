@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role.Companion.Checkbox
 import androidx.compose.ui.unit.dp
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.datetime.LocalTime
 
@@ -71,7 +71,7 @@ fun TimeRangePickerDialog(
 
                 when {
                     (startTime > endTime) && (!endTimeNextDay) -> {
-                        errorText = I18nManager.strings.startTimeCannotExceedEndTime
+                        errorText = Settings.language.strings.startTimeCannotExceedEndTime
                         showError = true
                     }
                     else -> {
@@ -81,12 +81,12 @@ fun TimeRangePickerDialog(
                     }
                 }
             }) {
-                Text(I18nManager.strings.confirm)
+                Text(Settings.language.strings.confirm)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(I18nManager.strings.cancel)
+                Text(Settings.language.strings.cancel)
             }
         },
         title = { Text(title) },
@@ -104,12 +104,12 @@ fun TimeRangePickerDialog(
                     )
                 }
 
-                DialogLabel(I18nManager.strings.begin)
+                DialogLabel(Settings.language.strings.begin)
                 TimeInput(state = startTimePickerState)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                DialogLabel(I18nManager.strings.end)
+                DialogLabel(Settings.language.strings.end)
                 TimeInput(state = endTimePickerState)
 
                 Row(modifier = Modifier.padding(horizontal = UiConstants.defaultPadding)) {
@@ -118,7 +118,7 @@ fun TimeRangePickerDialog(
                         onCheckedChange = { endTimeNextDay = it },
                     )
                     Text(
-                        text = I18nManager.strings.trainingStartedAndEndedOnDifferentDays,
+                        text = Settings.language.strings.trainingStartedAndEndedOnDifferentDays,
                     )
                 }
             }

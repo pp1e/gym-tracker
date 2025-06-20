@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.gymtracker.i18n.I18nManager
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import sh.calvin.reorderable.ReorderableScope
 
@@ -61,7 +61,7 @@ internal fun ReorderableScope.CurrentExerciseShort(
                         .padding(end = UiConstants.defaultPadding)
                         .draggableHandle(),
                 imageVector = Icons.Rounded.Reorder,
-                contentDescription = I18nManager.strings.reorder,
+                contentDescription = Settings.language.strings.reorder,
             )
 
             Text(
@@ -96,7 +96,7 @@ internal fun ReorderableScope.CurrentExerciseShort(
                         } else {
                             Icons.Rounded.ExpandMore
                         },
-                    contentDescription = I18nManager.strings.showLessOrMore,
+                    contentDescription = Settings.language.strings.showLessOrMore,
                 )
             }
         }

@@ -16,23 +16,28 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.example.gymtracker.database.DatabasesBuilder
 import com.example.gymtracker.routing.RootContent
 import com.example.gymtracker.routing.RootRouter
+import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.elements.BottomMenu
 import com.example.gymtracker.ui.elements.TopBar
 import com.example.gymtracker.ui.theme.GymTrackerTheme
 
 @Composable
 fun GymTrackerApplication(
-    databasesBuilder: DatabasesBuilder,
-    componentContext: ComponentContext,
-) {
-    val router =
-        RootRouter(
-            componentContext = componentContext,
-            storeFactory = DefaultStoreFactory(),
-            databasesBuilder = databasesBuilder,
-        )
+//    databasesBuilder: DatabasesBuilder,
+//    componentContext: ComponentContext,
 
-    GymTrackerTheme {
+    router: RootRouter,
+) {
+//    val router =
+//        RootRouter(
+//            componentContext = componentContext,
+//            storeFactory = DefaultStoreFactory(),
+//            databasesBuilder = databasesBuilder,
+//        )
+
+    GymTrackerTheme(
+        theme = Settings.theme,
+    ) {
         val model by router.model.subscribeAsState()
         val snackbarHostState = remember { SnackbarHostState() }
 
