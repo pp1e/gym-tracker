@@ -48,6 +48,8 @@ import com.example.gymtracker.settings.Settings
 import com.example.gymtracker.ui.UiConstants
 import kotlinx.coroutines.delay
 
+private const val ASPECT_RATIO = 2.5f
+
 @Composable
 fun NumberInput(
     value: Int,
@@ -63,7 +65,7 @@ fun NumberInput(
                 .height(
                     UiConstants.calculateNumberInputHeight(),
                 )
-                .aspectRatio(2.5f),
+                .aspectRatioIfNoWeight(ASPECT_RATIO),
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -124,7 +126,6 @@ fun NumberInputEditable(
             textFieldValue = value.toString()
         }
     }
-
     Card(
         modifier =
             Modifier
@@ -132,7 +133,7 @@ fun NumberInputEditable(
                 .height(
                     UiConstants.calculateNumberInputHeight(),
                 )
-                .aspectRatio(2.5f),
+                .aspectRatioIfNoWeight(ASPECT_RATIO),
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -225,6 +226,12 @@ fun NumberInputEditable(
         }
     }
 }
+
+private fun Modifier.aspectRatioIfNoWeight(ratio: Float) = if (
+    !this.any { it::class::simpleName.get() == "LayoutWeightElement"  }
+) {
+    this.aspectRatio(ratio)
+} else this
 
 private fun checkFloatValue(
     value: Float,

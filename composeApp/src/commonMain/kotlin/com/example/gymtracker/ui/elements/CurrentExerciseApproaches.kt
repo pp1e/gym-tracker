@@ -37,8 +37,9 @@ import com.example.gymtracker.utils.safeIn
 import kotlinx.coroutines.delay
 import sh.calvin.reorderable.ReorderableColumn
 
-private const val TEXT_FIELD_WEIGHT = 1f
-private const val APPROACH_NUMBER_WEIGHT = 0.3f
+private const val APPROACH_NUMBER_WEIGHT = 2f
+private const val REPETITIONS_WEIGHT = 10f
+private const val APPROACH_WEIGHT_WEIGHT = 11f
 
 private val CURRENT_EXERCISE_APPROACH_BOTTOM_PADDING = 7.dp
 private val CURRENT_EXERCISE_NUMBER_INPUT_PADDING_VALUES =
@@ -73,12 +74,12 @@ fun CurrentExerciseApproaches(
             )
 
             ApproachLabel(
-                weight = TEXT_FIELD_WEIGHT,
+                weight = REPETITIONS_WEIGHT,
                 text = Settings.language.strings.repetitions,
             )
 
             ApproachLabel(
-                weight = TEXT_FIELD_WEIGHT,
+                weight = APPROACH_WEIGHT_WEIGHT,
                 text = Settings.language.strings.weight,
             )
         }
@@ -113,7 +114,6 @@ fun CurrentExerciseApproaches(
                 )
             },
         ) { index, approach, _ ->
-//        for ((index, approach) in approaches.withIndex()) {
             key(approach.id) {
                 SwipeToDeleteBox(
                     onDelete = {
@@ -144,19 +144,20 @@ fun CurrentExerciseApproaches(
                             val numberInputModifier =
                                 Modifier
                                     .align(Alignment.CenterVertically)
-                                    .weight(TEXT_FIELD_WEIGHT)
                                     .padding(CURRENT_EXERCISE_NUMBER_INPUT_PADDING_VALUES)
 
                             NumberInput(
                                 value = approach.repetitions,
                                 onValueChange = { onRepetitionsChange(approach.id, it) },
-                                modifier = numberInputModifier,
+                                modifier = numberInputModifier
+                                    .weight(REPETITIONS_WEIGHT),
                             )
 
                             NumberInputEditable(
                                 value = approach.weight,
                                 onValueChange = { onWeightChange(approach.id, it) },
-                                modifier = numberInputModifier,
+                                modifier = numberInputModifier
+                                    .weight(APPROACH_WEIGHT_WEIGHT),
                             )
                         }
                     }
